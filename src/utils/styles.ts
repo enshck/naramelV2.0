@@ -10,7 +10,7 @@ export const GlobalStyle = createGlobalStyle`
 body {
     font-family: "Proxima Nova Regular", "Proxima Nova Thin",
       "SF UI Display Regular", sans-serif;
-    background-color: #eaeef2;
+    background-color: #fff;
     margin: 0px;
     padding: 0px;
 }

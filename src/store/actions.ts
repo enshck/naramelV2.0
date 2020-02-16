@@ -3,7 +3,8 @@ import {
   IProfileReducers,
   ISuccessOrders,
   IOrderElement,
-  IGoodsData
+  IGoodsData,
+  ICategory
 } from "../utils/interfaces";
 
 export const setSortGoods = (sortType: string) => ({
@@ -44,4 +45,9 @@ export const setIsAuthStatus = (isAuth: boolean) => ({
 export const setIsAdminStatus = (isAdmin: boolean) => ({
   type: types.SET_IS_ADMIN,
   isAdmin
+});
+
+export const setMenuItems = (menuCategory: ICategory[]) => ({
+  type: types.SET_MENU_CATEGORY,
+  menuCategory
 });

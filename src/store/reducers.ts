@@ -81,6 +81,16 @@ const isAuthReducers = (state = false, action: any) => {
   }
 };
 
+const menuCategoryReducers = (state = [], action: any) => {
+  switch (action.type) {
+    case types.SET_MENU_CATEGORY: {
+      return action.menuCategory;
+    }
+    default:
+      return state;
+  }
+};
+
 export const reducers = combineReducers({
   goods: goodsReducers,
   sortType: sortTypeReducers,
@@ -89,5 +99,6 @@ export const reducers = combineReducers({
   isOpenBasketModal: isOpenBasketModalReducers,
   profile: profileReducers,
   isAdmin: isAdminReducers,
-  isAuth: isAuthReducers
+  isAuth: isAuthReducers,
+  menuCategory: menuCategoryReducers
 });

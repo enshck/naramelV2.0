@@ -4,14 +4,14 @@ import styled from "styled-components";
 import { useGetFirebaseData } from "../../../customHooks/useGetFirebaseData";
 
 const ItemsContainer = styled.div`
-  position: absolute;
+  /* position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: #f5f5f5;
+  background: #f5f5f5; */
 `;
 
 const Items = () => {
