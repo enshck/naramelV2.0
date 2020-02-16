@@ -2,47 +2,13 @@ import React from "react";
 import { Route, Redirect, Switch } from "react-router-dom";
 import { useSelector } from "react-redux";
 
-import SignUp from "../components/pages/login_signUp";
+import SignUp from "../components/pages/login";
 import AdminPanel from "../components/pages/adminPanel";
-import { IProfile } from "../components/modals/basketModal";
 import Items from "../components/pages/items";
 import ItemsDetail from "../components/pages/itemsDetails";
 import WrapComponent from "../components/wrapComponent";
-
-const PrivateRoute = ({
-  component: Component,
-  isAuth,
-  profile,
-  isAdmin,
-  ...rest
-}: {
-  component: any;
-  isAuth: boolean;
-  profile: IProfile;
-  isAdmin: boolean;
-  path: string;
-  exact?: boolean;
-}) => {
-  return (
-    <Route
-      {...rest}
-      render={props => {
-        if (isAuth) {
-          return <Component {...props} />;
-        } else {
-          return (
-            <Redirect
-              to={{
-                pathname: "/login",
-                state: { from: props.location }
-              }}
-            />
-          );
-        }
-      }}
-    />
-  );
-};
+import { IProfile } from "../utils/interfaces";
+import { GlobalStyle } from "../utils/styles";
 
 const ProtectedRoute = ({
   component: Component,
@@ -80,7 +46,7 @@ const ProtectedRoute = ({
   );
 };
 
-const PublicRoute = ({
+const NotAuthRoute = ({
   component: Component,
   isAuth,
   type,
@@ -119,31 +85,26 @@ const Routes = () => {
 
   return (
     <WrapComponent>
+      <GlobalStyle />
       <Switch>
-        <Route
-          exact
-          path="/"
-          render={() =>
-            isAdmin ? <Redirect to="/items" /> : <Redirect to="/login" />
-          }
-        />
-        <PublicRoute
+        <Route exact path="/" render={() => <Redirect to="/items" />} />
+        <NotAuthRoute
           component={SignUp}
           path="/login"
           {...{ isAuth, type: "auth" }}
         />
-        <PublicRoute
+        <NotAuthRoute
           component={SignUp}
           path="/signUp"
           {...{ isAuth, type: "signUp" }}
         />
-        <PrivateRoute
+        <Route
           exact
           component={Items}
           path="/items"
           {...{ isAuth, profile, isAdmin }}
         />
-        <PrivateRoute
+        <Route
           component={ItemsDetail}
           path={`/items/:id`}
           {...{ isAuth, profile, isAdmin }}

@@ -1,13 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import { useDispatch, useSelector } from "react-redux";
 
-import Header from "../../header";
-import { IProfile } from "../../modals/basketModal";
-import { IProfileReducers } from "../../../utils/interfaces";
 import { useGetFirebaseData } from "../../../customHooks/useGetFirebaseData";
-import { setGoodsList, setOrders } from "../../../store/actions";
-import GoodsContainer from "./goodsContainer";
 
 const ItemsContainer = styled.div`
   position: absolute;
@@ -22,31 +16,42 @@ const ItemsContainer = styled.div`
 
 const Items = () => {
   const [getGoods, goodsData] = useGetFirebaseData();
-  const [getOrders, ordersData] = useGetFirebaseData();
-  const profile = useSelector<IProfileReducers, IProfile>(
-    state => state.profile
-  );
-  const dispatch = useDispatch();
+  // const [getOrders, ordersData] = useGetFirebaseData();
+  // const profile = useSelector<IProfileReducers, IProfile>(
+  //   state => state.profile
+  // );
+  // const dispatch = useDispatch();
 
   if (!goodsData.called) {
     getGoods({
-      collection: "goods",
-      actionHandler: goods => dispatch(setGoodsList(goods))
+      collection: "category"
+      // actionHandler: goods => dispatch(setGoodsList(goods))
     });
   }
 
-  if (!ordersData.called && profile.uid) {
-    getOrders({
-      collection: "orders",
-      singleDoc: profile.uid,
-      actionHandler: orders => dispatch(setOrders(orders))
-    });
-  }
+  // console.log(
+  //   goodsData.data.map((element: any) =>
+  //     element.references.map((elem: any) =>
+  //       elem.get().then(res => {
+  //         console.log(res.data());
+  //       })
+  //     )
+  //   )
+  // );
+
+  // if (!ordersData.called && profile.uid) {
+  //   getOrders({
+  //     collection: "orders",
+  //     singleDoc: profile.uid,
+  //     actionHandler: orders => dispatch(setOrders(orders))
+  //   });
+  // }
 
   return (
     <ItemsContainer>
-      <Header mode={"items"} />
-      <GoodsContainer />
+      Items
+      {/* <Header mode={"items"} />
+      <GoodsContainer /> */}
     </ItemsContainer>
   );
 };

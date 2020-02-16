@@ -6,14 +6,14 @@ import "firebase/firestore";
 import "firebase/storage";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCxHEdSzkMDqjoHrgLbWgz4lQ8Sa0G646c",
-  authDomain: "homeproject-ca142.firebaseapp.com",
-  databaseURL: "https://homeproject-ca142.firebaseio.com",
-  projectId: "homeproject-ca142",
-  storageBucket: "homeproject-ca142.appspot.com",
-  messagingSenderId: "1043437194905",
-  appId: "1:1043437194905:web:4493932f1fa7ccaaa2b208",
-  measurementId: "G-1G5NHYJ03R"
+  apiKey: "AIzaSyD4UYZmAfk8vgg3jFE1gy_L2yY0wfKIDDw",
+  authDomain: "naramel.firebaseapp.com",
+  databaseURL: "https://naramel.firebaseio.com",
+  projectId: "naramel",
+  storageBucket: "naramel.appspot.com",
+  messagingSenderId: "27048051909",
+  appId: "1:27048051909:web:712eb506982f015929dcac",
+  measurementId: "G-KM3VXDVXSP"
 };
 
 // Initialize Firebase

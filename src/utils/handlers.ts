@@ -1,13 +1,12 @@
 import firebase from "./firebase";
 import {
+  IErrorsObject,
   IOrderElement,
   IGoodsData,
-  IProfile
-} from "../components/modals/basketModal";
-
-import { ISuccessOrders } from "../components/pages/adminPanel/ordersContainer";
-import { IGoodsDataValidation } from "../components/pages/adminPanel/updateGoodsContainer";
-import { IErrorsObject } from "./interfaces";
+  IProfile,
+  IGoodsDataValidation,
+  ISuccessOrders
+} from "./interfaces";
 
 export const signOutHandler = () => {
   firebase

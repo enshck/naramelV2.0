@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Fragment } from "react";
 import { useDispatch } from "react-redux";
 import {
   setProfileData,
   setIsAdminStatus,
   setIsAuthStatus
 } from "../store/actions";
-import { GlobalStyleComponent } from "./assets/assets";
 
 import Spinner from "./spinner";
 import firebase from "../utils/firebase";
@@ -48,7 +47,7 @@ const WrapComponent = (props: IProps) => {
     return <Spinner />;
   }
 
-  return <GlobalStyleComponent>{props.children}</GlobalStyleComponent>;
+  return <Fragment>{props.children}</Fragment>;
 };
 
 export default WrapComponent;

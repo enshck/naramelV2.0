@@ -3,10 +3,10 @@ import React, { useState } from "react";
 import firebase, {
   authGoogleProvider,
   authFacebookProvider
-} from "../../../utils/firebase";
-import google from "../../../img/google.png";
-import facebookIcon from "../../../img/facebook.png";
-import { errors } from "../../../utils/errors";
+} from "../../../../utils/firebase";
+import google from "../../../../img/google.png";
+import facebookIcon from "../../../../img/facebook.png";
+import { errors } from "../../../../utils/errors";
 import {
   ControlsContainer,
   ErrorMessage,
@@ -17,7 +17,7 @@ import {
   StyledNavLink,
   SubmitButton,
   TabContainer
-} from "./components";
+} from "./styles";
 
 interface IFormData {
   email: string;

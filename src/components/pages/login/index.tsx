@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 
-import firebase from "../../utils/firebase";
-import SignUpForm from "../forms/auth_sign";
-import { errors } from "../../utils/errors";
+import firebase from "../../../utils/firebase";
+import { errors } from "../../../utils/errors";
+import Form from "./form";
 
 const MainContainer = styled.div`
   display: flex;
@@ -77,7 +77,7 @@ const SignUp = (props: IProps) => {
 
   return (
     <MainContainer>
-      <SignUpForm
+      <Form
         formData={formData}
         setFormData={setFormData}
         signUpHandler={type === "auth" ? authHandler : signUpHandler}

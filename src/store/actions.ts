@@ -1,7 +1,10 @@
 import types from "./types";
-import { IOrderElement, IGoodsData } from "../components/modals/basketModal";
-import { ISuccessOrders } from "../components/pages/adminPanel/ordersContainer";
-import { IProfileReducers } from "../utils/interfaces";
+import {
+  IProfileReducers,
+  ISuccessOrders,
+  IOrderElement,
+  IGoodsData
+} from "../utils/interfaces";
 
 export const setSortGoods = (sortType: string) => ({
   type: types.SET_SORT_GOODS,
