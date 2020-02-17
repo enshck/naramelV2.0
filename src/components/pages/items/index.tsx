@@ -49,7 +49,6 @@ const Items = () => {
 
   return (
     <ItemsContainer>
-      Items
       {/* <Header mode={"items"} />
       <GoodsContainer /> */}
     </ItemsContainer>

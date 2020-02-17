@@ -9,6 +9,7 @@ import ItemsDetail from "../components/pages/itemsDetails";
 import WrapComponent from "../components/wrapComponent";
 import { IProfile } from "../utils/interfaces";
 import { GlobalStyle } from "../utils/styles";
+import Header from "../components/header";
 
 const ProtectedRoute = ({
   component: Component,
@@ -86,6 +87,7 @@ const Routes = () => {
   return (
     <WrapComponent>
       <GlobalStyle />
+      <Header />
       <Switch>
         <Route exact path="/" render={() => <Redirect to="/items" />} />
         <NotAuthRoute
