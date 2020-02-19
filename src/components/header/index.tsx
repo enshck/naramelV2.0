@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import { useSelector } from "react-redux";
 
 import {
@@ -38,15 +38,17 @@ const Header = () => {
 
           return (
             <MenuCategoryContainer key={id}>
-              <MenuElement>{name}</MenuElement>
-              <SubCategoriesMainContainer>
-                <SubCategoryWrapper />
-                {subCategories.map(elem => {
-                  const { id, name } = elem;
+              <MenuElement>
+                <p>{name}</p>
+                <SubCategoriesMainContainer>
+                  <SubCategoryWrapper />
+                  {subCategories.map(elem => {
+                    const { id, name } = elem;
 
-                  return <SubCategory key={id}>{name}</SubCategory>;
-                })}
-              </SubCategoriesMainContainer>
+                    return <SubCategory key={id}>{name}</SubCategory>;
+                  })}
+                </SubCategoriesMainContainer>
+              </MenuElement>
             </MenuCategoryContainer>
           );
         })}

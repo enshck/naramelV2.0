@@ -2,7 +2,7 @@ import React, { useEffect, useState, Fragment } from "react";
 import { useDispatch } from "react-redux";
 
 import { setMenuItems } from "../../store/actions";
-import { MainContainer } from "./styles";
+import { MainContainer, Container } from "./styles";
 import Spinner from "../spinner";
 import firebase from "../../utils/firebase";
 
@@ -32,7 +32,11 @@ const WrapComponent = (props: IProps) => {
     return <Spinner />;
   }
 
-  return <MainContainer>{props.children}</MainContainer>;
+  return (
+    <MainContainer>
+      <Container>{props.children}</Container>
+    </MainContainer>
+  );
 };
 
 export default WrapComponent;

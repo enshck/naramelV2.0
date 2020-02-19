@@ -38,23 +38,24 @@ export const MenuContainer = styled.div`
 
 export const SubCategoriesMainContainer = styled.div`
   visibility: hidden;
+  opacity: 0;
   position: absolute;
   width: 100%;
   box-sizing: border-box;
-  top: 35px;
   left: 0;
   z-index: 800;
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  top: 30px;
+  grid-template-columns: repeat(4, 1fr);
   padding-top: 20px;
-  min-height: 400px;
+  grid-gap: 40px;
+  min-height: 100px;
+  transition: 0.5s;
 `;
 
 export const SubCategoryWrapper = styled.div`
   width: 100%;
   height: 100%;
-  top: 5px;
+  top: 15px;
   position: absolute;
   background: #f9f9f9;
   z-index: 400;
@@ -63,21 +64,27 @@ export const SubCategoryWrapper = styled.div`
 
 export const MenuCategoryContainer = styled.div`
   padding-bottom: 10px;
-
-  &:hover {
-    ${SubCategoriesMainContainer} {
-      visibility: visible;
-    }
-  }
 `;
 
 export const MenuElement = styled.div`
-  font-size: 15px;
-  color: #333333;
   cursor: pointer;
 
+  p {
+    font-size: 15px;
+    color: #333333;
+    margin: 0;
+  }
+
   :hover {
-    color: #792c9b;
+    p {
+      color: #792c9b;
+    }
+    ${SubCategoriesMainContainer} {
+      opacity: 1;
+      /* height: 100px; */
+      /* min-height: 400px; */
+      visibility: visible;
+    }
   }
 `;
 
