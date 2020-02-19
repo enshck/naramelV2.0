@@ -2,17 +2,9 @@ import React from "react";
 import styled from "styled-components";
 
 import { useGetFirebaseData } from "../../../customHooks/useGetFirebaseData";
-
-const ItemsContainer = styled.div`
-  /* position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  background: #f5f5f5; */
-`;
+import Filter from "./filter";
+import GoodsContainer from "./goodsContainer";
+import { MainContainer } from "./styles";
 
 const Items = () => {
   const [getGoods, goodsData] = useGetFirebaseData();
@@ -45,13 +37,16 @@ const Items = () => {
   //     singleDoc: profile.uid,
   //     actionHandler: orders => dispatch(setOrders(orders))
   //   });
+
   // }
 
   return (
-    <ItemsContainer>
+    <MainContainer>
+      <Filter />
+      <GoodsContainer />
       {/* <Header mode={"items"} />
       <GoodsContainer /> */}
-    </ItemsContainer>
+    </MainContainer>
   );
 };
 
