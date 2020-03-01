@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@types/axios": "^0.14.0",
     "@types/firebase": "^3.2.1",
     "@types/jest": "^24.0.19",
     "@types/node": "^12.11.2",
@@ -10,6 +11,7 @@
     "@types/react-dom": "^16.9.2",
     "@types/styled-components": "^4.1.19",
     "@types/uuid": "^3.4.7",
+    "axios": "^0.19.2",
     "firebase": "^7.0.0",
     "moment": "^2.24.0",
     "prop-types": "^15.7.2",

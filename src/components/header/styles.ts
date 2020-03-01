@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 
 export const MainContainer = styled.div`
   width: 100%;
@@ -88,11 +89,13 @@ export const MenuElement = styled.div`
   }
 `;
 
-export const SubCategory = styled.div`
+export const SubCategory = styled(Link)`
   z-index: 600;
   display: flex;
   justify-content: center;
   cursor: pointer;
+  text-decoration: none;
+  color: #333333;
   :hover {
     color: #792c9b;
   }

@@ -1,51 +1,78 @@
-import React from "react";
-import styled from "styled-components";
+import React, { useState, useEffect } from "react";
+import querystring from "querystring";
 
-import { useGetFirebaseData } from "../../../customHooks/useGetFirebaseData";
 import Filter from "./filter";
 import GoodsContainer from "./goodsContainer";
 import { MainContainer } from "./styles";
+import { getFilteredGoods } from "axiosRequests/goods";
+import Spinner from "components/spinner";
+
+interface ISubGoodsElement {
+  elementValue: {
+    type: string;
+    value: string;
+  };
+  image: string;
+  price: number;
+}
+
+export interface IGoodsElement {
+  brand: string;
+  description: string;
+  groupId: string;
+  id: string;
+  name: string;
+  subName: string;
+  subGoods: ISubGoodsElement[];
+  filters: {
+    [key: string]: any;
+  };
+}
 
 const Items = () => {
-  const [getGoods, goodsData] = useGetFirebaseData();
-  // const [getOrders, ordersData] = useGetFirebaseData();
-  // const profile = useSelector<IProfileReducers, IProfile>(
-  //   state => state.profile
-  // );
-  // const dispatch = useDispatch();
+  const [goods, setGoods] = useState<IGoodsElement[]>([]);
+  const [filterData, setFilterData] = useState<{ [key: string]: string } | {}>(
+    {}
+  );
+  const [isMountedComponent, setMountedComponent] = useState(false);
+  const [isFetching, setFetching] = useState<boolean>(true);
+  const { search } = window.location;
 
-  if (!goodsData.called) {
-    getGoods({
-      collection: "category"
-      // actionHandler: goods => dispatch(setGoodsList(goods))
-    });
+  useEffect(() => {
+    setMountedComponent(true);
+  }, []);
+
+  useEffect(() => {
+    if (search.length > 0) {
+      const searchData = search.slice(1);
+      const parsedQuery = querystring.parse(searchData);
+      setFilterData(parsedQuery);
+    } else {
+      setFilterData({});
+    }
+  }, [search]);
+
+  useEffect(() => {
+    async function effectHandler() {
+      const result = await getFilteredGoods(filterData);
+      setGoods(result);
+      setFetching(false);
+    }
+
+    if (isMountedComponent) {
+      setFetching(true);
+      effectHandler();
+    }
+  }, [filterData]);
+
+  if (isFetching) {
+    return <Spinner />;
   }
-
-  // console.log(
-  //   goodsData.data.map((element: any) =>
-  //     element.references.map((elem: any) =>
-  //       elem.get().then(res => {
-  //         console.log(res.data());
-  //       })
-  //     )
-  //   )
-  // );
-
-  // if (!ordersData.called && profile.uid) {
-  //   getOrders({
-  //     collection: "orders",
-  //     singleDoc: profile.uid,
-  //     actionHandler: orders => dispatch(setOrders(orders))
-  //   });
-
-  // }
 
   return (
     <MainContainer>
       <Filter />
-      <GoodsContainer />
-      {/* <Header mode={"items"} />
-      <GoodsContainer /> */}
+      <GoodsContainer goods={goods} />
     </MainContainer>
   );
 };

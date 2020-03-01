@@ -14,14 +14,13 @@ import {
   MenuCategoryContainer,
   SubCategoryWrapper
 } from "./styles";
-import { ICategoryReducers, ICategory } from "../../utils/interfaces";
-import logo from "../../img/logoNaravel.png";
+import { ICategoryReducers, ICategory } from "utils/interfaces";
+import logo from "img/logoNaravel.png";
 
 const Header = () => {
   const menuCategory = useSelector<ICategoryReducers, ICategory[]>(
     state => state.menuCategory
   );
-  console.log(menuCategory, ">>>");
 
   return (
     <MainContainer>
@@ -45,7 +44,17 @@ const Header = () => {
                   {subCategories.map(elem => {
                     const { id, name } = elem;
 
-                    return <SubCategory key={id}>{name}</SubCategory>;
+                    return (
+                      <SubCategory
+                        key={id}
+                        to={{
+                          pathname: "/items",
+                          search: `groupId=${id}`
+                        }}
+                      >
+                        {name}
+                      </SubCategory>
+                    );
                   })}
                 </SubCategoriesMainContainer>
               </MenuElement>
