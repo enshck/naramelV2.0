@@ -6,8 +6,11 @@ import GoodsContainer from "./goodsContainer";
 import { MainContainer } from "./styles";
 import { getFilteredGoods } from "axiosRequests/goods";
 import Spinner from "components/spinner";
+import { useGetFirebaseData } from "customHooks/useGetFirebaseData";
+import { counterGoodsForFilter } from "utils/handlers";
+import firebase from "utils/firebase";
 
-interface ISubGoodsElement {
+export interface ISubGoodsElement {
   elementValue: {
     type: string;
     value: string;
@@ -29,14 +32,49 @@ export interface IGoodsElement {
   };
 }
 
+export interface IFiltersDataElement {
+  value: string;
+  count: number;
+}
+
+interface IFiltersData {
+  [key: string]: IFiltersDataElement[];
+}
+
+interface IFilterData {
+  groupId?: string;
+}
+
 const Items = () => {
   const [goods, setGoods] = useState<IGoodsElement[]>([]);
-  const [filterData, setFilterData] = useState<{ [key: string]: string } | {}>(
-    {}
-  );
+  const [allGoods, setAllGoods] = useState<IGoodsElement[]>([]);
+  const [filterData, setFilterData] = useState<IFilterData>({});
+  const [filtersData, setFiltersData] = useState<IFiltersData>({});
   const [isMountedComponent, setMountedComponent] = useState(false);
   const [isFetching, setFetching] = useState<boolean>(true);
   const { search } = window.location;
+
+  // if (!allGoodsData.called) {
+  //   getAllGoods({
+  //     collection: "goods"
+  //   });
+  // }
+
+  // async function effectHandler() {
+
+  //   const goodsData = filterData.groupId
+  //     ? await firebase
+  //         .firestore()
+  //         .collection("goods")
+  //         .where("groupId", "==", filterData.groupId)
+  //         .get()
+  //     : await firebase
+  //         .firestore()
+  //         .collection("goods")
+  //         .get();
+  //   const unpackedGoodsData: any = goodsData.docs.map(item => item.data())
+  //   setAllGoods(unpackedGoodsData);
+  // }
 
   useEffect(() => {
     setMountedComponent(true);
@@ -64,6 +102,13 @@ const Items = () => {
       effectHandler();
     }
   }, [filterData]);
+
+  // useEffect(() => {
+  //   if (data.length > 0) {
+  //     console.log(counterGoodsForFilter(data), ">>.");
+  //     // console.log(filterData, "><<<><<>");
+  //   }
+  // }, [data]);
 
   if (isFetching) {
     return <Spinner />;

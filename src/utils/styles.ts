@@ -18,11 +18,13 @@ body {
 
 export const GoodsStyledSelectorInput = styled.div`
   width: 100%;
-  height: 40px;
+  height: 30px;
   border: 1px solid #ccc;
   padding: 5px;
   box-sizing: border-box;
   font-size: 13px;
+  display: flex;
+  justify-content: center;
 `;
 
 interface IGoodsStyledSelectorOptions {
@@ -32,10 +34,13 @@ interface IGoodsStyledSelectorOptions {
 export const GoodsStyledSelectorOptions = styled.div<IGoodsStyledSelectorOptions>`
   width: 100%;
   position: absolute;
-  top: 40px;
+  top: 30px;
   max-height: 200px;
   overflow-y: auto;
   visibility: hidden;
+  border: 1px solid #ccc;
+  background: #fff;
+  border-top: 0;
 
   ${({ isOpenedOptionContainer }) =>
     isOpenedOptionContainer &&
@@ -53,9 +58,25 @@ export const GoodsStyledSelectorOption = styled.div<IGoodsStyledSelectorOption>`
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 5px 0;
+  font-size: 13px;
   ${({ isChanged }) =>
     isChanged &&
     css`
-      background: #333;
+      background: #f4f3f5;
     `}
+`;
+
+export const BuyButton = styled.div`
+  background-color: #792c9b;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 14px 10px;
+  text-transform: uppercase;
+  margin: 0 0 15px;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;

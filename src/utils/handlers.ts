@@ -7,6 +7,7 @@ import {
   IGoodsDataValidation,
   ISuccessOrders
 } from "./interfaces";
+import { IFiltersDataElement, IGoodsElement } from "components/pages/items";
 
 export const signOutHandler = () => {
   firebase
@@ -140,4 +141,41 @@ export const createProductValidation = (form: IGoodsDataValidation) => {
   }
 
   return errors;
+};
+
+export const counterGoodsForFilter = (goodsData: IGoodsElement[]) => {
+  const filterData: { [key: string]: IFiltersDataElement[] } = {};
+
+  goodsData.forEach((goodsItem: IGoodsElement) => {
+    const { filters } = goodsItem;
+
+    Object.keys(filters).forEach((filterKey: string) => {
+      const countedValue: IFiltersDataElement[] = Array.isArray(
+        filters[filterKey]
+      )
+        ? filters[filterKey].map((elem: string) => ({
+            value: elem,
+            count: 1
+          }))
+        : [
+            {
+              value: filters[filterKey],
+              count: 1
+            }
+          ];
+      if (!filterData[filterKey]) {
+        filterData[filterKey] = countedValue;
+      } else {
+        filterData[filterKey].forEach(elem => {
+          countedValue.forEach(countedValueElem => {
+            if (elem.value === countedValueElem.value) {
+              elem.count = elem.count + countedValueElem.count;
+            }
+          });
+        });
+      }
+    });
+  });
+
+  return filterData;
 };

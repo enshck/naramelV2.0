@@ -1,4 +1,5 @@
 import React, { ElementType, useState } from "react";
+import { ClickAwayListener } from "@material-ui/core";
 
 import { MainContainer } from "./styles";
 
@@ -31,32 +32,36 @@ const Selector = ({
   );
 
   return (
-    <MainContainer isOpenedOptionContainer={isOpenedOptionContainer}>
-      <StyledInputContainer
-        onClick={() => openOptionContainer(true)}
-        onBlur={() => openOptionContainer(false)}
-      >
-        {changedValue}
-        {arrowIcon && <img src={arrowIcon} alt={"arrowIcon"} />}
-      </StyledInputContainer>
-      <StyledOptionContainer isOpenedOptionContainer={isOpenedOptionContainer}>
-        {options.map(elem => {
-          const { label, value } = elem;
+    <ClickAwayListener onClickAway={() => openOptionContainer(false)}>
+      <MainContainer isOpenedOptionContainer={isOpenedOptionContainer}>
+        <StyledInputContainer
+          onClick={() => openOptionContainer(!isOpenedOptionContainer)}
+        >
+          {changedValue}
+          {arrowIcon && <img src={arrowIcon} alt={"arrowIcon"} />}
+        </StyledInputContainer>
+        <StyledOptionContainer
+          isOpenedOptionContainer={isOpenedOptionContainer}
+        >
+          {options.map((elem, key) => {
+            const { label, value } = elem;
 
-          return (
-            <StyledOption
-              isChanged={changedValue === value}
-              onClick={() => {
-                setNewValue(value);
-                openOptionContainer(false);
-              }}
-            >
-              {label}
-            </StyledOption>
-          );
-        })}
-      </StyledOptionContainer>
-    </MainContainer>
+            return (
+              <StyledOption
+                isChanged={changedValue === value}
+                onClick={() => {
+                  setNewValue(value);
+                  openOptionContainer(false);
+                }}
+                key={key}
+              >
+                {label}
+              </StyledOption>
+            );
+          })}
+        </StyledOptionContainer>
+      </MainContainer>
+    </ClickAwayListener>
   );
 };
 

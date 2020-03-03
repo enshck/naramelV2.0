@@ -1,19 +1,22 @@
 import styled from "styled-components";
 
+import { BuyButton as ButtonBuy } from "utils/styles";
+
 export const Wrapper = styled.div`
   position: absolute;
   width: 100%;
   height: 100%;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
   visibility: hidden;
-  transform: translateY(-10%);
+  transform: translateY(-5%);
   transition: 0.2s;
 `;
 
 export const InvisiblePart = styled.div`
-  visibility: hidden;
-  transition: 0.2s;
+  display: none;
   width: 100%;
+  flex-direction: column;
+  align-items: center;
 `;
 
 export const GoodsElement = styled.div`
@@ -28,10 +31,10 @@ export const GoodsElement = styled.div`
     ${Wrapper} {
       visibility: visible;
       width: 120%;
-      height: 120%;
+      height: 110%;
     }
     ${InvisiblePart} {
-      visibility: visible;
+      display: flex;
     }
   }
 `;
@@ -69,5 +72,11 @@ export const Price = styled.p`
 `;
 
 export const SelectorContainer = styled.div`
-  width: 100%;
+  width: 80%;
+  margin-top: 10px;
+`;
+
+export const BuyButton = styled(ButtonBuy)`
+  margin-top: 30px;
+  width: 40%;
 `;
