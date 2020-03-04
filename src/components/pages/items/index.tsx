@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import querystring from "querystring";
+import querystring from "qs";
+import { useHistory } from "react-router-dom";
 
 import Filter from "./filter";
 import GoodsContainer from "./goodsContainer";
 import { MainContainer } from "./styles";
 import { getFilteredGoods } from "axiosRequests/goods";
 import Spinner from "components/spinner";
-import { useGetFirebaseData } from "customHooks/useGetFirebaseData";
 import { counterGoodsForFilter } from "utils/handlers";
 import firebase from "utils/firebase";
 
@@ -37,12 +37,13 @@ export interface IFiltersDataElement {
   count: number;
 }
 
-interface IFiltersData {
+export interface IFiltersData {
   [key: string]: IFiltersDataElement[];
 }
 
-interface IFilterData {
-  groupId?: string;
+export interface IFilterData {
+  // groupId?: string;
+  [key: string]: string[] | string;
 }
 
 const Items = () => {
@@ -52,29 +53,31 @@ const Items = () => {
   const [filtersData, setFiltersData] = useState<IFiltersData>({});
   const [isMountedComponent, setMountedComponent] = useState(false);
   const [isFetching, setFetching] = useState<boolean>(true);
+  const [isFetchingFilter, setFetchingFilter] = useState<boolean>(true);
   const { search } = window.location;
+  const { groupId } = filterData;
+  const history = useHistory();
 
-  // if (!allGoodsData.called) {
-  //   getAllGoods({
-  //     collection: "goods"
-  //   });
-  // }
+  useEffect(() => {
+    async function effectHandler() {
+      setFetchingFilter(true);
+      const goodsData = filterData.groupId
+        ? await firebase
+            .firestore()
+            .collection("goods")
+            .where("groupId", "==", filterData.groupId)
+            .get()
+        : await firebase
+            .firestore()
+            .collection("goods")
+            .get();
+      const unpackedGoodsData: any = goodsData.docs.map(item => item.data());
+      setAllGoods(unpackedGoodsData);
+      setFetchingFilter(false);
+    }
 
-  // async function effectHandler() {
-
-  //   const goodsData = filterData.groupId
-  //     ? await firebase
-  //         .firestore()
-  //         .collection("goods")
-  //         .where("groupId", "==", filterData.groupId)
-  //         .get()
-  //     : await firebase
-  //         .firestore()
-  //         .collection("goods")
-  //         .get();
-  //   const unpackedGoodsData: any = goodsData.docs.map(item => item.data())
-  //   setAllGoods(unpackedGoodsData);
-  // }
+    effectHandler();
+  }, [groupId]);
 
   useEffect(() => {
     setMountedComponent(true);
@@ -92,6 +95,8 @@ const Items = () => {
 
   useEffect(() => {
     async function effectHandler() {
+      const stringifyParams = querystring.stringify(filterData);
+      history.push({ pathname: "/items", search: `${stringifyParams}` });
       const result = await getFilteredGoods(filterData);
       setGoods(result);
       setFetching(false);
@@ -103,20 +108,40 @@ const Items = () => {
     }
   }, [filterData]);
 
-  // useEffect(() => {
-  //   if (data.length > 0) {
-  //     console.log(counterGoodsForFilter(data), ">>.");
-  //     // console.log(filterData, "><<<><<>");
-  //   }
-  // }, [data]);
+  useEffect(() => {
+    setFiltersData(counterGoodsForFilter(allGoods));
+  }, [allGoods]);
 
   if (isFetching) {
     return <Spinner />;
   }
 
+  const onChangeFilterHandler = (filterKey: string, value: string) => {
+    const filterDataClone = { ...filterData };
+    const filterElement = filterDataClone[filterKey];
+    if (filterElement) {
+      const valueIndex = filterElement.indexOf(value);
+      if (Array.isArray(filterElement)) {
+        if (valueIndex !== -1) {
+          filterElement.splice(valueIndex, 1);
+        } else {
+          filterElement.push(value);
+        }
+      }
+    } else {
+      filterDataClone[filterKey] = [value];
+    }
+    setFilterData(filterDataClone);
+  };
+
   return (
     <MainContainer>
-      <Filter />
+      <Filter
+        filtersData={filtersData}
+        isFetchingFilter={isFetchingFilter}
+        filterData={filterData}
+        onChangeFilterHandler={onChangeFilterHandler}
+      />
       <GoodsContainer goods={goods} />
     </MainContainer>
   );

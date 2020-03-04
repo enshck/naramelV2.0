@@ -4,7 +4,8 @@ import {
   ISuccessOrders,
   IOrderElement,
   IGoodsData,
-  ICategory
+  ICategory,
+  IFilter
 } from "../utils/interfaces";
 
 export const setSortGoods = (sortType: string) => ({
@@ -50,4 +51,9 @@ export const setIsAdminStatus = (isAdmin: boolean) => ({
 export const setMenuItems = (menuCategory: ICategory[]) => ({
   type: types.SET_MENU_CATEGORY,
   menuCategory
+});
+
+export const setFilters = (filters: IFilter[]) => ({
+  type: types.SET_FILTERS,
+  filters
 });

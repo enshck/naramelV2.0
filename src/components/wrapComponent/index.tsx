@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
-import { setMenuItems } from "../../store/actions";
+import { setMenuItems, setFilters } from "store/actions";
 import { MainContainer, Container } from "./styles";
 import Spinner from "../spinner";
-import firebase from "../../utils/firebase";
+import firebase from "utils/firebase";
 
 interface IProps {
   children: any;
@@ -15,17 +15,27 @@ const WrapComponent = (props: IProps) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    setFetching(true);
+    async function effectHandler() {
+      const categoryDocs = await firebase
+        .firestore()
+        .collection("category")
+        .get();
 
-    firebase
-      .firestore()
-      .collection("category")
-      .get()
-      .then(doc => {
-        const docData: any = doc.docs.map(elem => elem.data());
-        dispatch(setMenuItems(docData));
-        setFetching(false);
-      });
+      const filtersDocs = await firebase
+        .firestore()
+        .collection("filters")
+        .get();
+
+      const categoryDocData: any = categoryDocs.docs.map(elem => elem.data());
+      const filtersDocData: any = filtersDocs.docs.map(elem => elem.data());
+
+      dispatch(setMenuItems(categoryDocData));
+      dispatch(setFilters(filtersDocData));
+      setFetching(false);
+    }
+
+    setFetching(true);
+    effectHandler();
   }, []);
 
   if (isFetching) {

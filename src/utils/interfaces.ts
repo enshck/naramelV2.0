@@ -101,3 +101,14 @@ export interface ICategory {
 export interface ICategoryReducers {
   menuCategory: ICategory[];
 }
+
+export interface IFilter {
+  id: string;
+  name: string;
+  type: string;
+  units: string;
+}
+
+export interface IFiltersReducers {
+  filters: IFilter[];
+}

@@ -91,6 +91,16 @@ const menuCategoryReducers = (state = [], action: any) => {
   }
 };
 
+const filtersReducers = (state = [], action: any) => {
+  switch (action.type) {
+    case types.SET_FILTERS: {
+      return action.filters;
+    }
+    default:
+      return state;
+  }
+};
+
 export const reducers = combineReducers({
   goods: goodsReducers,
   sortType: sortTypeReducers,
@@ -100,5 +110,6 @@ export const reducers = combineReducers({
   profile: profileReducers,
   isAdmin: isAdminReducers,
   isAuth: isAuthReducers,
-  menuCategory: menuCategoryReducers
+  menuCategory: menuCategoryReducers,
+  filters: filtersReducers
 });

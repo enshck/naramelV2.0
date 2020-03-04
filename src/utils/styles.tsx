@@ -1,3 +1,4 @@
+import React, { BaseSyntheticEvent } from "react";
 import styled, { createGlobalStyle, css } from "styled-components";
 
 export const GlobalStyle = createGlobalStyle`
@@ -31,7 +32,9 @@ interface IGoodsStyledSelectorOptions {
   isOpenedOptionContainer: boolean;
 }
 
-export const GoodsStyledSelectorOptions = styled.div<IGoodsStyledSelectorOptions>`
+export const GoodsStyledSelectorOptions = styled.div<
+  IGoodsStyledSelectorOptions
+>`
   width: 100%;
   position: absolute;
   top: 30px;
@@ -80,3 +83,86 @@ export const BuyButton = styled.div`
   justify-content: center;
   align-items: center;
 `;
+
+const CheckboxSpan = styled.span`
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 20px;
+  box-sizing: border-box;
+  width: 20px;
+  background-color: #eee;
+
+  &:after {
+    content: "";
+    position: absolute;
+    display: none;
+  }
+`;
+
+const CheckboxInput = styled.input``;
+
+const CheckBoxMainContainer = styled.label`
+  display: block;
+  position: relative;
+  padding-left: 14px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  font-size: 22px;
+  user-select: none;
+
+  ${CheckboxInput} {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+
+    &:checked ~ ${CheckboxSpan}:after {
+      display: block;
+    }
+  }
+
+  &:hover input ~ .checkmark {
+    background-color: #ccc;
+  }
+
+  ${CheckboxSpan}:after {
+    left: 6px;
+    top: 1px;
+    width: 6px;
+    height: 12px;
+    border: solid #792c9b;
+    border-width: 0 2px 2px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+  }
+`;
+
+interface IFilterStyledCheckbox {
+  type: string;
+  name: string;
+  onChange: (e: BaseSyntheticEvent, name: string) => void;
+  checked: boolean;
+}
+
+export const FilterStyledCheckbox = ({
+  type,
+  name,
+  onChange,
+  checked
+}: IFilterStyledCheckbox) => {
+  return (
+    <CheckBoxMainContainer>
+      <CheckboxInput
+        type={type}
+        name={name}
+        id={name}
+        onChange={e => onChange(e, name)}
+        checked={checked}
+      />
+      <CheckboxSpan />
+    </CheckBoxMainContainer>
+  );
+};

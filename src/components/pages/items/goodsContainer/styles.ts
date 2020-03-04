@@ -5,4 +5,6 @@ export const MainContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-gap: 40px;
+  grid-auto-rows: 450px;
+  padding-bottom: 50px;
 `;
