@@ -3,16 +3,19 @@ import styled from "styled-components";
 export const MainContainer = styled.div``;
 
 export const FilterElement = styled.div`
-  h2 {
-    font-size: 15px;
-    font-weight: 400;
-    margin-top: 5px;
-  }
   width: 80%;
   margin-top: 20px;
   border-top: 1px solid #ebebeb;
   padding-bottom: 30px;
   padding-top: 20px;
+  h2 {
+    font-size: 15px;
+    font-weight: 400;
+    margin-top: 5px;
+  }
+  p {
+    font-size: 13px;
+  }
   :last-child {
     border-bottom: 1px solid #ebebeb;
   }
@@ -34,4 +37,13 @@ export const Label = styled.label`
   span {
     color: #999;
   }
+`;
+
+export const StyledFilterInput = styled.input`
+  border: 1px solid #ccc;
+  padding: 5px;
+  box-sizing: border-box;
+  height: 30px;
+  width: 100%;
+  outline: none;
 `;

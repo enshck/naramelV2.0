@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, BaseSyntheticEvent } from "react";
 import querystring from "qs";
 import { useHistory } from "react-router-dom";
 
@@ -42,13 +42,21 @@ export interface IFiltersData {
 }
 
 export interface IFilterData {
-  // groupId?: string;
   [key: string]: string[] | string;
+}
+
+export interface IMinAndMaxPrice {
+  min: number;
+  max: number;
 }
 
 const Items = () => {
   const [goods, setGoods] = useState<IGoodsElement[]>([]);
   const [allGoods, setAllGoods] = useState<IGoodsElement[]>([]);
+  const [minAndMaxPrice, setMinAndMaxPrice] = useState<IMinAndMaxPrice>({
+    min: 0,
+    max: 0
+  });
   const [filterData, setFilterData] = useState<IFilterData>({});
   const [filtersData, setFiltersData] = useState<IFiltersData>({});
   const [isMountedComponent, setMountedComponent] = useState(false);
@@ -57,6 +65,10 @@ const Items = () => {
   const { search } = window.location;
   const { groupId } = filterData;
   const history = useHistory();
+
+  useEffect(() => {
+    setMountedComponent(true);
+  }, []);
 
   useEffect(() => {
     async function effectHandler() {
@@ -80,14 +92,16 @@ const Items = () => {
   }, [groupId]);
 
   useEffect(() => {
-    setMountedComponent(true);
-  }, []);
-
-  useEffect(() => {
     if (search.length > 0) {
       const searchData = search.slice(1);
       const parsedQuery = querystring.parse(searchData);
       setFilterData(parsedQuery);
+      if (parsedQuery.price) {
+        setMinAndMaxPrice({
+          min: parsedQuery.price[0],
+          max: parsedQuery.price[1]
+        });
+      }
     } else {
       setFilterData({});
     }
@@ -109,12 +123,17 @@ const Items = () => {
   }, [filterData]);
 
   useEffect(() => {
+    const searchData = search.slice(1);
+    const parsedQuery = querystring.parse(searchData);
+    if (allGoods.length > 0 && !parsedQuery.price) {
+      const allGoodsPrices = allGoods.map(elem => elem.filters.price);
+      setMinAndMaxPrice({
+        min: Math.min(...allGoodsPrices),
+        max: Math.max(...allGoodsPrices)
+      });
+    }
     setFiltersData(counterGoodsForFilter(allGoods));
   }, [allGoods]);
-
-  if (isFetching) {
-    return <Spinner />;
-  }
 
   const onChangeFilterHandler = (filterKey: string, value: string) => {
     const filterDataClone = { ...filterData };
@@ -134,6 +153,23 @@ const Items = () => {
     setFilterData(filterDataClone);
   };
 
+  const onInputPrice = (e: BaseSyntheticEvent, name: string) => {
+    const value = e.target.value;
+    const newFilterData = {
+      ...minAndMaxPrice,
+      [name]: value
+    };
+    setMinAndMaxPrice(newFilterData);
+    setFilterData({
+      ...filterData,
+      price: [`${newFilterData.min}`, `${newFilterData.max}`]
+    });
+  };
+
+  if (isFetching) {
+    return <Spinner />;
+  }
+
   return (
     <MainContainer>
       <Filter
@@ -141,6 +177,8 @@ const Items = () => {
         isFetchingFilter={isFetchingFilter}
         filterData={filterData}
         onChangeFilterHandler={onChangeFilterHandler}
+        minAndMaxPrice={minAndMaxPrice}
+        onInputPrice={onInputPrice}
       />
       <GoodsContainer goods={goods} />
     </MainContainer>

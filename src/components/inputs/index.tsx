@@ -33,7 +33,7 @@ interface IProps {
   onBlur?: (e: BaseSyntheticEvent, name: string) => void;
   name: string;
   defaultValue?: string;
-  value?: string;
+  value?: string | number;
   type: string;
   onClick?: (e: BaseSyntheticEvent, name: string) => void;
   checked?: string | boolean;
