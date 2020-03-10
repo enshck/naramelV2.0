@@ -181,3 +181,11 @@ export const counterGoodsForFilter = (goodsData: IGoodsElement[]) => {
 
   return filterData;
 };
+
+export const debounce = (delay: number) => {
+  let debounceTimer: any;
+  return (onClickHandler: (...args: any[]) => void) => {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout((...args) => onClickHandler(...args), delay);
+  };
+};

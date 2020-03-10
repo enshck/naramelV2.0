@@ -20,7 +20,7 @@ interface IProps {
   filterData: IFilterData;
   onChangeFilterHandler: (filterKey: string, value: string) => void;
   minAndMaxPrice: IMinAndMaxPrice;
-  onInputPrice: (e: BaseSyntheticEvent, name: string) => void;
+  onInputPrice: (value: string, name: string) => void;
 }
 
 const Filter = ({
@@ -77,7 +77,7 @@ const Filter = ({
                     name={"min"}
                     type={"text"}
                     value={minAndMaxPrice.min}
-                    onInput={onInputPrice}
+                    onInput={(e, name) => onInputPrice(e.target.value, name)}
                   />
                   <p>До:</p>
                   <Input
@@ -85,7 +85,7 @@ const Filter = ({
                     name={"max"}
                     type={"text"}
                     value={minAndMaxPrice.max}
-                    onInput={onInputPrice}
+                    onInput={(e, name) => onInputPrice(e.target.value, name)}
                   />
                 </Fragment>
               )}

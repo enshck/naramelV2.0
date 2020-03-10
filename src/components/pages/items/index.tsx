@@ -1,4 +1,4 @@
-import React, { useState, useEffect, BaseSyntheticEvent } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import querystring from "qs";
 import { useHistory } from "react-router-dom";
 
@@ -7,7 +7,7 @@ import GoodsContainer from "./goodsContainer";
 import { MainContainer } from "./styles";
 import { getFilteredGoods } from "axiosRequests/goods";
 import Spinner from "components/spinner";
-import { counterGoodsForFilter } from "utils/handlers";
+import { counterGoodsForFilter, debounce } from "utils/handlers";
 import firebase from "utils/firebase";
 
 export interface ISubGoodsElement {
@@ -62,6 +62,7 @@ const Items = () => {
   const [isMountedComponent, setMountedComponent] = useState(false);
   const [isFetching, setFetching] = useState<boolean>(true);
   const [isFetchingFilter, setFetchingFilter] = useState<boolean>(true);
+  const onInputPriceDebounceHandler = useCallback(debounce(1000), []);
   const { search } = window.location;
   const { groupId } = filterData;
   const history = useHistory();
@@ -153,16 +154,18 @@ const Items = () => {
     setFilterData(filterDataClone);
   };
 
-  const onInputPrice = (e: BaseSyntheticEvent, name: string) => {
-    const value = e.target.value;
+  const onInputPrice = (value: string, name: string) => {
     const newFilterData = {
       ...minAndMaxPrice,
       [name]: value
     };
     setMinAndMaxPrice(newFilterData);
-    setFilterData({
-      ...filterData,
-      price: [`${newFilterData.min}`, `${newFilterData.max}`]
+
+    onInputPriceDebounceHandler(() => {
+      setFilterData({
+        ...filterData,
+        price: [`${newFilterData.min}`, `${newFilterData.max}`]
+      });
     });
   };
 
