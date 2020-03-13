@@ -1,11 +1,11 @@
 import types from "./types";
 import {
-  IProfileReducers,
   ISuccessOrders,
   IOrderElement,
   IGoodsData,
   ICategory,
-  IFilter
+  IFilter,
+  IProfile
 } from "../utils/interfaces";
 
 export const setSortGoods = (sortType: string) => ({
@@ -33,7 +33,7 @@ export const setAdminOrders = (adminOrders: ISuccessOrders[]) => ({
   adminOrders
 });
 
-export const setProfileData = (profile: IProfileReducers | {}) => ({
+export const setProfileData = (profile: IProfile | {}) => ({
   type: types.SET_PROFILE,
   profile
 });

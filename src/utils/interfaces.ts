@@ -35,40 +35,8 @@ export interface ISuccessOrders {
   id: string;
 }
 
-export interface IGoodsReducers {
-  goods: IGoodsData[];
-}
-
-export interface ISortTypeReducers {
-  sortType: string;
-}
-
-export interface IOrdersReducers {
-  orders: IOrderElement[];
-}
-
-export interface IAdminOrdersReducers {
-  adminOrders: ISuccessOrders[];
-}
-
-export interface IIsOpenBasketModalReducers {
-  isOpenBasketModal: boolean;
-}
-
 export interface IErrorsObject {
   [key: string]: string;
-}
-
-export interface IProfileReducers {
-  profile: IProfile;
-}
-
-export interface IIsAdminReducers {
-  isAdmin: boolean;
-}
-
-export interface IIsAuthReducers {
-  isAuth: boolean;
 }
 
 export interface IGoodsDataValidation {
@@ -98,10 +66,6 @@ export interface ICategory {
   subCategories: ISubCategory[];
 }
 
-export interface ICategoryReducers {
-  menuCategory: ICategory[];
-}
-
 export interface IFilter {
   id: string;
   name: string;
@@ -110,5 +74,18 @@ export interface IFilter {
 }
 
 export interface IFiltersReducers {
+  filters: IFilter[];
+}
+
+export interface IRootState {
+  goods: IGoodsData[];
+  sortType: string;
+  orders: IOrderElement[];
+  adminOrders: ISuccessOrders[];
+  isOpenBasketModal: boolean;
+  profile: IProfile;
+  isAdmin: boolean;
+  isAuth: boolean;
+  menuCategory: ICategory[];
   filters: IFilter[];
 }

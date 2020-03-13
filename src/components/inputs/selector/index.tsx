@@ -31,13 +31,16 @@ const Selector = ({
     false
   );
 
+  const changedLabel =
+    options.find(elem => elem.value === changedValue)?.label || "";
+
   return (
     <ClickAwayListener onClickAway={() => openOptionContainer(false)}>
       <MainContainer isOpenedOptionContainer={isOpenedOptionContainer}>
         <StyledInputContainer
           onClick={() => openOptionContainer(!isOpenedOptionContainer)}
         >
-          {changedValue}
+          {changedLabel}
           {arrowIcon && <img src={arrowIcon} alt={"arrowIcon"} />}
         </StyledInputContainer>
         <StyledOptionContainer

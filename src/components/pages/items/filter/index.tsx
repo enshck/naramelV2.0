@@ -1,5 +1,4 @@
-import React, { Fragment, BaseSyntheticEvent } from "react";
-import { useSelector } from "react-redux";
+import React, { Fragment } from "react";
 
 import {
   MainContainer,
@@ -10,9 +9,9 @@ import {
 } from "./styles";
 import { IFiltersData, IFilterData, IMinAndMaxPrice } from "../index";
 import Spinner from "components/spinner";
-import { IFiltersReducers, IFilter } from "utils/interfaces";
 import Input from "components/inputs";
 import { FilterStyledCheckbox } from "utils/styles";
+import { useSelector } from "store/reducers";
 
 interface IProps {
   filtersData: IFiltersData;
@@ -31,9 +30,7 @@ const Filter = ({
   minAndMaxPrice,
   onInputPrice
 }: IProps) => {
-  const filters = useSelector<IFiltersReducers, IFilter[]>(
-    state => state.filters
-  );
+  const filters = useSelector(state => state.filters);
 
   if (isFetchingFilter) {
     return <Spinner />;
@@ -64,7 +61,8 @@ const Filter = ({
                         checked={filterElement && filterElement.includes(value)}
                       />
                       <Label htmlFor={`${filterKey}-${value}`}>
-                        {value} <span>({count})</span>
+                        {value + " " + translatedNameOfFilter.units}{" "}
+                        <span>({count})</span>
                       </Label>
                     </CheckboxContainer>
                   );

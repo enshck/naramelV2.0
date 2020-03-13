@@ -1,6 +1,5 @@
 import React from "react";
 import { Route, Redirect, Switch } from "react-router-dom";
-import { useSelector } from "react-redux";
 
 import SignUp from "../components/pages/login";
 import AdminPanel from "../components/pages/adminPanel";
@@ -10,6 +9,7 @@ import WrapComponent from "../components/wrapComponent";
 import { IProfile } from "../utils/interfaces";
 import { GlobalStyle } from "../utils/styles";
 import Header from "../components/header";
+import { useSelector } from "store/reducers";
 
 const ProtectedRoute = ({
   component: Component,
@@ -80,9 +80,9 @@ const NotAuthRoute = ({
 };
 
 const Routes = () => {
-  const isAuth = useSelector<any, boolean>(state => state.isAuth);
-  const isAdmin = useSelector<any, boolean>(state => state.isAdmin);
-  const profile = useSelector<any, IProfile>(state => state.profile);
+  const isAuth = useSelector(state => state.isAuth);
+  const isAdmin = useSelector(state => state.isAdmin);
+  const profile = useSelector(state => state.profile);
 
   return (
     <WrapComponent>

@@ -20,17 +20,21 @@ import {
 import Selector from "components/inputs/selector";
 import arrowDown from "assets/goods/arrowDown.png";
 import { ISubGoodsElement, IGoodsElement } from "components/pages/items/index";
+import { useSelector } from "store/reducers";
 
 const ItemElement = (props: IGoodsElement) => {
   const { name, subName, subGoods } = props;
+  const filters = useSelector(state => state.filters);
   const [changedSubElement, setChangedSubElement] = useState<ISubGoodsElement>(
     subGoods[0]
   );
   const { elementValue, image, price } = changedSubElement;
   const optionsForSelector = subGoods.map(elem => {
-    const { value } = elem.elementValue;
+    const { value, type } = elem.elementValue;
+    const changedFilterType = filters.find(elem => elem.type === type);
+
     return {
-      label: value,
+      label: `${value} ${changedFilterType?.units || ""}`,
       value
     };
   });

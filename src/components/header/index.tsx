@@ -1,5 +1,4 @@
 import React from "react";
-import { useSelector } from "react-redux";
 
 import {
   MainContainer,
@@ -14,13 +13,11 @@ import {
   MenuCategoryContainer,
   SubCategoryWrapper
 } from "./styles";
-import { ICategoryReducers, ICategory } from "utils/interfaces";
 import logo from "img/logoNaravel.png";
+import { useSelector } from "store/reducers";
 
 const Header = () => {
-  const menuCategory = useSelector<ICategoryReducers, ICategory[]>(
-    state => state.menuCategory
-  );
+  const menuCategory = useSelector(state => state.menuCategory);
 
   return (
     <MainContainer>

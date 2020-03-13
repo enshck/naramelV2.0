@@ -1,5 +1,11 @@
 import { combineReducers } from "redux";
+import {
+  TypedUseSelectorHook,
+  useSelector as useTypedSelector
+} from "react-redux";
+
 import types from "./types";
+import { IRootState } from "utils/interfaces";
 
 const goodsReducers = (state = [], action: any) => {
   switch (action.type) {
@@ -100,6 +106,8 @@ const filtersReducers = (state = [], action: any) => {
       return state;
   }
 };
+
+export const useSelector: TypedUseSelectorHook<IRootState> = useTypedSelector;
 
 export const reducers = combineReducers({
   goods: goodsReducers,
