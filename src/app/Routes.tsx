@@ -9,7 +9,7 @@ import WrapComponent from "../components/wrapComponent";
 import { IProfile } from "../utils/interfaces";
 import { GlobalStyle } from "../utils/styles";
 import Header from "../components/header";
-import { useSelector } from "store/reducers";
+import { useSelector } from "customHooks/useSelector";
 
 const ProtectedRoute = ({
   component: Component,

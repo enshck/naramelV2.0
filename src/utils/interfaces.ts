@@ -1,3 +1,5 @@
+import { ICommonGoodsElement, ISubGoodsElement } from "components/pages/items";
+
 export interface IGoodsData {
   goodId: string;
   goodName: string;
@@ -14,25 +16,11 @@ export interface IGoodsData {
   price: string;
 }
 
-export interface IOrderElement {
-  count: number;
-  goodsData: IGoodsData;
-}
-
 export interface IProfile {
   email: string;
   displayName: string;
   uid: string;
   phoneNumber: string;
-}
-
-export interface ISuccessOrders {
-  orders: IOrderElement[];
-  status: string;
-  userName: string;
-  summaryOrder: number;
-  date: any;
-  id: string;
 }
 
 export interface IErrorsObject {
@@ -77,12 +65,15 @@ export interface IFiltersReducers {
   filters: IFilter[];
 }
 
+export interface IOrderData extends ICommonGoodsElement, ISubGoodsElement {
+  count?: number;
+}
+
 export interface IRootState {
   goods: IGoodsData[];
   sortType: string;
-  orders: IOrderElement[];
-  adminOrders: ISuccessOrders[];
-  isOpenBasketModal: boolean;
+  orders: IOrderData[];
+  openedModal: string | null;
   profile: IProfile;
   isAdmin: boolean;
   isAuth: boolean;

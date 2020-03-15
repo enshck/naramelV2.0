@@ -11,7 +11,7 @@ import { IFiltersData, IFilterData, IMinAndMaxPrice } from "../index";
 import Spinner from "components/spinner";
 import Input from "components/inputs";
 import { FilterStyledCheckbox } from "utils/styles";
-import { useSelector } from "store/reducers";
+import { useSelector } from "customHooks/useSelector";
 
 interface IProps {
   filtersData: IFiltersData;

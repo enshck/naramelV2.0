@@ -1,12 +1,11 @@
 import types from "./types";
 import {
-  ISuccessOrders,
-  IOrderElement,
+  IOrderData,
   IGoodsData,
   ICategory,
   IFilter,
   IProfile
-} from "../utils/interfaces";
+} from "utils/interfaces";
 
 export const setSortGoods = (sortType: string) => ({
   type: types.SET_SORT_GOODS,
@@ -16,21 +15,6 @@ export const setSortGoods = (sortType: string) => ({
 export const setGoodsList = (goodsList: IGoodsData[]) => ({
   type: types.SET_GOODS_LIST,
   goodsList
-});
-
-export const setOrders = (orders: IOrderElement[]) => ({
-  type: types.SET_ORDERS,
-  orders
-});
-
-export const setOpenBasketModal = (isOpen: boolean) => ({
-  type: types.SET_OPEN_MODAL_STATUS,
-  isOpen
-});
-
-export const setAdminOrders = (adminOrders: ISuccessOrders[]) => ({
-  type: types.SET_ADMIN_ORDERS,
-  adminOrders
 });
 
 export const setProfileData = (profile: IProfile | {}) => ({
@@ -56,4 +40,14 @@ export const setMenuItems = (menuCategory: ICategory[]) => ({
 export const setFilters = (filters: IFilter[]) => ({
   type: types.SET_FILTERS,
   filters
+});
+
+export const setOrdersData = (orders: IOrderData[]) => ({
+  type: types.SET_ORDERS,
+  orders
+});
+
+export const setOpenedModal = (openedModal: string | null) => ({
+  type: types.SET_OPENED_MODAL,
+  openedModal
 });

@@ -1,12 +1,7 @@
+import { useSelector } from "react-redux";
+
 import firebase from "./firebase";
-import {
-  IErrorsObject,
-  IOrderElement,
-  IGoodsData,
-  IProfile,
-  IGoodsDataValidation,
-  ISuccessOrders
-} from "./interfaces";
+import { IErrorsObject, IGoodsDataValidation, IOrderData } from "./interfaces";
 import { IFiltersDataElement, IGoodsElement } from "components/pages/items";
 
 export const signOutHandler = () => {
@@ -35,76 +30,50 @@ export const getOrders = (
     });
 };
 
-export const getSuccessOrders = async ({
-  handler
-}: {
-  handler: (data: ISuccessOrders[]) => void;
-}) => {
-  const collection = await firebase
-    .firestore()
-    .collection("successOrders")
-    .get();
-  const data: any = collection.docs.map(elem => elem.data());
-  handler(data);
-};
+interface IItemHandler {
+  ordersData: IOrderData[] | null;
+  item: IOrderData;
+  setDataToStateHandler: (newData: IOrderData[]) => void;
+}
 
-export const buyButtonHandler = ({
-  orders,
-  singleGood,
-  profile,
-  setOrders,
-  setOpenBasketModal
-}: {
-  orders: IOrderElement[];
-  singleGood: IGoodsData;
-  profile: IProfile;
-  setOrders: (orders: IOrderElement[]) => void;
-  setOpenBasketModal: (status: boolean) => void;
-}) => {
-  const isCreated = orders.some(
-    elem => elem.goodsData.goodId === singleGood.goodId
-  );
-
-  if (isCreated) {
-    orders.forEach((elem, item) => {
-      const { goodsData } = elem;
-      if (goodsData.goodId === singleGood.goodId) {
-        orders[item].count++;
-      }
-    });
+export const itemHandler = ({
+  ordersData,
+  item,
+  setDataToStateHandler
+}: IItemHandler) => {
+  if (ordersData) {
+    const includedElementIndex = ordersData.findIndex(
+      elem =>
+        elem.id === item.id &&
+        elem.elementValue.type === item.elementValue.type &&
+        elem.elementValue.value === item.elementValue.value
+    );
+    if (includedElementIndex === -1) {
+      const newData = [
+        ...ordersData,
+        {
+          ...item,
+          count: 1
+        }
+      ];
+      localStorage.setItem("ordersData", JSON.stringify(newData));
+      setDataToStateHandler(newData);
+    } else {
+      const existingElement = ordersData[includedElementIndex];
+      existingElement.count && existingElement.count++;
+      localStorage.setItem("ordersData", JSON.stringify(ordersData));
+      setDataToStateHandler(ordersData);
+    }
   } else {
-    orders.push({
-      count: 1,
-      goodsData: singleGood
-    });
+    const data = [
+      {
+        ...item,
+        count: 1
+      }
+    ];
+    localStorage.setItem("ordersData", JSON.stringify(data));
+    setDataToStateHandler(data);
   }
-
-  firebase
-    .firestore()
-    .collection("orders")
-    .doc(profile.uid)
-    .set({
-      ordersData: orders
-    })
-    .then(result => {
-      getOrders(profile.uid, setOrders);
-      setOpenBasketModal(true);
-    })
-    .catch(err => console.log(err));
-};
-
-export const recalculationSummaryOrder = ({
-  changedOrder
-}: {
-  changedOrder: ISuccessOrders;
-}) => {
-  const { orders } = changedOrder;
-  let sum: number = 0;
-  orders.forEach(({ count, goodsData }: IOrderElement) => {
-    sum = sum + +goodsData.price * count;
-  });
-
-  return +sum.toFixed(2);
 };
 
 export const createProductValidation = (form: IGoodsDataValidation) => {

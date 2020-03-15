@@ -8,6 +8,7 @@ export const MainContainer = styled.div<IProps>`
   width: 100%;
   position: relative;
   user-select: none;
+  z-index: 9999;
 
   img {
     position: absolute;

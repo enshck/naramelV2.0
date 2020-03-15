@@ -1,14 +1,30 @@
 import React, { useState, useEffect, useCallback } from "react";
 import querystring from "qs";
 import { useHistory } from "react-router-dom";
+import { useDispatch } from "react-redux";
 
 import Filter from "./filter";
 import GoodsContainer from "./goodsContainer";
 import { MainContainer } from "./styles";
 import { getFilteredGoods } from "axiosRequests/goods";
 import Spinner from "components/spinner";
-import { counterGoodsForFilter, debounce } from "utils/handlers";
+import { counterGoodsForFilter, debounce, itemHandler } from "utils/handlers";
 import firebase from "utils/firebase";
+import { IOrderData } from "utils/interfaces";
+import { useSelector } from "customHooks/useSelector";
+import { setOrdersData } from "store/actions";
+
+export interface ICommonGoodsElement {
+  brand: string;
+  description: string;
+  groupId: string;
+  id: string;
+  name: string;
+  subName: string;
+  filters: {
+    [key: string]: any;
+  };
+}
 
 export interface ISubGoodsElement {
   elementValue: {
@@ -19,17 +35,8 @@ export interface ISubGoodsElement {
   price: number;
 }
 
-export interface IGoodsElement {
-  brand: string;
-  description: string;
-  groupId: string;
-  id: string;
-  name: string;
-  subName: string;
+export interface IGoodsElement extends ICommonGoodsElement {
   subGoods: ISubGoodsElement[];
-  filters: {
-    [key: string]: any;
-  };
 }
 
 export interface IFiltersDataElement {
@@ -51,6 +58,7 @@ export interface IMinAndMaxPrice {
 }
 
 const Items = () => {
+  const ordersData = useSelector(state => state.orders);
   const [goods, setGoods] = useState<IGoodsElement[]>([]);
   const [allGoods, setAllGoods] = useState<IGoodsElement[]>([]);
   const [minAndMaxPrice, setMinAndMaxPrice] = useState<IMinAndMaxPrice>({
@@ -66,6 +74,7 @@ const Items = () => {
   const { search } = window.location;
   const { groupId } = filterData;
   const history = useHistory();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     setMountedComponent(true);
@@ -169,6 +178,14 @@ const Items = () => {
     });
   };
 
+  const buyButtonHandler = (item: IOrderData) => {
+    itemHandler({
+      ordersData: ordersData.length > 0 ? ordersData : null,
+      item: item,
+      setDataToStateHandler: newData => dispatch(setOrdersData(newData))
+    });
+  };
+
   if (isFetching) {
     return <Spinner />;
   }
@@ -183,7 +200,7 @@ const Items = () => {
         minAndMaxPrice={minAndMaxPrice}
         onInputPrice={onInputPrice}
       />
-      <GoodsContainer goods={goods} />
+      <GoodsContainer goods={goods} buyButtonHandler={buyButtonHandler} />
     </MainContainer>
   );
 };

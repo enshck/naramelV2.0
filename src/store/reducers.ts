@@ -1,11 +1,6 @@
 import { combineReducers } from "redux";
-import {
-  TypedUseSelectorHook,
-  useSelector as useTypedSelector
-} from "react-redux";
 
 import types from "./types";
-import { IRootState } from "utils/interfaces";
 
 const goodsReducers = (state = [], action: any) => {
   switch (action.type) {
@@ -30,27 +25,7 @@ const sortTypeReducers = (state = "list", action: any) => {
 const ordersReducers = (state = [], action: any) => {
   switch (action.type) {
     case types.SET_ORDERS: {
-      return action.orders.ordersData || [];
-    }
-    default:
-      return state;
-  }
-};
-
-const adminOrdersReducers = (state = [], action: any) => {
-  switch (action.type) {
-    case types.SET_ADMIN_ORDERS: {
-      return action.adminOrders;
-    }
-    default:
-      return state;
-  }
-};
-
-const isOpenBasketModalReducers = (state = false, action: any) => {
-  switch (action.type) {
-    case types.SET_OPEN_MODAL_STATUS: {
-      return action.isOpen;
+      return action.orders || [];
     }
     default:
       return state;
@@ -107,14 +82,21 @@ const filtersReducers = (state = [], action: any) => {
   }
 };
 
-export const useSelector: TypedUseSelectorHook<IRootState> = useTypedSelector;
+const openedModalReducers = (state = "orders", action: any) => {
+  switch (action.type) {
+    case types.SET_OPENED_MODAL: {
+      return action.openedModal;
+    }
+    default:
+      return state;
+  }
+};
 
 export const reducers = combineReducers({
   goods: goodsReducers,
   sortType: sortTypeReducers,
   orders: ordersReducers,
-  adminOrders: adminOrdersReducers,
-  isOpenBasketModal: isOpenBasketModalReducers,
+  openedModal: openedModalReducers,
   profile: profileReducers,
   isAdmin: isAdminReducers,
   isAuth: isAuthReducers,

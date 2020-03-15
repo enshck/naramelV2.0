@@ -20,10 +20,16 @@ import {
 import Selector from "components/inputs/selector";
 import arrowDown from "assets/goods/arrowDown.png";
 import { ISubGoodsElement, IGoodsElement } from "components/pages/items/index";
-import { useSelector } from "store/reducers";
+import { useSelector } from "customHooks/useSelector";
+import { IOrderData } from "utils/interfaces";
 
-const ItemElement = (props: IGoodsElement) => {
-  const { name, subName, subGoods } = props;
+interface IProps {
+  itemData: IGoodsElement;
+  buyButtonHandler: (item: IOrderData) => void;
+}
+
+const ItemElement = ({ itemData, buyButtonHandler }: IProps) => {
+  const { name, subName, subGoods } = itemData;
   const filters = useSelector(state => state.filters);
   const [changedSubElement, setChangedSubElement] = useState<ISubGoodsElement>(
     subGoods[0]
@@ -70,7 +76,18 @@ const ItemElement = (props: IGoodsElement) => {
             arrowIcon={arrowDown}
           />
         </SelectorContainer>
-        <BuyButton>Купить</BuyButton>
+        <BuyButton
+          onClick={() => {
+            const orderElement = {
+              ...itemData,
+              ...changedSubElement
+            };
+            delete orderElement.subGoods;
+            buyButtonHandler(orderElement);
+          }}
+        >
+          Купить
+        </BuyButton>
       </InvisiblePart>
     </GoodsElement>
   );

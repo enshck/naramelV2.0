@@ -26,6 +26,7 @@ export const PhoneContainer = styled.div``;
 export const ControlsContainer = styled.div`
   display: flex;
   justify-content: flex-end;
+  cursor: pointer;
 `;
 
 export const MenuContainer = styled.div`

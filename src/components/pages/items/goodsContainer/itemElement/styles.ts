@@ -79,4 +79,5 @@ export const SelectorContainer = styled.div`
 export const BuyButton = styled(ButtonBuy)`
   margin-top: 30px;
   width: 40%;
+  z-index: 900;
 `;

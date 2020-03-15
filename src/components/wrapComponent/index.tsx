@@ -1,16 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
-import { setMenuItems, setFilters } from "store/actions";
+import { setMenuItems, setFilters, setOrdersData } from "store/actions";
 import { MainContainer, Container } from "./styles";
 import Spinner from "../spinner";
 import firebase from "utils/firebase";
+import { IOrderData } from "utils/interfaces";
 
 interface IProps {
   children: any;
 }
 
 const WrapComponent = (props: IProps) => {
+  const nonParsedOrdersData = localStorage.getItem("ordersData");
+  const ordersData: IOrderData[] = nonParsedOrdersData
+    ? JSON.parse(nonParsedOrdersData)
+    : [];
   const [isFetching, setFetching] = useState(true);
   const dispatch = useDispatch();
 
@@ -31,6 +36,7 @@ const WrapComponent = (props: IProps) => {
 
       dispatch(setMenuItems(categoryDocData));
       dispatch(setFilters(filtersDocData));
+      dispatch(setOrdersData(ordersData));
       setFetching(false);
     }
 
