@@ -158,3 +158,10 @@ export const debounce = (delay: number) => {
     debounceTimer = setTimeout((...args) => onClickHandler(...args), delay);
   };
 };
+
+export const getSummaryOrder = (ordersData: IOrderData[]) => {
+  return ordersData
+    .map(elem => (elem.count ? elem.count * elem.price : 0))
+    .reduce((accumulator, elem) => accumulator + elem)
+    .toFixed(2);
+};
