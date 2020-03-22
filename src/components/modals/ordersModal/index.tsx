@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { Dialog } from "@material-ui/core";
 import { useDispatch } from "react-redux";
 import { Scrollbars } from "react-custom-scrollbars";
@@ -16,10 +16,13 @@ import {
   CountConrolContainer,
   CountControlButton,
   Orders,
-  SummaryOrderPrice
+  SummaryOrderPrice,
+  ControlContainer,
+  CloseButton,
+  ConfirmButton
 } from "./styles";
 import { useSelector } from "customHooks/useSelector";
-import { setOrdersData } from "store/actions";
+import { setOrdersData, setOpenedModal } from "store/actions";
 import { getSummaryOrder } from "utils/handlers";
 
 interface IProps {
@@ -28,7 +31,9 @@ interface IProps {
 }
 
 const OrdersModal = ({ open, onClose }: IProps) => {
+  const [step, setStep] = useState<number>(0);
   const ordersData = useSelector(state => state.orders);
+  const filters = useSelector(state => state.filters);
   const summaryValue = useMemo(() => getSummaryOrder(ordersData), [ordersData]);
   const dispatch = useDispatch();
 
@@ -47,6 +52,24 @@ const OrdersModal = ({ open, onClose }: IProps) => {
     }
   };
 
+  const submitHandler = () => {};
+
+  if (step === 2) {
+    return (
+      <Dialog open={open} fullWidth={true} maxWidth={"md"}>
+        step 3
+      </Dialog>
+    );
+  }
+
+  if (step === 1) {
+    return (
+      <Dialog open={open} onClose={onClose} fullWidth={true} maxWidth={"md"}>
+        step 2
+      </Dialog>
+    );
+  }
+
   return (
     <Dialog open={open} onClose={onClose} fullWidth={true} maxWidth={"md"}>
       <MainContainer>
@@ -63,7 +86,10 @@ const OrdersModal = ({ open, onClose }: IProps) => {
                   elementValue,
                   count
                 } = elem;
-                const { value } = elementValue;
+                const { value, type } = elementValue;
+                const filterForOrderElement = filters.find(
+                  elem => elem.type === type
+                );
 
                 return (
                   <OrderElement>
@@ -74,7 +100,8 @@ const OrdersModal = ({ open, onClose }: IProps) => {
                       <OrderInfo>
                         <h2>{name}</h2>
                         <p>{subName}</p>
-                        <span>{value}</span>
+                        <span>{`${value} ${filterForOrderElement?.units ||
+                          ""}`}</span>
                         <CountConrolContainer>
                           <CountControlButton
                             onClick={() =>
@@ -104,9 +131,19 @@ const OrdersModal = ({ open, onClose }: IProps) => {
           </Scrollbars>
         </OrdersContainer>
         <SummaryOrderPrice>
-          <p>Итого:</p>
-          <span>{summaryValue} грн</span>
+          <span>Итого:</span>
+          <p>
+            <span>{summaryValue}</span> грн
+          </p>
         </SummaryOrderPrice>
+        <ControlContainer>
+          <CloseButton onClick={() => onClose(false)}>
+            Продолжить покупки
+          </CloseButton>
+          <ConfirmButton onClick={() => setStep(1)}>
+            Оформить заказ
+          </ConfirmButton>
+        </ControlContainer>
       </MainContainer>
     </Dialog>
   );

@@ -162,6 +162,6 @@ export const debounce = (delay: number) => {
 export const getSummaryOrder = (ordersData: IOrderData[]) => {
   return ordersData
     .map(elem => (elem.count ? elem.count * elem.price : 0))
-    .reduce((accumulator, elem) => accumulator + elem)
+    .reduce((accumulator, elem) => accumulator + elem, 0)
     .toFixed(2);
 };

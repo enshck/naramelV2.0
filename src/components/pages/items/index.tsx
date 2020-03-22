@@ -12,7 +12,7 @@ import { counterGoodsForFilter, debounce, itemHandler } from "utils/handlers";
 import firebase from "utils/firebase";
 import { IOrderData } from "utils/interfaces";
 import { useSelector } from "customHooks/useSelector";
-import { setOrdersData } from "store/actions";
+import { setOrdersData, setOpenedModal } from "store/actions";
 
 export interface ICommonGoodsElement {
   brand: string;
@@ -184,6 +184,7 @@ const Items = () => {
       item: item,
       setDataToStateHandler: newData => dispatch(setOrdersData(newData))
     });
+    dispatch(setOpenedModal("orders"));
   };
 
   if (isFetching) {
