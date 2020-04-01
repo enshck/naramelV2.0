@@ -32,9 +32,7 @@ interface IGoodsStyledSelectorOptions {
   isOpenedOptionContainer: boolean;
 }
 
-export const GoodsStyledSelectorOptions = styled.div<
-  IGoodsStyledSelectorOptions
->`
+export const GoodsStyledSelectorOptions = styled.div<IGoodsStyledSelectorOptions>`
   width: 100%;
   position: absolute;
   top: 30px;
@@ -166,3 +164,12 @@ export const FilterStyledCheckbox = ({
     </CheckBoxMainContainer>
   );
 };
+
+export const StyledInput = styled.input`
+    border: 1px solid #ccc;
+    padding: 5px;
+    box-sizing: border-box;
+    height: 30px;
+    width: 100%;
+    outline: none;
+`
