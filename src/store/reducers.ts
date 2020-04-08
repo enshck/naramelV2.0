@@ -82,7 +82,7 @@ const filtersReducers = (state = [], action: any) => {
   }
 };
 
-const openedModalReducers = (state = "orders", action: any) => {
+const openedModalReducers = (state = "", action: any) => {
   switch (action.type) {
     case types.SET_OPENED_MODAL: {
       return action.openedModal;
@@ -101,5 +101,5 @@ export const reducers = combineReducers({
   isAdmin: isAdminReducers,
   isAuth: isAuthReducers,
   menuCategory: menuCategoryReducers,
-  filters: filtersReducers
+  filters: filtersReducers,
 });

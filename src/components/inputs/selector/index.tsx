@@ -1,5 +1,6 @@
 import React, { ElementType, useState } from "react";
 import { ClickAwayListener } from "@material-ui/core";
+import { Scrollbars } from "react-custom-scrollbars";
 
 import { MainContainer } from "./styles";
 
@@ -13,8 +14,8 @@ interface IProps {
   StyledOptionContainer: ElementType;
   StyledOption: ElementType;
   options: IOption[];
-  setNewValue: (newValue: string) => void;
-  changedValue: string;
+  setNewValue: (newValue: IOption) => void;
+  changedValue: IOption;
   arrowIcon?: string;
 }
 
@@ -25,43 +26,39 @@ const Selector = ({
   options,
   setNewValue,
   changedValue,
-  arrowIcon
+  arrowIcon,
 }: IProps) => {
-  const [isOpenedOptionContainer, openOptionContainer] = useState<boolean>(
-    false
-  );
+  const [isVisible, setVisible] = useState<boolean>(false);
 
-  const changedLabel =
-    options.find(elem => elem.value === changedValue)?.label || "";
+  // const changedLabel =
+  //   options.find((elem) => elem.value === changedValue)?.label || "";
 
   return (
-    <ClickAwayListener onClickAway={() => openOptionContainer(false)}>
-      <MainContainer isOpenedOptionContainer={isOpenedOptionContainer}>
-        <StyledInputContainer
-          onClick={() => openOptionContainer(!isOpenedOptionContainer)}
-        >
-          {changedLabel}
+    <ClickAwayListener onClickAway={() => setVisible(false)}>
+      <MainContainer isOpenedOptionContainer={isVisible}>
+        <StyledInputContainer onClick={() => setVisible(!isVisible)}>
+          {changedValue.label}
           {arrowIcon && <img src={arrowIcon} alt={"arrowIcon"} />}
         </StyledInputContainer>
-        <StyledOptionContainer
-          isOpenedOptionContainer={isOpenedOptionContainer}
-        >
-          {options.map((elem, key) => {
-            const { label, value } = elem;
+        <StyledOptionContainer isVisible={isVisible}>
+          <Scrollbars autoHeight>
+            {options.map((elem, key) => {
+              const { label, value } = elem;
 
-            return (
-              <StyledOption
-                isChanged={changedValue === value}
-                onClick={() => {
-                  setNewValue(value);
-                  openOptionContainer(false);
-                }}
-                key={key}
-              >
-                {label}
-              </StyledOption>
-            );
-          })}
+              return (
+                <StyledOption
+                  isChanged={changedValue.value === value}
+                  onClick={() => {
+                    setNewValue(elem);
+                    setVisible(false);
+                  }}
+                  key={key}
+                >
+                  {label}
+                </StyledOption>
+              );
+            })}
+          </Scrollbars>
         </StyledOptionContainer>
       </MainContainer>
     </ClickAwayListener>

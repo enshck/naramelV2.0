@@ -10,18 +10,19 @@ import {
   Wrapper,
   Price,
   SelectorContainer,
-  BuyButton
+  BuyButton,
 } from "./styles";
 import {
   GoodsStyledSelectorInput,
   GoodsStyledSelectorOption,
-  GoodsStyledSelectorOptions
+  GoodsStyledSelectorOptions,
 } from "utils/styles";
 import Selector from "components/inputs/selector";
 import arrowDown from "assets/goods/arrowDown.png";
 import { ISubGoodsElement, IGoodsElement } from "components/pages/items/index";
 import { useSelector } from "customHooks/useSelector";
 import { IOrderData } from "utils/interfaces";
+import { IOption } from "components/inputs/dynamicSearch";
 
 interface IProps {
   itemData: IGoodsElement;
@@ -30,24 +31,24 @@ interface IProps {
 
 const ItemElement = ({ itemData, buyButtonHandler }: IProps) => {
   const { name, subName, subGoods } = itemData;
-  const filters = useSelector(state => state.filters);
+  const filters = useSelector((state) => state.filters);
   const [changedSubElement, setChangedSubElement] = useState<ISubGoodsElement>(
     subGoods[0]
   );
   const { elementValue, image, price } = changedSubElement;
-  const optionsForSelector = subGoods.map(elem => {
+  const optionsForSelector = subGoods.map((elem) => {
     const { value, type } = elem.elementValue;
-    const changedFilterType = filters.find(elem => elem.type === type);
+    const changedFilterType = filters.find((elem) => elem.type === type);
 
     return {
       label: `${value} ${changedFilterType?.units || ""}`,
-      value
+      value,
     };
   });
 
-  const changeSubElement = (newValue: string) => {
+  const changeSubElement = (newValue: IOption) => {
     const changedElement = subGoods.find(
-      elem => elem.elementValue.value === newValue
+      (elem) => elem.elementValue.value === newValue.value
     );
 
     if (changedElement) {
@@ -71,7 +72,10 @@ const ItemElement = ({ itemData, buyButtonHandler }: IProps) => {
             StyledOptionContainer={GoodsStyledSelectorOptions}
             StyledOption={GoodsStyledSelectorOption}
             options={optionsForSelector}
-            changedValue={elementValue.value}
+            changedValue={{
+              label: `${elementValue.value}`,
+              value: `${elementValue.value}`,
+            }}
             setNewValue={changeSubElement}
             arrowIcon={arrowDown}
           />
@@ -80,7 +84,7 @@ const ItemElement = ({ itemData, buyButtonHandler }: IProps) => {
           onClick={() => {
             const orderElement = {
               ...itemData,
-              ...changedSubElement
+              ...changedSubElement,
             };
             delete orderElement.subGoods;
             buyButtonHandler(orderElement);

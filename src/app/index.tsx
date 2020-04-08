@@ -13,7 +13,8 @@ const theme = {
   secondaryTextColor: "#666",
   whiteTextColor: "#fff",
   spreadColor: "#ebebeb",
-  inputsBorderColor: "#ccc"
+  inputsBorderColor: "#ccc",
+  blockedColor: "#C4C4C4",
 };
 
 const App = () => {

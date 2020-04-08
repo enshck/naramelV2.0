@@ -26,7 +26,7 @@ const ErrorMessage = styled.p`
 `;
 
 interface IProps {
-  beforeIcon?: string;
+  BeforeIcon?: ReactType;
   errors?: { [key: string]: string };
   placeholder?: string;
   StyledComponent: ReactType;
@@ -48,10 +48,12 @@ interface IProps {
   onDrop?: (...args: any[]) => void;
   accept?: string;
   titleForFileInput?: string | ReactElement;
+  mask?: string;
+  maskChar?: null;
 }
 
 const Input = ({
-  beforeIcon,
+  BeforeIcon,
   errors,
   placeholder,
   StyledComponent,
@@ -72,12 +74,14 @@ const Input = ({
   isBlocked,
   onDrop,
   accept,
-  titleForFileInput
+  titleForFileInput,
+  mask,
+  maskChar,
 }: IProps) => {
   return (
     <MainContainer>
       <InputContainer>
-        {beforeIcon && <img src={beforeIcon} alt={"inputImg"} />}
+        {BeforeIcon && <BeforeIcon />}
         <StyledComponent
           placeholder={placeholder}
           onBlur={(e: BaseSyntheticEvent) => onBlur && onBlur(e, name)}
@@ -99,6 +103,8 @@ const Input = ({
           onDrop={onDrop}
           accept={accept}
           titleForFileInput={titleForFileInput}
+          mask={mask && mask}
+          maskChar={maskChar && maskChar}
         />
       </InputContainer>
       {errors && errors[name] && <ErrorMessage>{errors[name]}</ErrorMessage>}

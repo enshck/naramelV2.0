@@ -29,7 +29,7 @@ export const GoodsStyledSelectorInput = styled.div`
 `;
 
 interface IGoodsStyledSelectorOptions {
-  isOpenedOptionContainer: boolean;
+  isVisible: boolean;
 }
 
 export const GoodsStyledSelectorOptions = styled.div<IGoodsStyledSelectorOptions>`
@@ -43,8 +43,8 @@ export const GoodsStyledSelectorOptions = styled.div<IGoodsStyledSelectorOptions
   background: #fff;
   border-top: 0;
 
-  ${({ isOpenedOptionContainer }) =>
-    isOpenedOptionContainer &&
+  ${({ isVisible }) =>
+    isVisible &&
     css`
       visibility: visible;
     `}

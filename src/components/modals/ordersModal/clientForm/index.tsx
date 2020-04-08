@@ -6,28 +6,61 @@ import {
   StyledInput,
   MainContainer,
   Label,
-  InputContainer
+  InputContainer,
+  ConfirmButton,
+  StyledPhoneInput,
+  CloseButton,
+  DynamicSearchInput,
+  StyledOption,
+  StyledSearchList,
+  SelectorInput,
 } from "./styles";
 import Input from "components/inputs";
-import { ICustomerData } from "../";
+import { ICustomerData, IOption } from "../";
+import DynamicSearcher from "components/inputs/dynamicSearch";
+import Selector from "components/inputs/selector";
 
 interface IProps {
   open: boolean;
   onClose: (isOpen: boolean) => void;
   customerData: ICustomerData;
   customerDataHandler: (e: BaseSyntheticEvent, name: string) => void;
+  setStep: (step: number) => void;
+  submitHandler: () => void;
+  customerPhoneInputHandler: (value: string) => void;
+  citySearchHandler: (value: string) => void;
+  citiesOptions: IOption[];
+  onChangeCityHandler: (data: IOption) => void;
+  dynamicSearchValue: string;
+  warehousesOptions: IOption[];
+  changedWarehouse: IOption;
+  onChangeWarehouse: (value: IOption) => void;
+  changedCity: IOption;
 }
 
 const Step2 = ({
   open,
   onClose,
   customerData,
-  customerDataHandler
+  customerDataHandler,
+  setStep,
+  submitHandler,
+  customerPhoneInputHandler,
+  citiesOptions,
+  citySearchHandler,
+  onChangeCityHandler,
+  dynamicSearchValue,
+  warehousesOptions,
+  changedWarehouse,
+  onChangeWarehouse,
+  changedCity,
 }: IProps) => {
   const { name, patronymic, phone } = customerData;
+
   return (
     <Dialog open={open} onClose={onClose} fullWidth={true} maxWidth={"sm"}>
       <MainContainer>
+        <h1>Данные заказчика</h1>
         <FormContainer>
           <InputContainer>
             <Label htmlFor={"name"}>Имя</Label>
@@ -35,8 +68,9 @@ const Step2 = ({
               StyledComponent={StyledInput}
               name={"name"}
               type={"text"}
-              value={name}
+              defaultValue={name}
               onInput={customerDataHandler}
+              autoComplete={"off"}
             />
           </InputContainer>
           <InputContainer>
@@ -45,20 +79,65 @@ const Step2 = ({
               StyledComponent={StyledInput}
               name={"patronymic"}
               type={"text"}
-              value={patronymic}
+              defaultValue={patronymic}
               onInput={customerDataHandler}
+              autoComplete={"off"}
             />
           </InputContainer>
           <InputContainer>
-            <Label htmlFor={"patronymic"}>Номер</Label>
+            <Label htmlFor={"phone"}>Телефон</Label>
             <Input
-              StyledComponent={StyledInput}
+              StyledComponent={StyledPhoneInput}
               name={"phone"}
               type={"text"}
-              value={phone}
-              onInput={customerDataHandler}
+              defaultValue={phone}
+              onInput={(e) => customerPhoneInputHandler(e.target.value)}
+              mask={"+38 (999) 999 99 99"}
+              maskChar={null}
+              autoComplete={"off"}
             />
           </InputContainer>
+          <InputContainer>
+            <Label htmlFor={"citySearch"}>Населенный пункт</Label>
+            <DynamicSearcher
+              StyledComponent={DynamicSearchInput}
+              StyledSearchList={StyledSearchList}
+              StyledSearchElement={StyledOption}
+              name={"citySearch"}
+              searchHandler={citySearchHandler}
+              options={citiesOptions}
+              onChange={onChangeCityHandler}
+              value={dynamicSearchValue}
+            />
+          </InputContainer>
+          {warehousesOptions.length > 0 && (
+            <InputContainer>
+              <Label htmlFor={"citySearch"}>Отделение Новой Почты</Label>
+              <Selector
+                StyledInputContainer={SelectorInput}
+                StyledOptionContainer={StyledSearchList}
+                StyledOption={StyledOption}
+                options={warehousesOptions}
+                changedValue={changedWarehouse}
+                setNewValue={onChangeWarehouse}
+              />
+            </InputContainer>
+          )}
+          <ConfirmButton
+            onClick={submitHandler}
+            isBlocked={
+              name.length < 1 ||
+              patronymic.length < 1 ||
+              phone.length !== 19 ||
+              changedCity.value.length < 1 ||
+              changedWarehouse.value.length < 1
+            }
+          >
+            Сделать заказ
+          </ConfirmButton>
+          <CloseButton onClick={() => setStep(0)}>
+            Продолжить покупки
+          </CloseButton>
         </FormContainer>
       </MainContainer>
     </Dialog>
