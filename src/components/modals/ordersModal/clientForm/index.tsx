@@ -19,6 +19,7 @@ import Input from "components/inputs";
 import { ICustomerData, IOption } from "../";
 import DynamicSearcher from "components/inputs/dynamicSearch";
 import Selector from "components/inputs/selector";
+import arrowDown from "assets/goods/arrowDown.png";
 
 interface IProps {
   open: boolean;
@@ -58,7 +59,7 @@ const Step2 = ({
   const { name, patronymic, phone } = customerData;
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth={true} maxWidth={"sm"}>
+    <Dialog open={open} fullWidth={true} maxWidth={"sm"}>
       <MainContainer>
         <h1>Данные заказчика</h1>
         <FormContainer>
@@ -120,6 +121,7 @@ const Step2 = ({
                 options={warehousesOptions}
                 changedValue={changedWarehouse}
                 setNewValue={onChangeWarehouse}
+                arrowIcon={arrowDown}
               />
             </InputContainer>
           )}

@@ -82,7 +82,7 @@ const filtersReducers = (state = [], action: any) => {
   }
 };
 
-const openedModalReducers = (state = "", action: any) => {
+const openedModalReducers = (state = "orders", action: any) => {
   switch (action.type) {
     case types.SET_OPENED_MODAL: {
       return action.openedModal;

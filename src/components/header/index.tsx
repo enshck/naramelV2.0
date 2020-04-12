@@ -12,7 +12,7 @@ import {
   SubCategoriesMainContainer,
   SubCategory,
   MenuCategoryContainer,
-  SubCategoryWrapper
+  SubCategoryWrapper,
 } from "./styles";
 import logo from "img/logoNaravel.png";
 import { useSelector } from "customHooks/useSelector";
@@ -20,9 +20,9 @@ import { setOpenedModal } from "store/actions";
 import OrdersModal from "components/modals/ordersModal";
 
 const Header = () => {
-  const menuCategory = useSelector(state => state.menuCategory);
-  const ordersData = useSelector(state => state.orders);
-  const openedModal = useSelector(state => state.openedModal);
+  const menuCategory = useSelector((state) => state.menuCategory);
+  const ordersData = useSelector((state) => state.orders);
+  const openedModal = useSelector((state) => state.openedModal);
   const dispatch = useDispatch();
 
   return (
@@ -36,12 +36,16 @@ const Header = () => {
         <LogoContainer>
           <img src={logo} alt={"logo"} />
         </LogoContainer>
-        <ControlsContainer onClick={() => dispatch(setOpenedModal("orders"))}>
-          Корзина ({ordersData.length})
+        <ControlsContainer
+          onClick={() =>
+            ordersData.length > 0 && dispatch(setOpenedModal("orders"))
+          }
+        >
+          Корзина <span>({ordersData.length})</span>
         </ControlsContainer>
       </SubHeader>
       <MenuContainer>
-        {menuCategory.map(elem => {
+        {menuCategory.map((elem) => {
           const { id, name, subCategories } = elem;
 
           return (
@@ -50,7 +54,7 @@ const Header = () => {
                 <p>{name}</p>
                 <SubCategoriesMainContainer>
                   <SubCategoryWrapper />
-                  {subCategories.map(elem => {
+                  {subCategories.map((elem) => {
                     const { id, name } = elem;
 
                     return (
@@ -58,7 +62,7 @@ const Header = () => {
                         key={id}
                         to={{
                           pathname: "/items",
-                          search: `groupId=${id}`
+                          search: `groupId=${id}`,
                         }}
                       >
                         {name}

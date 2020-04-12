@@ -27,6 +27,10 @@ export const ControlsContainer = styled.div`
   display: flex;
   justify-content: flex-end;
   cursor: pointer;
+  span {
+    color: #999;
+    margin-left: 5px;
+  }
 `;
 
 export const MenuContainer = styled.div`

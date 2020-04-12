@@ -38,7 +38,7 @@ const Selector = ({
       <MainContainer isOpenedOptionContainer={isVisible}>
         <StyledInputContainer onClick={() => setVisible(!isVisible)}>
           {changedValue.label}
-          {arrowIcon && <img src={arrowIcon} alt={"arrowIcon"} />}
+          <span>{arrowIcon && <img src={arrowIcon} alt={"arrowIcon"} />}</span>
         </StyledInputContainer>
         <StyledOptionContainer isVisible={isVisible}>
           <Scrollbars autoHeight>

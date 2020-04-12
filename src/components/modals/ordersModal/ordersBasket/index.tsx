@@ -18,7 +18,7 @@ import {
   CountControlButton,
   Orders,
   SummaryOrderPrice,
-  ControlContainer
+  ControlContainer,
 } from "./styles";
 import { ConfirmButton, CloseButton } from "../styles";
 
@@ -30,12 +30,12 @@ interface IProps {
 }
 
 const Step1 = ({ open, onClose, updateCountOfGoods, setStep }: IProps) => {
-  const ordersData = useSelector(state => state.orders);
-  const filters = useSelector(state => state.filters);
+  const ordersData = useSelector((state) => state.orders);
+  const filters = useSelector((state) => state.filters);
   const summaryValue = useMemo(() => getSummaryOrder(ordersData), [ordersData]);
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth={true} maxWidth={"md"}>
+    <Dialog open={open} onClose={onClose} fullWidth={true} maxWidth={"sm"}>
       <MainContainer>
         <h1>Корзина</h1>
         <OrdersContainer>
@@ -48,11 +48,11 @@ const Step1 = ({ open, onClose, updateCountOfGoods, setStep }: IProps) => {
                   price,
                   subName,
                   elementValue,
-                  count
+                  count,
                 } = elem;
                 const { value, type } = elementValue;
                 const filterForOrderElement = filters.find(
-                  elem => elem.type === type
+                  (elem) => elem.type === type
                 );
 
                 return (
@@ -64,8 +64,9 @@ const Step1 = ({ open, onClose, updateCountOfGoods, setStep }: IProps) => {
                       <OrderInfo>
                         <h2>{name}</h2>
                         <p>{subName}</p>
-                        <span>{`${value} ${filterForOrderElement?.units ||
-                          ""}`}</span>
+                        <span>{`${value} ${
+                          filterForOrderElement?.units || ""
+                        }`}</span>
                         <CountConrolContainer>
                           <CountControlButton
                             onClick={() =>

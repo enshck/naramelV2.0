@@ -124,4 +124,19 @@ export const SelectorInput = styled.div`
   outline: none;
   overflow: hidden;
   font-size: 12px;
+  span {
+    width: 30%;
+    max-width: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    z-index: 200;
+    border-radius: 3px 3px 0 0;
+    box-sizing: border-box;
+    cursor: pointer;
+  }
 `;

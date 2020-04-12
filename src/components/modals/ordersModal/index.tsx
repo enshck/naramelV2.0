@@ -5,6 +5,8 @@ import React, {
   BaseSyntheticEvent,
 } from "react";
 import { useDispatch } from "react-redux";
+import moment from "moment";
+import { v1 as uuidv1 } from "uuid";
 
 import { useSelector } from "customHooks/useSelector";
 import { setOrdersData } from "store/actions";
@@ -12,6 +14,7 @@ import OrdersBasket from "./ordersBasket";
 import ClientForm from "./clientForm";
 import ConfirmedOrder from "./confirmedOrder";
 import { getCities, getWarehouses } from "axiosRequests/orders";
+import firebase from "utils/firebase";
 
 interface IProps {
   open: boolean;
@@ -38,6 +41,7 @@ const OrdersModal = ({ open, onClose }: IProps) => {
   const [step, setStep] = useState<number>(0);
   const [citiesOptions, setCitiesOptions] = useState<IOption[]>([]);
   const [warehousesOptions, setWarehousesOptions] = useState<IOption[]>([]);
+  const [completedOrderId, setCompletedOrderId] = useState<string>("");
   const [changedCity, setChangedCity] = useState<IOption>({
     label: "",
     value: "",
@@ -135,11 +139,11 @@ const OrdersModal = ({ open, onClose }: IProps) => {
   const onChangeWarehouse = (value: IOption) => {
     setChangedWarehouse({
       ...value,
-      label: value.label.slice(0, 40) + "...",
+      label: value.label.slice(0, 35) + "...",
     });
   };
 
-  const submitHandler = () => {
+  const submitHandler = async () => {
     const { name, patronymic, phone } = customerData;
 
     if (
@@ -149,7 +153,38 @@ const OrdersModal = ({ open, onClose }: IProps) => {
       changedCity.value.length >= 1 &&
       changedWarehouse.value.length >= 1
     ) {
-      console.log(name, patronymic, phone, "<<<");
+      const orders = ordersData.map((elem) => {
+        const { count, elementValue, id } = elem;
+
+        return {
+          count,
+          elementValue,
+          id,
+        };
+      });
+      const id = uuidv1();
+      const result = await firebase
+        .firestore()
+        .collection("orders")
+        .add({
+          id,
+          ordersData: orders,
+          date: moment().format("YYYY-MM-DD"),
+          customerData: {
+            name,
+            patronymic,
+            phone,
+            city: changedCity.label,
+            warehouse: changedWarehouse.value,
+          },
+        });
+
+      if (result) {
+        setStep(2);
+        setCompletedOrderId(id);
+        localStorage.removeItem("ordersData");
+        dispatch(setOrdersData([]));
+      }
     }
   };
 
@@ -178,7 +213,12 @@ const OrdersModal = ({ open, onClose }: IProps) => {
         onChangeWarehouse={onChangeWarehouse}
         changedCity={changedCity}
       />
-      <ConfirmedOrder open={open && step === 2} onClose={onClose} />
+      <ConfirmedOrder
+        open={open && step === 2}
+        onClose={onClose}
+        completedOrderId={completedOrderId}
+        setStep={setStep}
+      />
     </Fragment>
   );
 };
