@@ -29,7 +29,7 @@ const ProtectedRoute = ({
   return (
     <Route
       {...rest}
-      render={props => {
+      render={(props) => {
         if (isAdmin) {
           return <Component {...props} />;
         } else {
@@ -37,7 +37,7 @@ const ProtectedRoute = ({
             <Redirect
               to={{
                 pathname: "/items",
-                state: { from: props.location }
+                state: { from: props.location },
               }}
             />
           );
@@ -61,7 +61,7 @@ const NotAuthRoute = ({
   return (
     <Route
       {...rest}
-      render={props => {
+      render={(props) => {
         if (!isAuth) {
           return <Component {...props} type={type} />;
         } else {
@@ -69,7 +69,7 @@ const NotAuthRoute = ({
             <Redirect
               to={{
                 pathname: "/items",
-                state: { from: props.location }
+                state: { from: props.location },
               }}
             />
           );
@@ -80,9 +80,9 @@ const NotAuthRoute = ({
 };
 
 const Routes = () => {
-  const isAuth = useSelector(state => state.isAuth);
-  const isAdmin = useSelector(state => state.isAdmin);
-  const profile = useSelector(state => state.profile);
+  const isAuth = useSelector((state) => state.isAuth);
+  const isAdmin = useSelector((state) => state.isAdmin);
+  const profile = useSelector((state) => state.profile);
 
   return (
     <WrapComponent>

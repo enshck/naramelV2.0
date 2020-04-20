@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
+import { Link } from "react-router-dom";
 
 import {
   GoodsElement,
@@ -30,21 +31,36 @@ interface IProps {
 }
 
 const ItemElement = ({ itemData, buyButtonHandler }: IProps) => {
-  const { name, subName, subGoods } = itemData;
-  const filters = useSelector((state) => state.filters);
+  const { name, subName, subGoods, id } = itemData;
   const [changedSubElement, setChangedSubElement] = useState<ISubGoodsElement>(
     subGoods[0]
   );
   const { elementValue, image, price } = changedSubElement;
-  const optionsForSelector = subGoods.map((elem) => {
-    const { value, type } = elem.elementValue;
-    const changedFilterType = filters.find((elem) => elem.type === type);
+  const filters = useSelector((state) => state.filters);
+  const optionsForSelector = useMemo(
+    () =>
+      subGoods.map((elem) => {
+        const { value, type } = elem.elementValue;
+        const changedFilterType = filters.find((elem) => elem.type === type);
+
+        return {
+          label: `${value} ${changedFilterType?.units || ""}`,
+          value,
+        };
+      }),
+    [subGoods, filters]
+  );
+  const changedValueSelector = useMemo(() => {
+    const value = elementValue.value;
+    const changedFilterType = filters.find(
+      (elem) => elem.type === elementValue.type
+    );
 
     return {
       label: `${value} ${changedFilterType?.units || ""}`,
-      value,
+      value: `${value}`,
     };
-  });
+  }, [changedSubElement, filters]);
 
   const changeSubElement = (newValue: IOption) => {
     const changedElement = subGoods.find(
@@ -58,7 +74,7 @@ const ItemElement = ({ itemData, buyButtonHandler }: IProps) => {
 
   return (
     <GoodsElement>
-      <Wrapper />
+      <Wrapper to={`/items/${id}`} />
       <VisiblePart>
         <ItemImage src={image} />
         <Name>{name}</Name>
@@ -72,10 +88,7 @@ const ItemElement = ({ itemData, buyButtonHandler }: IProps) => {
             StyledOptionContainer={GoodsStyledSelectorOptions}
             StyledOption={GoodsStyledSelectorOption}
             options={optionsForSelector}
-            changedValue={{
-              label: `${elementValue.value}`,
-              value: `${elementValue.value}`,
-            }}
+            changedValue={changedValueSelector}
             setNewValue={changeSubElement}
             arrowIcon={arrowDown}
           />

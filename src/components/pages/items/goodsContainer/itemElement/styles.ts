@@ -1,8 +1,9 @@
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 
 import { BuyButton as ButtonBuy } from "utils/styles";
 
-export const Wrapper = styled.div`
+export const Wrapper = styled(Link)`
   position: absolute;
   width: 100%;
   height: 100%;
