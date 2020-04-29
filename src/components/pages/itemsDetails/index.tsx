@@ -1,16 +1,22 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import styled from "styled-components";
 
 import { IProfile } from "utils/interfaces";
 import firebase from "utils/firebase";
 import { useAsyncMemo } from "customHooks/useAsyncMemo";
-import { IGoodsElement } from "components/pages/items";
-
-const MainContainer = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-`;
+import { IGoodsElement, ISubGoodsElement } from "components/pages/items";
+import {
+  MainContainer,
+  GridColumn,
+  StyledSelectorInput,
+  StyledSelectorOption,
+  StyledSelectorOptions,
+  ControlsContainer,
+} from "./styles";
+import Selector from "components/inputs/selector";
+import arrowDown from "assets/goods/arrowDown.png";
+import { IOption } from "components/inputs/dynamicSearch";
+import { useSelector } from "customHooks/useSelector";
 
 interface IProps {
   match: {
@@ -39,92 +45,93 @@ const ItemsDetail = (props: IProps) => {
       description: "",
       groupId: "",
       id: "",
-      name: "",
+      name: "qwe",
       subName: "",
       filters: {},
       subGoods: [],
     }
   );
-  // const {} = itemData.data;
 
-  // const [itemData, setItemData] = useState<IGoodsElement>({});
-  // const [getItemData, itemData] = useGetFirebaseData();
-  // const itemData = useMemo(async () => {
-  //   const getItemDataHandler = async () => {
-  //     const result = await firebase
-  //       .firestore()
-  //       .collection("goods")
-  //       .where("id", "==", id)
-  //       .get();
-  //     const data = await result.docs.map((elem) => elem.data());
-  //     return data;
-  //   };
-  //   // console.log(await getItemDataHandler(), ">>>");
-  //   const result = await firebase
-  //     .firestore()
-  //     .collection("goods")
-  //     .where("id", "==", id)
-  //     .get();
+  const {
+    brand,
+    description,
+    groupId,
+    name,
+    subGoods,
+    subName,
+  } = itemData.data;
+  const filters = useSelector((state) => state.filters);
+  const [changedSubElement, setChangedSubElement] = useState<ISubGoodsElement>({
+    elementValue: {
+      type: "",
+      value: "",
+    },
+    images: [],
+    price: 0,
+  });
+  const { elementValue, images, price } = changedSubElement;
 
-  //   // return await result;
-  //   if (result.docs.length > 0) {
-  //     return result.docs[0].data();
-  //   } else {
-  //     return [];
-  //   }
+  const optionsForSelector = useMemo(
+    () =>
+      subGoods.map((elem) => {
+        const { value, type } = elem.elementValue;
+        const changedFilterType = filters.find((elem) => elem.type === type);
 
-  //   // console.log(data, ">>>");
-  //   // return data;
-  // }, [id]);
-  // const dat = await itemData;
+        return {
+          label: `${value} ${changedFilterType?.units || ""}`,
+          value,
+        };
+      }),
+    [subGoods, filters]
+  );
+  const changedValueSelector = useMemo(() => {
+    const value = elementValue.value;
+    const changedFilterType = filters.find(
+      (elem) => elem.type === elementValue.type
+    );
 
-  console.log(itemData.data, ">>");
+    return {
+      label: `${value} ${changedFilterType?.units || ""}`,
+      value: `${value}`,
+    };
+  }, [changedSubElement, filters]);
 
-  // itemData.then(result => console.log(result))
+  useEffect(() => {
+    if (subGoods.length >= 1) {
+      setChangedSubElement(subGoods[0]);
+    }
+  }, [subGoods]);
 
-  // if(!itemData.called) {
-  //   getItemData({
-  //     collection:
-  //   })
-  // }
+  const changeSubElement = (newValue: IOption) => {
+    const changedElement = subGoods.find(
+      (elem) => elem.elementValue.value === newValue.value
+    );
 
-  // console.log(itemData, ">>>");
+    if (changedElement) {
+      setChangedSubElement(changedElement);
+    }
+  };
 
-  // const [changedProduct, changeProduct] = useState<any>({
-  //   parametrs: {}
-  // });
-  // const [getGoods, goodsData] = useGetFirebaseData();
-  // const [getOrders, ordersData] = useGetFirebaseData();
-  // const dispatch = useDispatch();
-  // const goods = useSelector<IGoodsReducers, IGoodsData[]>(state => state.goods);
-
-  // if (!goodsData.called) {
-  //   getGoods({
-  //     collection: "goods",
-  //     actionHandler: goods => dispatch(setGoodsList(goods))
-  //   });
-  // }
-
-  // if (!ordersData.called && profile) {
-  //   getOrders({
-  //     collection: "orders",
-  //     singleDoc: profile.uid,
-  //     actionHandler: orders => dispatch(setOrders(orders))
-  //   });
-  // }
-
-  // useEffect(() => {
-  //   goods.forEach((elem: { goodId: string }) => {
-  //     const { goodId } = elem;
-
-  //     goodId === match.params.id && changeProduct(elem);
-  //   });
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [goods]);
+  console.log(changedSubElement, ">>>");
 
   return (
     <MainContainer>
-      detail Items {id}
+      <GridColumn>{name}</GridColumn>
+      <GridColumn></GridColumn>
+      <GridColumn>
+        <ControlsContainer>
+          <h2>{price}</h2>
+          <Selector
+            StyledInputContainer={StyledSelectorInput}
+            StyledOptionContainer={StyledSelectorOptions}
+            StyledOption={StyledSelectorOption}
+            options={optionsForSelector}
+            changedValue={changedValueSelector}
+            setNewValue={changeSubElement}
+            arrowIcon={arrowDown}
+          />
+        </ControlsContainer>
+      </GridColumn>
       {/* <ButtonBack to={"/items"}>
         <img src={ArrowBack} alt={"back"} />
       </ButtonBack>

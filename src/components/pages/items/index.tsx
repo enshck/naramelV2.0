@@ -31,7 +31,7 @@ export interface ISubGoodsElement {
     type: string;
     value: string;
   };
-  image: string;
+  images: string[];
   price: number;
 }
 
@@ -58,12 +58,12 @@ export interface IMinAndMaxPrice {
 }
 
 const Items = () => {
-  const ordersData = useSelector(state => state.orders);
+  const ordersData = useSelector((state) => state.orders);
   const [goods, setGoods] = useState<IGoodsElement[]>([]);
   const [allGoods, setAllGoods] = useState<IGoodsElement[]>([]);
   const [minAndMaxPrice, setMinAndMaxPrice] = useState<IMinAndMaxPrice>({
     min: 0,
-    max: 0
+    max: 0,
   });
   const [filterData, setFilterData] = useState<IFilterData>({});
   const [filtersData, setFiltersData] = useState<IFiltersData>({});
@@ -89,11 +89,8 @@ const Items = () => {
             .collection("goods")
             .where("groupId", "==", filterData.groupId)
             .get()
-        : await firebase
-            .firestore()
-            .collection("goods")
-            .get();
-      const unpackedGoodsData: any = goodsData.docs.map(item => item.data());
+        : await firebase.firestore().collection("goods").get();
+      const unpackedGoodsData: any = goodsData.docs.map((item) => item.data());
       setAllGoods(unpackedGoodsData);
       setFetchingFilter(false);
     }
@@ -109,7 +106,7 @@ const Items = () => {
       if (parsedQuery.price) {
         setMinAndMaxPrice({
           min: parsedQuery.price[0],
-          max: parsedQuery.price[1]
+          max: parsedQuery.price[1],
         });
       }
     } else {
@@ -136,10 +133,10 @@ const Items = () => {
     const searchData = search.slice(1);
     const parsedQuery = querystring.parse(searchData);
     if (allGoods.length > 0 && !parsedQuery.price) {
-      const allGoodsPrices = allGoods.map(elem => elem.filters.price);
+      const allGoodsPrices = allGoods.map((elem) => elem.filters.price);
       setMinAndMaxPrice({
         min: Math.min(...allGoodsPrices),
-        max: Math.max(...allGoodsPrices)
+        max: Math.max(...allGoodsPrices),
       });
     }
     setFiltersData(counterGoodsForFilter(allGoods));
@@ -166,14 +163,14 @@ const Items = () => {
   const onInputPrice = (value: string, name: string) => {
     const newFilterData = {
       ...minAndMaxPrice,
-      [name]: value
+      [name]: value,
     };
     setMinAndMaxPrice(newFilterData);
 
     onInputPriceDebounceHandler(() => {
       setFilterData({
         ...filterData,
-        price: [`${newFilterData.min}`, `${newFilterData.max}`]
+        price: [`${newFilterData.min}`, `${newFilterData.max}`],
       });
     });
   };
@@ -182,7 +179,7 @@ const Items = () => {
     itemHandler({
       ordersData: ordersData.length > 0 ? ordersData : null,
       item: item,
-      setDataToStateHandler: newData => dispatch(setOrdersData(newData))
+      setDataToStateHandler: (newData) => dispatch(setOrdersData(newData)),
     });
     dispatch(setOpenedModal("orders"));
   };

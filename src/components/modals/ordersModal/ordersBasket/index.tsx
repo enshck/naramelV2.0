@@ -43,7 +43,7 @@ const Step1 = ({ open, onClose, updateCountOfGoods, setStep }: IProps) => {
             <Orders>
               {ordersData.map((elem, key) => {
                 const {
-                  image,
+                  images,
                   name,
                   price,
                   subName,
@@ -59,7 +59,7 @@ const Step1 = ({ open, onClose, updateCountOfGoods, setStep }: IProps) => {
                   <OrderElement>
                     <OrderInfoContainer>
                       <ImageContainer>
-                        <img src={image} alt={"itemImage"} />
+                        <img src={images[0]} alt={"itemImage"} />
                       </ImageContainer>
                       <OrderInfo>
                         <h2>{name}</h2>

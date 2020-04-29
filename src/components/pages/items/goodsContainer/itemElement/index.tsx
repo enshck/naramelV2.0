@@ -35,7 +35,7 @@ const ItemElement = ({ itemData, buyButtonHandler }: IProps) => {
   const [changedSubElement, setChangedSubElement] = useState<ISubGoodsElement>(
     subGoods[0]
   );
-  const { elementValue, image, price } = changedSubElement;
+  const { elementValue, images, price } = changedSubElement;
   const filters = useSelector((state) => state.filters);
   const optionsForSelector = useMemo(
     () =>
@@ -76,7 +76,7 @@ const ItemElement = ({ itemData, buyButtonHandler }: IProps) => {
     <GoodsElement>
       <Wrapper to={`/items/${id}`} />
       <VisiblePart>
-        <ItemImage src={image} />
+        <ItemImage src={images[0]} />
         <Name>{name}</Name>
         <SubName>{subName}</SubName>
         <Price>{price + " грн"}</Price>
