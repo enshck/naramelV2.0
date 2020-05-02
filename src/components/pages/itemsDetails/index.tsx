@@ -12,11 +12,13 @@ import {
   StyledSelectorOption,
   StyledSelectorOptions,
   ControlsContainer,
+  SliderContainer,
 } from "./styles";
 import Selector from "components/inputs/selector";
 import arrowDown from "assets/goods/arrowDown.png";
 import { IOption } from "components/inputs/dynamicSearch";
 import { useSelector } from "customHooks/useSelector";
+import Slider from "./slider";
 
 interface IProps {
   match: {
@@ -117,7 +119,11 @@ const ItemsDetail = (props: IProps) => {
   return (
     <MainContainer>
       <GridColumn>{name}</GridColumn>
-      <GridColumn></GridColumn>
+      <GridColumn>
+        <SliderContainer>
+          <Slider images={images} />
+        </SliderContainer>
+      </GridColumn>
       <GridColumn>
         <ControlsContainer>
           <h2>{price}</h2>

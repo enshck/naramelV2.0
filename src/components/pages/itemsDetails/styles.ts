@@ -15,10 +15,15 @@ export const GridColumn = styled.div`
   width: 100%;
   display: flex;
   justify-content: flex-start;
+  min-width: 0;
+`;
+
+export const SliderContainer = styled.div`
+  width: 100%;
 `;
 
 export const ControlsContainer = styled.div`
-  max-width: 180px;
+  max-width: 140px;
   width: 100%;
   h2 {
     font-size: 24;
@@ -31,7 +36,9 @@ export const ControlsContainer = styled.div`
   }
 `;
 
-export const StyledSelectorInput = styled(GoodsStyledSelectorInput)``;
+export const StyledSelectorInput = styled(GoodsStyledSelectorInput)`
+  justify-content: flex-start;
+`;
 
 export const StyledSelectorOption = styled(GoodsStyledSelectorOption)``;
 
