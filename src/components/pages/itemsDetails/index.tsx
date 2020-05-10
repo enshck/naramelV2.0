@@ -1,24 +1,18 @@
 import React, { useMemo, useState, useEffect } from "react";
-import styled from "styled-components";
+import { useDispatch } from "react-redux";
 
 import { IProfile } from "utils/interfaces";
 import firebase from "utils/firebase";
 import { useAsyncMemo } from "customHooks/useAsyncMemo";
 import { IGoodsElement, ISubGoodsElement } from "components/pages/items";
-import {
-  MainContainer,
-  GridColumn,
-  StyledSelectorInput,
-  StyledSelectorOption,
-  StyledSelectorOptions,
-  ControlsContainer,
-  SliderContainer,
-} from "./styles";
-import Selector from "components/inputs/selector";
-import arrowDown from "assets/goods/arrowDown.png";
+import { MainContainer, GridColumn, SliderContainer } from "./styles";
 import { IOption } from "components/inputs/dynamicSearch";
 import { useSelector } from "customHooks/useSelector";
 import Slider from "./slider";
+import ItemInfoContainer from "./itemInfoContainer";
+import ControlsContainer from "./controlsContainer";
+import { itemHandler } from "utils/handlers";
+import { setOrdersData, setOpenedModal } from "store/actions";
 
 interface IProps {
   match: {
@@ -47,22 +41,17 @@ const ItemsDetail = (props: IProps) => {
       description: "",
       groupId: "",
       id: "",
-      name: "qwe",
+      name: "",
       subName: "",
       filters: {},
       subGoods: [],
     }
   );
 
-  const {
-    brand,
-    description,
-    groupId,
-    name,
-    subGoods,
-    subName,
-  } = itemData.data;
+  const { subGoods } = itemData.data;
   const filters = useSelector((state) => state.filters);
+  const ordersData = useSelector((state) => state.orders);
+  const dispatch = useDispatch();
   const [changedSubElement, setChangedSubElement] = useState<ISubGoodsElement>({
     elementValue: {
       type: "",
@@ -114,35 +103,40 @@ const ItemsDetail = (props: IProps) => {
     }
   };
 
-  console.log(changedSubElement, ">>>");
+  const submitHandler = () => {
+    const item = {
+      ...itemData.data,
+      ...changedSubElement,
+    };
+    delete item.subGoods;
+    itemHandler({
+      ordersData: ordersData.length > 0 ? ordersData : null,
+      item,
+      setDataToStateHandler: (newData) => dispatch(setOrdersData(newData)),
+    });
+    dispatch(setOpenedModal("orders"));
+  };
 
   return (
     <MainContainer>
-      <GridColumn>{name}</GridColumn>
+      <GridColumn>
+        <ItemInfoContainer {...itemData.data} possibleFilters={filters} />
+      </GridColumn>
       <GridColumn>
         <SliderContainer>
           <Slider images={images} />
         </SliderContainer>
       </GridColumn>
       <GridColumn>
-        <ControlsContainer>
-          <h2>{price}</h2>
-          <Selector
-            StyledInputContainer={StyledSelectorInput}
-            StyledOptionContainer={StyledSelectorOptions}
-            StyledOption={StyledSelectorOption}
-            options={optionsForSelector}
-            changedValue={changedValueSelector}
-            setNewValue={changeSubElement}
-            arrowIcon={arrowDown}
-          />
-        </ControlsContainer>
+        <ControlsContainer
+          changeSubElement={changeSubElement}
+          changedValueSelector={changedValueSelector}
+          optionsForSelector={optionsForSelector}
+          price={price}
+          id={id}
+          submitHandler={submitHandler}
+        />
       </GridColumn>
-      {/* <ButtonBack to={"/items"}>
-        <img src={ArrowBack} alt={"back"} />
-      </ButtonBack>
-      <Header mode={"singleItem"} />
-      <ItemsDetailContainer changedProduct={changedProduct} /> */}
     </MainContainer>
   );
 };

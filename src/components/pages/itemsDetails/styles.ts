@@ -8,7 +8,8 @@ import {
 export const MainContainer = styled.div`
   width: 100%;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: 1fr 2fr 1fr;
+  margin-top: 50px;
 `;
 
 export const GridColumn = styled.div`
@@ -20,20 +21,7 @@ export const GridColumn = styled.div`
 
 export const SliderContainer = styled.div`
   width: 100%;
-`;
-
-export const ControlsContainer = styled.div`
-  max-width: 140px;
-  width: 100%;
-  h2 {
-    font-size: 24;
-    font-weight: 400;
-    :after {
-      content: " грн.";
-      display: inline;
-      font-size: 16px;
-    }
-  }
+  padding: 0 20px 20px 20px;
 `;
 
 export const StyledSelectorInput = styled(GoodsStyledSelectorInput)`
