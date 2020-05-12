@@ -6,37 +6,31 @@ import AdminPanel from "../components/pages/adminPanel";
 import Items from "../components/pages/items";
 import ItemsDetail from "../components/pages/itemsDetails";
 import WrapComponent from "../components/wrapComponent";
-import { IProfile } from "../utils/interfaces";
 import { GlobalStyle } from "../utils/styles";
 import Header from "../components/header";
 import { useSelector } from "customHooks/useSelector";
 
 const ProtectedRoute = ({
   component: Component,
-  isAuth,
-  profile,
-  isAdmin,
+  isLogged,
   ...rest
 }: {
   component: any;
-  isAuth: boolean;
-  profile: IProfile;
-  isAdmin: boolean;
+  isLogged: boolean;
   path: string;
   exact?: boolean;
 }) => {
-  console.log(isAdmin, "adm");
   return (
     <Route
       {...rest}
       render={(props) => {
-        if (isAdmin) {
+        if (isLogged) {
           return <Component {...props} />;
         } else {
           return (
             <Redirect
               to={{
-                pathname: "/items",
+                pathname: "/login",
                 state: { from: props.location },
               }}
             />
@@ -49,26 +43,24 @@ const ProtectedRoute = ({
 
 const NotAuthRoute = ({
   component: Component,
-  isAuth,
-  type,
+  isLogged,
   ...rest
 }: {
   component: any;
-  isAuth: boolean;
+  isLogged: boolean;
   path: string;
-  type: string;
 }) => {
   return (
     <Route
       {...rest}
       render={(props) => {
-        if (!isAuth) {
-          return <Component {...props} type={type} />;
+        if (!isLogged) {
+          return <Component {...props} />;
         } else {
           return (
             <Redirect
               to={{
-                pathname: "/items",
+                pathname: "/adminPanel",
                 state: { from: props.location },
               }}
             />
@@ -80,9 +72,7 @@ const NotAuthRoute = ({
 };
 
 const Routes = () => {
-  const isAuth = useSelector((state) => state.isAuth);
-  const isAdmin = useSelector((state) => state.isAdmin);
-  const profile = useSelector((state) => state.profile);
+  const isLogged = useSelector((state) => state.isLogged);
 
   return (
     <WrapComponent>
@@ -90,33 +80,14 @@ const Routes = () => {
       <Header />
       <Switch>
         <Route exact path="/" render={() => <Redirect to="/items" />} />
-        <NotAuthRoute
-          component={SignUp}
-          path="/login"
-          {...{ isAuth, type: "auth" }}
-        />
-        <NotAuthRoute
-          component={SignUp}
-          path="/signUp"
-          {...{ isAuth, type: "signUp" }}
-        />
-        <Route
-          exact
-          component={Items}
-          path="/items"
-          {...{ isAuth, profile, isAdmin }}
-        />
-        <Route
-          component={ItemsDetail}
-          path={`/items/:id`}
-          {...{ isAuth, profile, isAdmin }}
-        />
+        <NotAuthRoute component={SignUp} path="/login" {...{ isLogged }} />
+        <Route exact component={Items} path="/items" {...{ isLogged }} />
+        <Route component={ItemsDetail} path={`/items/:id`} {...{ isLogged }} />
         <ProtectedRoute
           component={AdminPanel}
           path="/adminPanel"
-          {...{ isAuth, type: "auth", profile, isAdmin }}
+          {...{ isLogged }}
         />
-
         <Route render={() => <div>Not found</div>} />
       </Switch>
     </WrapComponent>

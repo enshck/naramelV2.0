@@ -4,50 +4,45 @@ import {
   IGoodsData,
   ICategory,
   IFilter,
-  IProfile
+  IProfile,
 } from "utils/interfaces";
 
 export const setSortGoods = (sortType: string) => ({
   type: types.SET_SORT_GOODS,
-  sortType
+  sortType,
 });
 
 export const setGoodsList = (goodsList: IGoodsData[]) => ({
   type: types.SET_GOODS_LIST,
-  goodsList
+  goodsList,
 });
 
 export const setProfileData = (profile: IProfile | {}) => ({
   type: types.SET_PROFILE,
-  profile
+  profile,
 });
 
-export const setIsAuthStatus = (isAuth: boolean) => ({
-  type: types.SET_IS_AUTH,
-  isAuth
-});
-
-export const setIsAdminStatus = (isAdmin: boolean) => ({
-  type: types.SET_IS_ADMIN,
-  isAdmin
+export const setIsLogged = (isLogged: boolean) => ({
+  type: types.SET_IS_LOGGED,
+  isLogged,
 });
 
 export const setMenuItems = (menuCategory: ICategory[]) => ({
   type: types.SET_MENU_CATEGORY,
-  menuCategory
+  menuCategory,
 });
 
 export const setFilters = (filters: IFilter[]) => ({
   type: types.SET_FILTERS,
-  filters
+  filters,
 });
 
 export const setOrdersData = (orders: IOrderData[]) => ({
   type: types.SET_ORDERS,
-  orders
+  orders,
 });
 
 export const setOpenedModal = (openedModal: string | null) => ({
   type: types.SET_OPENED_MODAL,
-  openedModal
+  openedModal,
 });

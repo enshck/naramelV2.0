@@ -75,8 +75,7 @@ export interface IRootState {
   orders: IOrderData[];
   openedModal: string | null;
   profile: IProfile;
-  isAdmin: boolean;
-  isAuth: boolean;
+  isLogged: boolean;
   menuCategory: ICategory[];
   filters: IFilter[];
 }

@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
-import { setMenuItems, setFilters, setOrdersData } from "store/actions";
+import {
+  setMenuItems,
+  setFilters,
+  setOrdersData,
+  setIsLogged,
+} from "store/actions";
 import { MainContainer, Container } from "./styles";
 import Spinner from "../spinner";
 import firebase from "utils/firebase";
@@ -31,9 +36,10 @@ const WrapComponent = (props: IProps) => {
         .collection("filters")
         .get();
 
-      const categoryDocData: any = categoryDocs.docs.map(elem => elem.data());
-      const filtersDocData: any = filtersDocs.docs.map(elem => elem.data());
+      const categoryDocData: any = categoryDocs.docs.map((elem) => elem.data());
+      const filtersDocData: any = filtersDocs.docs.map((elem) => elem.data());
 
+      dispatch(setIsLogged(Boolean(firebase.auth().currentUser)));
       dispatch(setMenuItems(categoryDocData));
       dispatch(setFilters(filtersDocData));
       dispatch(setOrdersData(ordersData));

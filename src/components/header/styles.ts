@@ -105,3 +105,13 @@ export const SubCategory = styled(Link)`
     color: #792c9b;
   }
 `;
+
+export const MainControlsContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+`;
+
+export const LogoutButton = styled.div`
+  cursor: pointer;
+`;

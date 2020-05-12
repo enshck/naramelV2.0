@@ -8,8 +8,8 @@ export const signOutHandler = () => {
   firebase
     .auth()
     .signOut()
-    .then(res => {})
-    .catch(error => {
+    .then((res) => {})
+    .catch((error) => {
       console.log(error);
     });
 };
@@ -24,7 +24,7 @@ export const getOrders = (
     .collection("orders")
     .doc(userId)
     .get()
-    .then(elem => {
+    .then((elem) => {
       setOrdersHandler(elem.data());
       setFetching && setFetching(false);
     });
@@ -39,11 +39,11 @@ interface IItemHandler {
 export const itemHandler = ({
   ordersData,
   item,
-  setDataToStateHandler
+  setDataToStateHandler,
 }: IItemHandler) => {
   if (ordersData) {
     const includedElementIndex = ordersData.findIndex(
-      elem =>
+      (elem) =>
         elem.id === item.id &&
         elem.elementValue.type === item.elementValue.type &&
         elem.elementValue.value === item.elementValue.value
@@ -53,8 +53,8 @@ export const itemHandler = ({
         ...ordersData,
         {
           ...item,
-          count: 1
-        }
+          count: 1,
+        },
       ];
       localStorage.setItem("ordersData", JSON.stringify(newData));
       setDataToStateHandler(newData);
@@ -68,8 +68,8 @@ export const itemHandler = ({
     const data = [
       {
         ...item,
-        count: 1
-      }
+        count: 1,
+      },
     ];
     localStorage.setItem("ordersData", JSON.stringify(data));
     setDataToStateHandler(data);
@@ -124,19 +124,19 @@ export const counterGoodsForFilter = (goodsData: IGoodsElement[]) => {
       )
         ? filters[filterKey].map((elem: string) => ({
             value: elem,
-            count: 1
+            count: 1,
           }))
         : [
             {
               value: filters[filterKey],
-              count: 1
-            }
+              count: 1,
+            },
           ];
       if (!filterData[filterKey]) {
         filterData[filterKey] = countedValue;
       } else {
-        filterData[filterKey].forEach(elem => {
-          countedValue.forEach(countedValueElem => {
+        filterData[filterKey].forEach((elem) => {
+          countedValue.forEach((countedValueElem) => {
             if (elem.value === countedValueElem.value) {
               elem.count = elem.count + countedValueElem.count;
             } else {
@@ -161,7 +161,23 @@ export const debounce = (delay: number) => {
 
 export const getSummaryOrder = (ordersData: IOrderData[]) => {
   return ordersData
-    .map(elem => (elem.count ? elem.count * elem.price : 0))
+    .map((elem) => (elem.count ? elem.count * elem.price : 0))
     .reduce((accumulator, elem) => accumulator + elem, 0)
     .toFixed(2);
+};
+
+export const getSplitText = (sourceText: string, parts: number) => {
+  let splittedWords = sourceText.split(" ");
+  const wordsPerColumn = +(splittedWords.length / parts).toFixed(0);
+  const columns = [];
+
+  for (let i = 1; i <= parts; i++) {
+    if (i === parts) {
+      columns.push(splittedWords.splice(0, splittedWords.length).join(" "));
+    } else {
+      columns.push(splittedWords.splice(0, wordsPerColumn).join(" "));
+    }
+  }
+
+  return columns;
 };

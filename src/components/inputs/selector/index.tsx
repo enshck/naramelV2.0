@@ -30,9 +30,6 @@ const Selector = ({
 }: IProps) => {
   const [isVisible, setVisible] = useState<boolean>(false);
 
-  // const changedLabel =
-  //   options.find((elem) => elem.value === changedValue)?.label || "";
-
   return (
     <ClickAwayListener onClickAway={() => setVisible(false)}>
       <MainContainer isOpenedOptionContainer={isVisible}>

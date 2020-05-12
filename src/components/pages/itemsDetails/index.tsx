@@ -1,11 +1,19 @@
 import React, { useMemo, useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
+import { Scrollbars } from "react-custom-scrollbars";
 
 import { IProfile } from "utils/interfaces";
 import firebase from "utils/firebase";
 import { useAsyncMemo } from "customHooks/useAsyncMemo";
 import { IGoodsElement, ISubGoodsElement } from "components/pages/items";
-import { MainContainer, GridColumn, SliderContainer } from "./styles";
+import {
+  MainContentContainer,
+  MainContainer,
+  GridColumn,
+  SliderContainer,
+  DescriptionMainContainer,
+  DescriptionGridContainer,
+} from "./styles";
 import { IOption } from "components/inputs/dynamicSearch";
 import { useSelector } from "customHooks/useSelector";
 import Slider from "./slider";
@@ -48,7 +56,7 @@ const ItemsDetail = (props: IProps) => {
     }
   );
 
-  const { subGoods } = itemData.data;
+  const { subGoods, name, description } = itemData.data;
   const filters = useSelector((state) => state.filters);
   const ordersData = useSelector((state) => state.orders);
   const dispatch = useDispatch();
@@ -118,26 +126,32 @@ const ItemsDetail = (props: IProps) => {
   };
 
   return (
-    <MainContainer>
-      <GridColumn>
-        <ItemInfoContainer {...itemData.data} possibleFilters={filters} />
-      </GridColumn>
-      <GridColumn>
-        <SliderContainer>
-          <Slider images={images} />
-        </SliderContainer>
-      </GridColumn>
-      <GridColumn>
-        <ControlsContainer
-          changeSubElement={changeSubElement}
-          changedValueSelector={changedValueSelector}
-          optionsForSelector={optionsForSelector}
-          price={price}
-          id={id}
-          submitHandler={submitHandler}
-        />
-      </GridColumn>
-    </MainContainer>
+    <MainContentContainer>
+      <MainContainer>
+        <GridColumn>
+          <ItemInfoContainer {...itemData.data} possibleFilters={filters} />
+        </GridColumn>
+        <GridColumn>
+          <SliderContainer>
+            <Slider images={images} />
+          </SliderContainer>
+        </GridColumn>
+        <GridColumn>
+          <ControlsContainer
+            changeSubElement={changeSubElement}
+            changedValueSelector={changedValueSelector}
+            optionsForSelector={optionsForSelector}
+            price={price}
+            id={id}
+            submitHandler={submitHandler}
+          />
+        </GridColumn>
+      </MainContainer>
+      <DescriptionMainContainer>
+        <h1>Описание {name}</h1>
+        <DescriptionGridContainer>{description}</DescriptionGridContainer>
+      </DescriptionMainContainer>
+    </MainContentContainer>
   );
 };
 

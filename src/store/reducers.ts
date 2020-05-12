@@ -42,20 +42,10 @@ const profileReducers = (state = {}, action: any) => {
   }
 };
 
-const isAdminReducers = (state = false, action: any) => {
+const isLoggedUserReducers = (state = false, action: any) => {
   switch (action.type) {
-    case types.SET_IS_ADMIN: {
-      return action.isAdmin;
-    }
-    default:
-      return state;
-  }
-};
-
-const isAuthReducers = (state = false, action: any) => {
-  switch (action.type) {
-    case types.SET_IS_AUTH: {
-      return action.isAuth;
+    case types.SET_IS_LOGGED: {
+      return action.isLogged;
     }
     default:
       return state;
@@ -98,8 +88,7 @@ export const reducers = combineReducers({
   orders: ordersReducers,
   openedModal: openedModalReducers,
   profile: profileReducers,
-  isAdmin: isAdminReducers,
-  isAuth: isAuthReducers,
+  isLogged: isLoggedUserReducers,
   menuCategory: menuCategoryReducers,
   filters: filtersReducers,
 });

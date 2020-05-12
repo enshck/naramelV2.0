@@ -13,17 +13,25 @@ import {
   SubCategory,
   MenuCategoryContainer,
   SubCategoryWrapper,
+  MainControlsContainer,
+  LogoutButton,
 } from "./styles";
 import logo from "img/logoNaravel.png";
 import { useSelector } from "customHooks/useSelector";
 import { setOpenedModal } from "store/actions";
 import OrdersModal from "components/modals/ordersModal";
+import firebase from "utils/firebase";
 
 const Header = () => {
   const menuCategory = useSelector((state) => state.menuCategory);
   const ordersData = useSelector((state) => state.orders);
   const openedModal = useSelector((state) => state.openedModal);
+  const isLogged = useSelector((state) => state.isLogged);
   const dispatch = useDispatch();
+
+  const logoutHandler = () => {
+    firebase.auth().signOut();
+  };
 
   return (
     <MainContainer>
@@ -36,13 +44,16 @@ const Header = () => {
         <LogoContainer>
           <img src={logo} alt={"logo"} />
         </LogoContainer>
-        <ControlsContainer
-          onClick={() =>
-            ordersData.length > 0 && dispatch(setOpenedModal("orders"))
-          }
-        >
-          Корзина <span>({ordersData.length})</span>
-        </ControlsContainer>
+        <MainControlsContainer>
+          <ControlsContainer
+            onClick={() =>
+              ordersData.length > 0 && dispatch(setOpenedModal("orders"))
+            }
+          >
+            Корзина <span>({ordersData.length})</span>
+          </ControlsContainer>
+          {isLogged && <LogoutButton>Выйти</LogoutButton>}
+        </MainControlsContainer>
       </SubHeader>
       <MenuContainer>
         {menuCategory.map((elem) => {
