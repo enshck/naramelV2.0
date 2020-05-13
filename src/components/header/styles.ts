@@ -87,8 +87,6 @@ export const MenuElement = styled.div`
     }
     ${SubCategoriesMainContainer} {
       opacity: 1;
-      /* height: 100px; */
-      /* min-height: 400px; */
       visibility: visible;
     }
   }
@@ -114,4 +112,7 @@ export const MainControlsContainer = styled.div`
 
 export const LogoutButton = styled.div`
   cursor: pointer;
+  :hover {
+    color: #792c9b;
+  }
 `;

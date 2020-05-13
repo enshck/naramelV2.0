@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 
-import { IProfile } from "../../../utils/interfaces";
+import { IProfile } from "utils/interfaces";
+import Header from "./header";
+import Caregories from "./categoryContainer";
 
 const MainContainer = styled.div``;
 
@@ -10,46 +12,12 @@ interface IProps {
 }
 
 const AdminPanel = (props: IProps) => {
-  // const { profile } = props;
-  // const [changedMode, setChangedMode] = useState("orders");
-  // const [getAdminOrdersData, adminOrdersData] = useGetFirebaseData();
-  // const [getGoodsData, goodsData] = useGetFirebaseData();
-  // const [getOrders, ordersData] = useGetFirebaseData();
-  // const dispatch = useDispatch();
-
-  // if (!adminOrdersData.called) {
-  //   getAdminOrdersData({
-  //     collection: "successOrders",
-  //     actionHandler: orders => dispatch(setAdminOrders(orders))
-  //   });
-  // }
-
-  // if (!goodsData.called) {
-  //   getGoodsData({
-  //     collection: "goods",
-  //     actionHandler: goods => dispatch(setGoodsList(goods))
-  //   });
-  // }
-
-  // if (!ordersData.called && profile) {
-  //   getOrders({
-  //     collection: "orders",
-  //     singleDoc: profile.uid,
-  //     actionHandler: orders => dispatch(setOrders(orders))
-  //   });
-  // }
+  const [changedTab, setChangedTab] = useState(1);
 
   return (
     <MainContainer>
-      admin panel
-      {/* <ButtonBack to={"/items"}>
-        <img src={ArrowBack} alt={"back"} />
-      </ButtonBack>
-      <Header mode={"adminPanel"} />
-      <AdminContainer
-        changedMode={changedMode}
-        setChangedMode={setChangedMode}
-      /> */}
+      <Header changedTab={changedTab} setChangedTab={setChangedTab} />
+      {changedTab === 1 && <Caregories />}
     </MainContainer>
   );
 };
