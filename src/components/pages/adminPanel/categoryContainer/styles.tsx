@@ -1,5 +1,5 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import {
   ExpansionPanel,
   ExpansionPanelDetails,
@@ -12,6 +12,7 @@ export const MainContainer = styled.div`
   width: 100%;
   display: flex;
   justify-content: center;
+  margin-top: 80px;
 `;
 
 export const CategoriesContainer = styled.div`
@@ -37,7 +38,7 @@ export const StyledExpansionPanelSummary = withStyles({
     margin: 0,
   },
   expanded: {
-    margin: "0 !important",
+    margin: "10px 0 !important",
     minHeight: "0 !important",
   },
 })((props: any) => <ExpansionPanelSummary {...props} />);
@@ -47,22 +48,50 @@ export const StyledExpansionPanelDetails = withStyles({
     padding: 0,
     margin: "0",
     position: "relative",
-    borderBottom: "1px solid #DBDCDE",
+    // borderBottom: "1px solid #DBDCDE",
   },
 })((props: any) => <ExpansionPanelDetails {...props} />);
 
 export const SubCategoriesContainer = styled.div`
   display: flex;
   flex-direction: column;
+  width: 100%;
 `;
 
-export const CategoryName = styled.p`
+export const CategoryName = styled.div`
   font-size: 14px;
+  position: relative;
   span {
     opacity: 0.6;
   }
 `;
 
 export const SubCategoryElement = styled.div`
-  margin: 15px 0;
+  margin: 10px 0;
+  border: 1px solid #dbdcde;
+  padding: 15px;
+  width: 100%;
+  position: relative;
+  span {
+    opacity: 0.6;
+  }
+`;
+
+export const Button = styled.div`
+  width: 30px;
+  height: 30px;
+  border: 1px solid #dbdcde;
+  border-radius: 100%;
+  stroke: ${(props) => props.theme.mainButtonColor};
+  display: flex;
+  justify-content: center;
+  cursor: pointer;
+  align-items: center;
+  position: absolute;
+  top: calc(50% - 15px);
+  right: 0;
+  ${({ right }: { right?: string }) =>
+    css`
+      right: ${right};
+    `}
 `;
