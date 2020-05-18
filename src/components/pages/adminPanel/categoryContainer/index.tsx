@@ -32,6 +32,7 @@ const Categories = () => {
     setAnchorForNamePopover,
   ] = React.useState<HTMLDivElement | null>(null);
   const [editableCategoryId, setEditableCategoryId] = useState("");
+  const [editableSubCategoryId, setEditableSubCategoryId] = useState("");
   const [editInputValue, setEditInputValue] = useState("");
   const [popoverEditMode, setPopoverEditMode] = useState("");
   const [itemData] = useAsyncMemo<IGoodsElement[]>(
@@ -62,6 +63,17 @@ const Categories = () => {
     return countedData;
   }, [data]);
 
+  const updateCategoriesData = async () => {
+    const newCategoriesDataDocs = await firebase
+      .firestore()
+      .collection("category")
+      .get();
+    const newCategoryData: any = newCategoriesDataDocs.docs.map((elem) =>
+      elem.data()
+    );
+    dispatch(setMenuItems(newCategoryData));
+  };
+
   const expandedIdHandler = (id: string) => {
     if (expandedId === id) {
       setExpandedId("");
@@ -90,14 +102,7 @@ const Categories = () => {
       });
       await batch.commit();
       await firebase.firestore().collection("category").doc(id).delete();
-      const newCategoriesDataDocs = await firebase
-        .firestore()
-        .collection("category")
-        .get();
-      const newCategoryData: any = newCategoriesDataDocs.docs.map((elem) =>
-        elem.data()
-      );
-      dispatch(setMenuItems(newCategoryData));
+      updateCategoriesData();
     } catch (error) {
       console.log(error, "error");
     }
@@ -106,26 +111,89 @@ const Categories = () => {
   const onCloseEditNamePopover = () => {
     setAnchorForNamePopover(null);
     setEditableCategoryId("");
+    setEditableSubCategoryId("");
     setPopoverEditMode("");
     setEditInputValue("");
   };
 
-  const openEditPopover = (
-    e: BaseSyntheticEvent,
-    id: string,
-    editMode: string
-  ) => {
+  interface IOpenEditPopoverData {
+    e: BaseSyntheticEvent;
+    editMode: string;
+    idCategory?: string;
+    idSubcategory?: string;
+  }
+
+  const openEditPopover = ({
+    e,
+    editMode,
+    idCategory,
+    idSubcategory,
+  }: IOpenEditPopoverData) => {
     e.stopPropagation();
     setAnchorForNamePopover(e.currentTarget);
-    setEditableCategoryId(id);
     setPopoverEditMode(editMode);
+    if (idCategory) {
+      setEditableCategoryId(idCategory);
+    }
+    if (idSubcategory) {
+      setEditableSubCategoryId(idSubcategory);
+    }
+    const changedCategory = categoryData.find((elem) => elem.id === idCategory);
+    if (editMode === "category") {
+      setEditInputValue(changedCategory?.name || "");
+    } else if (editMode === "subCategory") {
+      const changedSubCategory = changedCategory?.subCategories.find(
+        (elem) => elem.id === idSubcategory
+      );
+      setEditInputValue(changedSubCategory?.name || "");
+    }
   };
 
-  const popoverSubmitHandler = () => {
+  const popoverSubmitHandler = async () => {
     if (popoverEditMode === "category") {
-      console.log(editableCategoryId, "category");
-    } else if (popoverEditMode === "subсategory") {
-      console.log(editableCategoryId, "subсategory");
+      if (editableCategoryId) {
+        // update category
+        await firebase
+          .firestore()
+          .collection("category")
+          .doc(editableCategoryId)
+          .update({
+            name: editInputValue,
+          });
+
+        updateCategoriesData();
+        onCloseEditNamePopover();
+      } else {
+        // add new category
+        console.log("new");
+      }
+    } else if (popoverEditMode === "subCategory") {
+      if (editableSubCategoryId) {
+        // update subcategory
+        const changedCategory = categoryData.find(
+          (elem) => elem.id === editableCategoryId
+        );
+        const changedSubCategoryesClone = [
+          ...(changedCategory?.subCategories || []),
+        ];
+        const changedSubCategory = changedSubCategoryesClone.find(
+          (elem) => elem.id === editableSubCategoryId
+        );
+        if (changedSubCategory) {
+          changedSubCategory.name = editInputValue;
+          await firebase
+            .firestore()
+            .collection("category")
+            .doc(editableCategoryId)
+            .update({
+              subCategories: changedSubCategoryesClone,
+            });
+          updateCategoriesData();
+          onCloseEditNamePopover();
+        }
+      } else {
+        // add new subcategory
+      }
     }
   };
 
@@ -142,14 +210,15 @@ const Categories = () => {
       />
       <CategoriesContainer>
         {categoryData.map((elem) => {
-          const { id, name, subCategories } = elem;
+          const { name, subCategories } = elem;
+          const idCategory = elem.id;
 
           return (
             <StyledExpansionPanel
               square
-              expanded={expandedId === id}
-              onChange={() => expandedIdHandler(id)}
-              key={id}
+              expanded={expandedId === idCategory}
+              onChange={() => expandedIdHandler(idCategory)}
+              key={idCategory}
             >
               <StyledExpansionPanelSummary
                 aria-controls="panel1d-content"
@@ -157,19 +226,25 @@ const Categories = () => {
                 expandIcon={<img src={arrowDown} alt={"arrow"} />}
               >
                 <CategoryName>
-                  {name} <span>(ID: {id})</span>
+                  {name} <span>(ID: {idCategory})</span>
                 </CategoryName>
-                {expandedId !== id && (
+                {expandedId !== idCategory && (
                   <Fragment>
                     <Button
                       right={"80px"}
-                      onClick={(e) => openEditPopover(e, id, "category")}
+                      onClick={(e) =>
+                        openEditPopover({
+                          e,
+                          editMode: "category",
+                          idCategory,
+                        })
+                      }
                     >
                       <EditIcon />
                     </Button>
                     <Button
                       right={"40px"}
-                      onClick={(e) => deleteCategoryHandler(e, id)}
+                      onClick={(e) => deleteCategoryHandler(e, idCategory)}
                     >
                       <DeleteIcon />
                     </Button>
@@ -186,7 +261,14 @@ const Categories = () => {
                         {name} <span>- {countOfGoods[id] || 0} товар(ов)</span>
                         <Button
                           right={"50px"}
-                          onClick={(e) => openEditPopover(e, id, "subсategory")}
+                          onClick={(e) =>
+                            openEditPopover({
+                              e,
+                              editMode: "subCategory",
+                              idCategory,
+                              idSubcategory: id,
+                            })
+                          }
                         >
                           <EditIcon />
                         </Button>

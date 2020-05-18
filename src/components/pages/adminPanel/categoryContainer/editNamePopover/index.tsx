@@ -66,7 +66,7 @@ const EditNamePopover = ({
           value={editInputValue}
           onInput={(e) => setEditInputValue(e.target.value)}
         />
-        <SubmitButton>
+        <SubmitButton onClick={popoverSubmitHandler}>
           {editableCategoryId ? "Обновить" : "Создать"}
         </SubmitButton>
       </MainPopoverContainer>
