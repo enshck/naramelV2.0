@@ -83,6 +83,8 @@ const Categories = () => {
   };
 
   const deleteCategoryHandler = async (e: BaseSyntheticEvent, id: string) => {
+    // delete category with related subcategories and goods
+
     e.stopPropagation();
     try {
       const batch = firebase.firestore().batch();
@@ -102,6 +104,40 @@ const Categories = () => {
       });
       await batch.commit();
       await firebase.firestore().collection("category").doc(id).delete();
+      updateCategoriesData();
+    } catch (error) {
+      console.log(error, "error");
+    }
+  };
+
+  const deleteSubcategoryHandler = async (
+    idSubCategory: string,
+    idCategory: string
+  ) => {
+    // delete subCategory with related goods
+
+    try {
+      const batch = firebase.firestore().batch();
+      const relatedGoods = await firebase
+        .firestore()
+        .collection("goods")
+        .where("groupId", "==", idSubCategory)
+        .get();
+      relatedGoods.forEach((doc) => {
+        batch.delete(doc.ref);
+      });
+      const changedCategoryData: any = (
+        await firebase.firestore().collection("category").doc(idCategory).get()
+      ).data();
+      const subCategories: ISubCategory[] = changedCategoryData.subCategories;
+      const changedSubCategoryIndex = subCategories.findIndex(
+        (elem) => elem.id === idSubCategory
+      );
+      subCategories.splice(changedSubCategoryIndex, 1);
+      await batch.commit();
+      await firebase.firestore().collection("category").doc(idCategory).update({
+        subCategories,
+      });
       updateCategoriesData();
     } catch (error) {
       console.log(error, "error");
@@ -272,7 +308,12 @@ const Categories = () => {
                         >
                           <EditIcon />
                         </Button>
-                        <Button right={"10px"}>
+                        <Button
+                          right={"10px"}
+                          onClick={(e) =>
+                            deleteSubcategoryHandler(id, idCategory)
+                          }
+                        >
                           <DeleteIcon />
                         </Button>
                       </SubCategoryElement>
