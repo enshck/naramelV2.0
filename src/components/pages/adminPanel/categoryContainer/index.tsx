@@ -1,5 +1,6 @@
 import React, { useState, useMemo, BaseSyntheticEvent, Fragment } from "react";
 import { useDispatch } from "react-redux";
+import { v1 as uuidv1 } from "uuid";
 
 import { useSelector } from "customHooks/useSelector";
 import {
@@ -12,6 +13,8 @@ import {
   SubCategoriesContainer,
   SubCategoryElement,
   Button,
+  PlusCategoryIconContainer,
+  AddCategoryButton,
 } from "./styles";
 import { useAsyncMemo } from "customHooks/useAsyncMemo";
 import { IGoodsElement } from "components/pages/items";
@@ -22,6 +25,7 @@ import { ReactComponent as EditIcon } from "assets/adminPanel/edit.svg";
 import { ReactComponent as DeleteIcon } from "assets/adminPanel/delete.svg";
 import { setMenuItems } from "store/actions";
 import EditNamePopover from "./editNamePopover";
+import { ReactComponent as PlusIcon } from "assets/adminPanel/plus.svg";
 
 const Categories = () => {
   const dispatch = useDispatch();
@@ -94,15 +98,17 @@ const Categories = () => {
       const relatedGoodsIdArray: string[] = changedCategoryData.subCategories.map(
         (elem: ISubCategory) => elem.id
       );
-      const relatedGoods = await firebase
-        .firestore()
-        .collection("goods")
-        .where("groupId", "in", relatedGoodsIdArray)
-        .get();
-      relatedGoods.forEach((doc) => {
-        batch.delete(doc.ref);
-      });
-      await batch.commit();
+      if (relatedGoodsIdArray.length > 0) {
+        const relatedGoods = await firebase
+          .firestore()
+          .collection("goods")
+          .where("groupId", "in", relatedGoodsIdArray)
+          .get();
+        relatedGoods.forEach((doc) => {
+          batch.delete(doc.ref);
+        });
+        await batch.commit();
+      }
       await firebase.firestore().collection("category").doc(id).delete();
       updateCategoriesData();
     } catch (error) {
@@ -115,7 +121,6 @@ const Categories = () => {
     idCategory: string
   ) => {
     // delete subCategory with related goods
-
     try {
       const batch = firebase.firestore().batch();
       const relatedGoods = await firebase
@@ -186,49 +191,93 @@ const Categories = () => {
   };
 
   const popoverSubmitHandler = async () => {
-    if (popoverEditMode === "category") {
-      if (editableCategoryId) {
-        // update category
-        await firebase
-          .firestore()
-          .collection("category")
-          .doc(editableCategoryId)
-          .update({
-            name: editInputValue,
-          });
-
-        updateCategoriesData();
-        onCloseEditNamePopover();
-      } else {
-        // add new category
-        console.log("new");
-      }
-    } else if (popoverEditMode === "subCategory") {
-      if (editableSubCategoryId) {
-        // update subcategory
-        const changedCategory = categoryData.find(
-          (elem) => elem.id === editableCategoryId
-        );
-        const changedSubCategoryesClone = [
-          ...(changedCategory?.subCategories || []),
-        ];
-        const changedSubCategory = changedSubCategoryesClone.find(
-          (elem) => elem.id === editableSubCategoryId
-        );
-        if (changedSubCategory) {
-          changedSubCategory.name = editInputValue;
+    if (editInputValue.length > 0) {
+      if (popoverEditMode === "category") {
+        if (editableCategoryId) {
+          // update category
           await firebase
             .firestore()
             .collection("category")
             .doc(editableCategoryId)
             .update({
-              subCategories: changedSubCategoryesClone,
+              name: editInputValue,
             });
+
           updateCategoriesData();
           onCloseEditNamePopover();
+        } else {
+          // add new category
+          const uniqueCategoryId = uuidv1();
+
+          try {
+            await firebase
+              .firestore()
+              .collection("category")
+              .doc(uniqueCategoryId)
+              .set({
+                id: uniqueCategoryId,
+                name: editInputValue,
+                subCategories: [],
+              });
+            updateCategoriesData();
+            onCloseEditNamePopover();
+          } catch (err) {
+            console.log(err, "error");
+          }
         }
-      } else {
-        // add new subcategory
+      } else if (popoverEditMode === "subCategory") {
+        if (editableSubCategoryId) {
+          // update subcategory
+          const changedCategory = categoryData.find(
+            (elem) => elem.id === editableCategoryId
+          );
+          const changedSubCategoryesClone = [
+            ...(changedCategory?.subCategories || []),
+          ];
+          const changedSubCategory = changedSubCategoryesClone.find(
+            (elem) => elem.id === editableSubCategoryId
+          );
+          if (changedSubCategory) {
+            changedSubCategory.name = editInputValue;
+            await firebase
+              .firestore()
+              .collection("category")
+              .doc(editableCategoryId)
+              .update({
+                subCategories: changedSubCategoryesClone,
+              });
+            updateCategoriesData();
+            onCloseEditNamePopover();
+          }
+        } else {
+          // add new subcategory
+
+          const uniqueCategoryId = uuidv1();
+
+          try {
+            const changedCategory = categoryData.find(
+              (elem) => elem.id === editableCategoryId
+            );
+            const changedSubCategoryesClone = [
+              ...(changedCategory?.subCategories || []),
+            ];
+            changedSubCategoryesClone.push({
+              id: uniqueCategoryId,
+              name: editInputValue,
+            });
+            await firebase
+              .firestore()
+              .collection("category")
+              .doc(editableCategoryId)
+              .update({
+                subCategories: changedSubCategoryesClone,
+              });
+            updateCategoriesData();
+            onCloseEditNamePopover();
+          } catch (err) {
+            console.log(err, "error");
+          }
+        }
       }
     }
   };
@@ -253,7 +302,9 @@ const Categories = () => {
             <StyledExpansionPanel
               square
               expanded={expandedId === idCategory}
-              onChange={() => expandedIdHandler(idCategory)}
+              onChange={() =>
+                subCategories.length > 0 && expandedIdHandler(idCategory)
+              }
               key={idCategory}
             >
               <StyledExpansionPanelSummary
@@ -262,10 +313,23 @@ const Categories = () => {
                 expandIcon={<img src={arrowDown} alt={"arrow"} />}
               >
                 <CategoryName>
-                  {name} <span>(ID: {idCategory})</span>
+                  {name} - <span>{subCategories.length} подкатегорий</span>{" "}
                 </CategoryName>
                 {expandedId !== idCategory && (
                   <Fragment>
+                    <Button
+                      right={"120px"}
+                      style={{ padding: "6px" }}
+                      onClick={(e) =>
+                        openEditPopover({
+                          e,
+                          editMode: "subCategory",
+                          idCategory,
+                        })
+                      }
+                    >
+                      <PlusIcon />
+                    </Button>
                     <Button
                       right={"80px"}
                       onClick={(e) =>
@@ -325,6 +389,16 @@ const Categories = () => {
           );
         })}
       </CategoriesContainer>
+      <PlusCategoryIconContainer
+        onClick={(e) =>
+          openEditPopover({
+            e,
+            editMode: "category",
+          })
+        }
+      >
+        <PlusIcon />
+      </PlusCategoryIconContainer>
     </MainContainer>
   );
 };

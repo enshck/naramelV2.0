@@ -11,7 +11,8 @@ import {
 export const MainContainer = styled.div`
   width: 100%;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
   margin-top: 80px;
 `;
 
@@ -94,4 +95,22 @@ export const Button = styled.div`
     css`
       right: ${right};
     `}
+`;
+
+export const AddCategoryButton = styled.div`
+  display: flex;
+`;
+
+export const PlusCategoryIconContainer = styled.div`
+  stroke: #792c9b;
+  max-width: 30px;
+  max-height: 30px;
+  padding: 5px;
+  border: 1px solid #dbdcde;
+  border-radius: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+  cursor: pointer;
 `;
