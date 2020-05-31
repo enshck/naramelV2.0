@@ -1,6 +1,7 @@
 import React, { useState, useMemo, BaseSyntheticEvent, Fragment } from "react";
 import { useDispatch } from "react-redux";
 import { v1 as uuidv1 } from "uuid";
+import { useHistory } from "react-router-dom";
 
 import { useSelector } from "customHooks/useSelector";
 import {
@@ -15,6 +16,10 @@ import {
   Button,
   PlusCategoryIconContainer,
   AddCategoryButton,
+  StyledTooltip,
+  CountOfGoodsContainer,
+  TooltipElement,
+  StyledOrderStatusContainer,
 } from "./styles";
 import { useAsyncMemo } from "customHooks/useAsyncMemo";
 import { IGoodsElement } from "components/pages/items";
@@ -26,9 +31,26 @@ import { ReactComponent as DeleteIcon } from "assets/adminPanel/delete.svg";
 import { setMenuItems } from "store/actions";
 import EditNamePopover from "./editNamePopover";
 import { ReactComponent as PlusIcon } from "assets/adminPanel/plus.svg";
+import { getIdsForCategories } from "axiosRequests/adminPanel";
+import { orderStatus } from "utils/constants";
+
+interface IRelatedOrderData {
+  id: string;
+  status: "ordered" | "accepted" | "delivered" | "cancelled";
+}
+
+interface IRelatedGoodsAndOrders {
+  relatedGoods: {
+    [key: string]: string[];
+  };
+  relatedOrders: {
+    [key: string]: IRelatedOrderData[];
+  };
+}
 
 const Categories = () => {
   const dispatch = useDispatch();
+  const history = useHistory();
   const categoryData = useSelector((state) => state.menuCategory);
   const [expandedId, setExpandedId] = useState("");
   const [
@@ -39,33 +61,26 @@ const Categories = () => {
   const [editableSubCategoryId, setEditableSubCategoryId] = useState("");
   const [editInputValue, setEditInputValue] = useState("");
   const [popoverEditMode, setPopoverEditMode] = useState("");
-  const [itemData] = useAsyncMemo<IGoodsElement[]>(
-    () => {
-      return firebase
-        .firestore()
-        .collection("goods")
-        .get()
-        .then((result) => result.docs.map((elem) => elem.data()));
+  const [relatedGoodsAndOrders] = useAsyncMemo<IRelatedGoodsAndOrders>(
+    async () => {
+      const token = (await firebase.auth().currentUser?.getIdTokenResult())
+        ?.token;
+      return token
+        ? getIdsForCategories(token)
+        : new Promise((resolve) => {
+            resolve({
+              relatedGoods: {},
+              relatedOrders: {},
+            });
+          });
     },
-    [],
-    []
+    [categoryData],
+    {
+      relatedGoods: {},
+      relatedOrders: {},
+    }
   );
-  const { data } = itemData;
-  const countOfGoods = useMemo(() => {
-    const countedData: { [key: string]: number } = {};
-
-    data.forEach((elem) => {
-      const { groupId } = elem;
-
-      if (countedData[groupId]) {
-        countedData[groupId]++;
-      } else {
-        countedData[groupId] = 1;
-      }
-    });
-
-    return countedData;
-  }, [data]);
+  const { relatedGoods, relatedOrders } = relatedGoodsAndOrders.data;
 
   const updateCategoriesData = async () => {
     const newCategoriesDataDocs = await firebase
@@ -358,7 +373,35 @@ const Categories = () => {
 
                     return (
                       <SubCategoryElement>
-                        {name} <span>- {countOfGoods[id] || 0} товар(ов)</span>
+                        {name}
+                        <CountOfGoodsContainer>
+                          <span>
+                            -{(relatedGoods[id] || []).length} товар(ов)
+                          </span>
+                        </CountOfGoodsContainer>
+                        <CountOfGoodsContainer>
+                          <span>
+                            -{(relatedOrders[id] || []).length} заказ(ов)
+                          </span>
+                          <StyledTooltip>
+                            {relatedOrders[id] &&
+                              relatedOrders[id].map((elem) => {
+                                const { id, status } = elem;
+                                return (
+                                  <TooltipElement
+                                    onClick={() =>
+                                      history.push(`/adminPanel?id=${id}#0`)
+                                    }
+                                  >
+                                    {id}
+                                    <StyledOrderStatusContainer status={status}>
+                                      {orderStatus[status]}
+                                    </StyledOrderStatusContainer>
+                                  </TooltipElement>
+                                );
+                              })}
+                          </StyledTooltip>
+                        </CountOfGoodsContainer>
                         <Button
                           right={"50px"}
                           onClick={(e) =>

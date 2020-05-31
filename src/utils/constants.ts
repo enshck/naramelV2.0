@@ -1,8 +1,8 @@
 export const orderStatus: { [key: string]: string } = {
-  ordered: "Заказано",
-  delivered: "Доставленно",
-  paidFor: "Оплаченно",
-  cancelled: "Отмененно"
+  ordered: "заказано",
+  accepted: "принято",
+  delivered: "доставлено",
+  cancelled: "отмененно",
 };
 
 export const colors: { [key: string]: string } = {
@@ -11,5 +11,5 @@ export const colors: { [key: string]: string } = {
   blue: "#2196f3",
   red: "#f44336",
   "deep-orange": "#ff9800",
-  green: "#4caf50"
+  green: "#4caf50",
 };

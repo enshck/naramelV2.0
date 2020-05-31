@@ -16,7 +16,7 @@ interface IActionData<T> {
 
 export function useAsyncMemo<T>(
   callback: () => Promise<any>,
-  deps: string[],
+  deps: any[],
   initialData: T
 ) {
   const initialState = {

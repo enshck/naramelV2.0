@@ -33,7 +33,9 @@ interface IGoodsStyledSelectorOptions {
   isVisible: boolean;
 }
 
-export const GoodsStyledSelectorOptions = styled.div<IGoodsStyledSelectorOptions>`
+export const GoodsStyledSelectorOptions = styled.div<
+  IGoodsStyledSelectorOptions
+>`
   width: 100%;
   position: absolute;
   top: 30px;
@@ -150,7 +152,7 @@ export const FilterStyledCheckbox = ({
   type,
   name,
   onChange,
-  checked
+  checked,
 }: IFilterStyledCheckbox) => {
   return (
     <CheckBoxMainContainer>
@@ -158,7 +160,7 @@ export const FilterStyledCheckbox = ({
         type={type}
         name={name}
         id={name}
-        onChange={e => onChange(e, name)}
+        onChange={(e) => onChange(e, name)}
         checked={checked}
       />
       <CheckboxSpan />
@@ -167,10 +169,40 @@ export const FilterStyledCheckbox = ({
 };
 
 export const StyledInput = styled.input`
-    border: 1px solid #ccc;
-    padding: 5px;
-    box-sizing: border-box;
-    height: 30px;
-    width: 100%;
-    outline: none;
-`
+  border: 1px solid #ccc;
+  padding: 5px;
+  box-sizing: border-box;
+  height: 30px;
+  width: 100%;
+  outline: none;
+`;
+
+interface IOrderStatusContainer {
+  status: "ordered" | "accepted" | "delivered" | "cancelled";
+}
+
+export const OrderStatusContainer = styled.div<IOrderStatusContainer>`
+  color: #fff;
+  ${({ status }) => {
+    if (status === "accepted") {
+      return css`
+        background: #792c9b;
+      `;
+    }
+    if (status === "cancelled") {
+      return css`
+        background: #ff3e3e;
+      `;
+    }
+    if (status === "delivered") {
+      return css`
+        background: #0d9e33;
+      `;
+    }
+    if (status === "ordered") {
+      return css`
+        background: #3087f8;
+      `;
+    }
+  }}
+`;
