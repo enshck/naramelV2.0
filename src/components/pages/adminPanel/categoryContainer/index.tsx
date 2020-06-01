@@ -2,6 +2,7 @@ import React, { useState, useMemo, BaseSyntheticEvent, Fragment } from "react";
 import { useDispatch } from "react-redux";
 import { v1 as uuidv1 } from "uuid";
 import { useHistory } from "react-router-dom";
+import qs from "qs";
 
 import { useSelector } from "customHooks/useSelector";
 import {
@@ -31,7 +32,7 @@ import { ReactComponent as DeleteIcon } from "assets/adminPanel/delete.svg";
 import { setMenuItems } from "store/actions";
 import EditNamePopover from "./editNamePopover";
 import { ReactComponent as PlusIcon } from "assets/adminPanel/plus.svg";
-import { getIdsForCategories } from "axiosRequests/adminPanel";
+import { getIdsForCategories, deleteGoods } from "axiosRequests/adminPanel";
 import { orderStatus } from "utils/constants";
 
 interface IRelatedOrderData {
@@ -106,7 +107,6 @@ const Categories = () => {
 
     e.stopPropagation();
     try {
-      const batch = firebase.firestore().batch();
       const changedCategoryData: any = (
         await firebase.firestore().collection("category").doc(id).get()
       ).data();
@@ -114,15 +114,23 @@ const Categories = () => {
         (elem: ISubCategory) => elem.id
       );
       if (relatedGoodsIdArray.length > 0) {
-        const relatedGoods = await firebase
-          .firestore()
-          .collection("goods")
-          .where("groupId", "in", relatedGoodsIdArray)
-          .get();
-        relatedGoods.forEach((doc) => {
-          batch.delete(doc.ref);
-        });
-        await batch.commit();
+        const token =
+          (await firebase.auth().currentUser?.getIdTokenResult())?.token ||
+          null;
+        const relatedGoods = (
+          await firebase
+            .firestore()
+            .collection("goods")
+            .where("groupId", "in", relatedGoodsIdArray)
+            .get()
+        ).docs.map((elem) => elem.data().id);
+
+        await deleteGoods(
+          {
+            goodsIds: relatedGoods,
+          },
+          token
+        );
       }
       await firebase.firestore().collection("category").doc(id).delete();
       updateCategoriesData();
@@ -137,15 +145,22 @@ const Categories = () => {
   ) => {
     // delete subCategory with related goods
     try {
-      const batch = firebase.firestore().batch();
-      const relatedGoods = await firebase
-        .firestore()
-        .collection("goods")
-        .where("groupId", "==", idSubCategory)
-        .get();
-      relatedGoods.forEach((doc) => {
-        batch.delete(doc.ref);
-      });
+      const token =
+        (await firebase.auth().currentUser?.getIdTokenResult())?.token || null;
+      const relatedGoods = (
+        await firebase
+          .firestore()
+          .collection("goods")
+          .where("groupId", "==", idSubCategory)
+          .get()
+      ).docs.map((elem) => elem.data().id);
+
+      await deleteGoods(
+        {
+          goodsIds: relatedGoods,
+        },
+        token
+      );
       const changedCategoryData: any = (
         await firebase.firestore().collection("category").doc(idCategory).get()
       ).data();
@@ -154,7 +169,6 @@ const Categories = () => {
         (elem) => elem.id === idSubCategory
       );
       subCategories.splice(changedSubCategoryIndex, 1);
-      await batch.commit();
       await firebase.firestore().collection("category").doc(idCategory).update({
         subCategories,
       });
@@ -378,12 +392,26 @@ const Categories = () => {
                           <span>
                             -{(relatedGoods[id] || []).length} товар(ов)
                           </span>
+                          <StyledTooltip isEmpty={!Boolean(relatedGoods[id])}>
+                            {relatedGoods[id] &&
+                              relatedGoods[id].map((elem) => {
+                                return (
+                                  <TooltipElement
+                                    onClick={() =>
+                                      history.push(`/adminPanel?id=${elem}#3`)
+                                    }
+                                  >
+                                    {elem}
+                                  </TooltipElement>
+                                );
+                              })}
+                          </StyledTooltip>
                         </CountOfGoodsContainer>
                         <CountOfGoodsContainer>
                           <span>
                             -{(relatedOrders[id] || []).length} заказ(ов)
                           </span>
-                          <StyledTooltip>
+                          <StyledTooltip isEmpty={!Boolean(relatedOrders[id])}>
                             {relatedOrders[id] &&
                               relatedOrders[id].map((elem) => {
                                 const { id, status } = elem;

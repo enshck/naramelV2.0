@@ -77,7 +77,7 @@ export const StyledTooltip = styled.div`
   background: #fff;
   opacity: 0;
   width: 400px;
-  transition: 0.6s;
+  transition: 0.4s;
   visibility: hidden;
   color: #000;
   box-shadow: 0px 5px 5px -3px rgba(0, 0, 0, 0.2),
@@ -85,6 +85,12 @@ export const StyledTooltip = styled.div`
   z-index: 9999999 !important;
   overflow: auto;
   max-height: 400px;
+
+  ${({ isEmpty }: { isEmpty?: boolean }) =>
+    isEmpty &&
+    css`
+      display: none;
+    `}
 `;
 
 export const TooltipElement = styled.div`
@@ -97,6 +103,9 @@ export const TooltipElement = styled.div`
   padding: 10px;
   :first-child {
     margin-top: 0;
+  }
+  :hover {
+    color: ${(props) => props.theme.mainButtonColor};
   }
 `;
 
