@@ -1,8 +1,7 @@
-import React, { useState, useMemo, BaseSyntheticEvent, Fragment } from "react";
+import React, { useState, BaseSyntheticEvent, Fragment } from "react";
 import { useDispatch } from "react-redux";
 import { v1 as uuidv1 } from "uuid";
 import { useHistory } from "react-router-dom";
-import qs from "qs";
 
 import { useSelector } from "customHooks/useSelector";
 import {
@@ -16,14 +15,12 @@ import {
   SubCategoryElement,
   Button,
   PlusCategoryIconContainer,
-  AddCategoryButton,
   StyledTooltip,
   CountOfGoodsContainer,
   TooltipElement,
   StyledOrderStatusContainer,
 } from "./styles";
 import { useAsyncMemo } from "customHooks/useAsyncMemo";
-import { IGoodsElement } from "components/pages/items";
 import firebase from "utils/firebase";
 import { ISubCategory } from "utils/interfaces";
 import arrowDown from "assets/adminPanel/arrowDown.png";
@@ -34,6 +31,7 @@ import EditNamePopover from "./editNamePopover";
 import { ReactComponent as PlusIcon } from "assets/adminPanel/plus.svg";
 import { getIdsForCategories, deleteGoods } from "axiosRequests/adminPanel";
 import { orderStatus } from "utils/constants";
+import Spinner from "components/spinner";
 
 interface IRelatedOrderData {
   id: string;
@@ -50,6 +48,7 @@ interface IRelatedGoodsAndOrders {
 }
 
 const Categories = () => {
+  const [isFetching, setFetching] = useState(false);
   const dispatch = useDispatch();
   const history = useHistory();
   const categoryData = useSelector((state) => state.menuCategory);
@@ -81,6 +80,7 @@ const Categories = () => {
       relatedOrders: {},
     }
   );
+  const { pending } = relatedGoodsAndOrders;
   const { relatedGoods, relatedOrders } = relatedGoodsAndOrders.data;
 
   const updateCategoriesData = async () => {
@@ -104,7 +104,7 @@ const Categories = () => {
 
   const deleteCategoryHandler = async (e: BaseSyntheticEvent, id: string) => {
     // delete category with related subcategories and goods
-
+    setFetching(true);
     e.stopPropagation();
     try {
       const changedCategoryData: any = (
@@ -137,6 +137,7 @@ const Categories = () => {
     } catch (error) {
       console.log(error, "error");
     }
+    setFetching(false);
   };
 
   const deleteSubcategoryHandler = async (
@@ -144,6 +145,7 @@ const Categories = () => {
     idCategory: string
   ) => {
     // delete subCategory with related goods
+    setFetching(true);
     try {
       const token =
         (await firebase.auth().currentUser?.getIdTokenResult())?.token || null;
@@ -176,6 +178,7 @@ const Categories = () => {
     } catch (error) {
       console.log(error, "error");
     }
+    setFetching(false);
   };
 
   const onCloseEditNamePopover = () => {
@@ -220,6 +223,7 @@ const Categories = () => {
   };
 
   const popoverSubmitHandler = async () => {
+    setFetching(true);
     if (editInputValue.length > 0) {
       if (popoverEditMode === "category") {
         if (editableCategoryId) {
@@ -309,7 +313,12 @@ const Categories = () => {
         }
       }
     }
+    setFetching(false);
   };
+
+  if (isFetching || pending) {
+    return <Spinner />;
+  }
 
   return (
     <MainContainer>

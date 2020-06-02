@@ -5,7 +5,6 @@ import {
   ExpansionPanelDetails,
   ExpansionPanelSummary,
   withStyles,
-  Tooltip,
 } from "@material-ui/core";
 import { OrderStatusContainer } from "utils/styles";
 
