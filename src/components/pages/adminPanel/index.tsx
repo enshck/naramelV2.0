@@ -6,8 +6,13 @@ import { IProfile } from "utils/interfaces";
 import Header from "./header";
 import Caregories from "./categoryContainer";
 import Filters from "./filtersContainer";
+import Goods from "./goodsContainer";
 
-const MainContainer = styled.div``;
+const MainContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 auto;
+`;
 
 interface IProps {
   profile: IProfile;
@@ -33,6 +38,7 @@ const AdminPanel = (props: IProps) => {
       <Header changedTab={changedTab} setChangedTab={changeTabHandler} />
       {changedTab === 1 && <Caregories />}
       {changedTab === 2 && <Filters />}
+      {changedTab === 3 && <Goods />}
     </MainContainer>
   );
 };
