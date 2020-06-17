@@ -33,9 +33,7 @@ interface IGoodsStyledSelectorOptions {
   isVisible: boolean;
 }
 
-export const GoodsStyledSelectorOptions = styled.div<
-  IGoodsStyledSelectorOptions
->`
+export const GoodsStyledSelectorOptions = styled.div<IGoodsStyledSelectorOptions>`
   width: 100%;
   position: absolute;
   top: 30px;
@@ -205,4 +203,14 @@ export const OrderStatusContainer = styled.div<IOrderStatusContainer>`
       `;
     }
   }}
+`;
+
+export const StyledTextArea = styled.textarea`
+    border: 1px solid #ccc;
+    padding: 10px;
+    box-sizing: border-box;
+    height: 300px;
+    width: 100%;
+    outline: none;
+    resize: none;
 `;

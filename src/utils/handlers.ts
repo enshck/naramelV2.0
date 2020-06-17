@@ -119,16 +119,15 @@ export const counterGoodsForFilter = (goodsData: IGoodsElement[]) => {
     const { filters } = goodsItem;
 
     Object.keys(filters).forEach((filterKey: string) => {
-      const countedValue: IFiltersDataElement[] = Array.isArray(
-        filters[filterKey]
-      )
-        ? filters[filterKey].map((elem: string) => ({
+      const filter = filters[filterKey];
+      const countedValue: IFiltersDataElement[] = Array.isArray(filter)
+        ? filter.map((elem: string) => ({
             value: elem,
             count: 1,
           }))
         : [
             {
-              value: filters[filterKey],
+              value: filter,
               count: 1,
             },
           ];

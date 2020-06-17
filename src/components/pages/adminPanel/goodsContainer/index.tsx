@@ -16,6 +16,12 @@ import { IGoodsElement } from "components/pages/items";
 import { debounce } from "utils/handlers";
 import GoodsListContainer from "./goodsListContainer";
 import EditGoodsContainer from "./editGoodsContainer";
+import { useSelector } from "customHooks/useSelector";
+
+export interface IOption {
+  label: string;
+  value: string;
+}
 
 const GoodsContainer = () => {
   const debounceForItemSearch = useCallback(debounce(800), []);
@@ -23,6 +29,22 @@ const GoodsContainer = () => {
   const history = useHistory();
   const { search } = history.location;
   const [goodsData, setGoodsData] = useState<IGoodsElement[]>([]);
+  const goodsCategories = useSelector((state) => state.menuCategory);
+
+  const listOfGoodsCategory = useMemo(() => {
+    const goodsCategory: IOption[] = [];
+    goodsCategories.forEach((category) => {
+      const { subCategories } = category;
+      subCategories.forEach((subCategory) =>
+        goodsCategory.push({
+          label: subCategory.name,
+          value: subCategory.id,
+        })
+      );
+    });
+
+    return goodsCategory;
+  }, [goodsCategories]);
 
   useEffect(() => {
     const effectHandler = async () => {
@@ -64,6 +86,8 @@ const GoodsContainer = () => {
     return changedItemData;
   }, [filteredGoodsData, search]);
 
+  console.log(listOfGoodsCategory, "cat");
+
   return (
     <MainContainer>
       <GridElement>
@@ -92,7 +116,10 @@ const GoodsContainer = () => {
       </GridElement>
       <GridElement>
         {changedItem ? (
-          <EditGoodsContainer changedItem={changedItem} />
+          <EditGoodsContainer
+            changedItem={changedItem}
+            listOfGoodsCategory={listOfGoodsCategory}
+          />
         ) : (
           <h1>Выберите товар</h1>
         )}
