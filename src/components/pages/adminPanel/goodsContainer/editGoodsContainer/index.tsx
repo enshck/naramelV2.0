@@ -7,6 +7,8 @@ import { IOption } from "../";
 import SubItemContainer from "./subItemsContainer";
 import ItemForm from "./itemForm";
 import { DropResult } from "react-beautiful-dnd";
+import FiltersContainer from "./filtersContainer";
+import EditFiltersPopover from "./editFiltersPopover";
 
 interface IProps {
   changedItem: IGoodsElement;
@@ -15,14 +17,30 @@ interface IProps {
 
 const EditGoodsContainer = ({ changedItem, listOfGoodsCategory }: IProps) => {
   const filtersTypes = useSelector((state) => state.filters);
+  const [
+    anchorForEditFilterPopover,
+    setAnchorForEditFilterPopover,
+  ] = useState<HTMLDivElement | null>(null);
+  const [editableFilterId, setEditableFilterId] = useState<string | null>(null);
   const [itemDataClone, setItemDataClone] = useState<IGoodsElement>(
     changedItem
   );
+  const [itemDataCloneForEdit, setItemDataCloneForEdit] = useState<
+    IGoodsElement
+  >(JSON.parse(JSON.stringify(itemDataClone)));
+
+  const ignoreFiltersListForEditPopover = useMemo(() => {
+    const { filters } = itemDataCloneForEdit;
+    return Object.keys(filters).map((elem) => elem);
+  }, [itemDataCloneForEdit]);
+
   const { brand, filters, subGoods } = itemDataClone;
 
   const [changedSubItemIndex, setChangedSubItemIndex] = useState(0);
-  const changedFilter = useMemo(
-    () =>
+  const changedFilter = useMemo(() => {
+    const { subGoods } = itemDataClone;
+
+    return (
       filtersTypes.find(
         (elem) => elem.type === subGoods[changedSubItemIndex].elementValue.type
       ) || {
@@ -30,42 +48,53 @@ const EditGoodsContainer = ({ changedItem, listOfGoodsCategory }: IProps) => {
         name: "",
         type: "",
         units: "",
-      },
-    [changedSubItemIndex, filtersTypes, itemDataClone]
-  );
+      }
+    );
+  }, [changedSubItemIndex, filtersTypes, itemDataClone]);
+
+  const ignoreFiltersList = useMemo(() => {
+    const { subGoods } = itemDataClone;
+
+    const ignoreList = ["brand", "price"];
+    subGoods.forEach((elem) => {
+      const { type } = elem.elementValue;
+
+      if (!ignoreList.includes(type)) {
+        ignoreList.push(type);
+      }
+    });
+
+    return ignoreList;
+  }, [itemDataClone]);
+
+  useEffect(() => {
+    const itemDataDeepClone = JSON.parse(JSON.stringify(itemDataClone));
+    setItemDataCloneForEdit(itemDataDeepClone);
+  }, [itemDataClone]);
 
   useEffect(() => {
     setItemDataClone(changedItem);
     setChangedSubItemIndex(0);
   }, [changedItem]);
 
-  useEffect(() => {
-    setItemDataClone({
-      ...itemDataClone,
-      filters: {
-        ...filters,
-        brand: brand,
-      },
-    });
-  }, [brand]);
-
-  useEffect(() => {
-    setItemDataClone({
-      ...itemDataClone,
-      filters: {
-        ...filters,
-        price: `${subGoods[0]?.price}` || "",
-      },
-    });
-  }, [subGoods[0]?.price]);
-
   const onInputHandler = (e: BaseSyntheticEvent) => {
     const { name, value } = e.target;
 
-    setItemDataClone({
-      ...itemDataClone,
-      [name]: value,
-    });
+    if (name === "brand") {
+      setItemDataClone({
+        ...itemDataClone,
+        filters: {
+          ...filters,
+          brand: value,
+        },
+        brand: value,
+      });
+    } else {
+      setItemDataClone({
+        ...itemDataClone,
+        [name]: value,
+      });
+    }
   };
 
   const onChangeGroup = (newValue: IOption) => {
@@ -170,14 +199,69 @@ const EditGoodsContainer = ({ changedItem, listOfGoodsCategory }: IProps) => {
 
   const setSubItemPrice = (e: BaseSyntheticEvent) => {
     const cloneOfItemData = { ...itemDataClone };
+
+    if (changedSubItemIndex === 0) {
+      cloneOfItemData.filters.price = e.target.value;
+    }
     cloneOfItemData.subGoods[changedSubItemIndex].price = e.target.value;
     setItemDataClone(cloneOfItemData);
   };
 
-  console.log(itemDataClone, "clone");
+  const deleteFilter = (filterKey: string) => {
+    const cloneOfItemData = { ...itemDataClone };
+    const { filters } = cloneOfItemData;
+
+    delete filters[filterKey];
+
+    setItemDataClone(cloneOfItemData);
+  };
+
+  const onCloseEditFilterPopover = () => {
+    const itemDataDeepClone = JSON.parse(JSON.stringify(itemDataClone));
+
+    setAnchorForEditFilterPopover(null);
+    setEditableFilterId(null);
+    setItemDataCloneForEdit(itemDataDeepClone);
+  };
+
+  const openEditPopoverHandler = (
+    anchor: HTMLDivElement | null,
+    filterId?: string
+  ) => {
+    if (filterId) {
+      setEditableFilterId(filterId);
+      setAnchorForEditFilterPopover(anchor);
+    } else {
+      const firstIdFilter = filtersTypes.find(
+        (elem) => !ignoreFiltersListForEditPopover.includes(elem.type)
+      )?.type;
+
+      if (firstIdFilter) {
+        setAnchorForEditFilterPopover(anchor);
+        setEditableFilterId(firstIdFilter);
+        const itemClone = { ...itemDataCloneForEdit };
+        itemClone.filters[firstIdFilter] = [];
+
+        setItemDataCloneForEdit(itemClone);
+      }
+    }
+  };
+
+  console.log(itemDataClone, itemDataCloneForEdit, "ignored");
 
   return (
     <MainContainer>
+      <EditFiltersPopover
+        anchorEl={anchorForEditFilterPopover}
+        closeHandler={onCloseEditFilterPopover}
+        ignoreFiltersList={ignoreFiltersListForEditPopover}
+        itemDataClone={itemDataClone}
+        setItemDataClone={setItemDataClone}
+        editableFilterId={editableFilterId}
+        setEditableFilterId={setEditableFilterId}
+        itemDataCloneForEdit={itemDataCloneForEdit}
+        setItemDataCloneForEdit={setItemDataCloneForEdit}
+      />
       <SubItemContainer
         changedFilter={changedFilter}
         changedSubItemIndex={changedSubItemIndex}
@@ -193,6 +277,12 @@ const EditGoodsContainer = ({ changedItem, listOfGoodsCategory }: IProps) => {
         listOfGoodsCategory={listOfGoodsCategory}
         onChangeGroup={onChangeGroup}
         onInputHandler={onInputHandler}
+      />
+      <FiltersContainer
+        filters={filters}
+        ignoreFiltersList={ignoreFiltersList}
+        deleteFilter={deleteFilter}
+        openEditPopoverHandler={openEditPopoverHandler}
       />
     </MainContainer>
   );

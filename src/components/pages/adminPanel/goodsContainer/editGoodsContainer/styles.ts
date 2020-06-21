@@ -1,5 +1,6 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
+import { PlusButton } from "./editFiltersPopover/styles";
 import { StyledTextArea as TextArea } from "utils/styles";
 import {
   GoodsStyledSelectorInput,
@@ -30,6 +31,8 @@ export const InputContainer = styled.div``;
 export const SelectorContainer = styled.div`
   max-width: 250px;
   width: 100%;
+  z-index: 1;
+  position: relative;
 `;
 
 export const StyledSelectorInput = styled(GoodsStyledSelectorInput)``;
@@ -102,4 +105,73 @@ export const CoverPictureContainer = styled.div`
 
 export const InputRow = styled.div`
   display: flex;
+`;
+
+export const MainFiltersContainer = styled.ul`
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  position: relative;
+
+  li {
+    font-size: 18px;
+    font-weight: 500;
+    margin: 0 0 0 20px;
+    position: relative;
+    width: fit-content;
+  }
+
+  h2 {
+    font-size: 20px;
+    font-weight: 500;
+    margin: 0 0 10px 0;
+    position: relative;
+    width: fit-content;
+  }
+`;
+
+export const FilterValuesContainer = styled.ul`
+  list-style: none;
+  padding: 0 0 0 20px;
+
+  li {
+    font-size: 16px;
+    font-weight: 400;
+    margin: 0;
+  }
+`;
+
+export const Button = styled.div`
+  width: 30px;
+  height: 30px;
+  border: 1px solid #dbdcde;
+  border-radius: 100%;
+  stroke: ${(props) => props.theme.mainButtonColor};
+  display: flex;
+  justify-content: center;
+  cursor: pointer;
+  align-items: center;
+  position: absolute;
+  top: calc(50% - 15px);
+  right: 0;
+  ${({ right }: { right?: string }) =>
+    css`
+      right: ${right};
+    `}
+`;
+
+export const PlusButtonContainer = styled(Button)`
+  stroke: #792c9b;
+  max-width: 25px;
+  max-height: 25px;
+  padding: 5px;
+  border: 1px solid #dbdcde;
+  border-radius: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: absolute;
+  right: -30px;
+  top: 1px;
 `;

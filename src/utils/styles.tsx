@@ -81,6 +81,12 @@ export const BuyButton = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+
+  ${({ isBlocked }: {isBlocked?: boolean}) =>
+    isBlocked &&
+    css`
+      background: ${props => props.theme.secondaryButtonColor};
+    `}
 `;
 
 const CheckboxSpan = styled.span`
