@@ -40,7 +40,11 @@ const DragNDropContainer = ({ onDragEnd, changedSubItem }: IProps) => {
                         {...provided.draggableProps}
                         {...provided.dragHandleProps}
                       >
-                        <img src={elem} alt={elem} />
+                        {typeof elem === "string" ? (
+                          <img src={elem} alt={elem} />
+                        ) : (
+                          <img src={URL.createObjectURL(elem)} alt={"da"} />
+                        )}
                       </ImageCard>
                     )}
                   </Draggable>

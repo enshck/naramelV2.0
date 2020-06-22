@@ -31,7 +31,14 @@ const GoodsList = ({ filteredGoodsData, changedItem }: IProps) => {
             onClick={() => history.push(`/adminPanel?id=${id}#3`)}
           >
             <ImageContainer>
-              <img src={mainImage} alt={"itemImage"} />
+              <img
+                src={
+                  typeof mainImage === "string"
+                    ? mainImage
+                    : URL.createObjectURL(mainImage)
+                }
+                alt={"itemImage"}
+              />
             </ImageContainer>
             <ElementInfo>
               <h3>{name}</h3>

@@ -247,6 +247,34 @@ const EditGoodsContainer = ({ changedItem, listOfGoodsCategory }: IProps) => {
     }
   };
 
+  const uploadNewPictures = (e: BaseSyntheticEvent) => {
+    const { files } = e.target;
+    const cloneOfItemData = { ...itemDataClone };
+    const { subGoods } = cloneOfItemData;
+    const imagesOfChangedSubGoods = subGoods[changedSubItemIndex].images;
+
+    subGoods[changedSubItemIndex].images = [
+      ...imagesOfChangedSubGoods,
+      ...files,
+    ];
+
+    setItemDataClone(cloneOfItemData);
+  };
+
+  // const submit = () => {
+  //   const cloneOfItemData = { ...itemDataClone };
+  //   const { subGoods } = cloneOfItemData;
+
+  //   subGoods.forEach((elem) => {
+  //     const { images } = elem;
+
+  //     console.log(
+  //       images.filter((elem) => typeof elem !== "string"),
+  //       "img"
+  //     );
+  //   });
+  // };
+
   console.log(itemDataClone, itemDataCloneForEdit, "ignored");
 
   return (
@@ -271,6 +299,7 @@ const EditGoodsContainer = ({ changedItem, listOfGoodsCategory }: IProps) => {
         onChangeSubItemValueType={onChangeSubItemValueType}
         onChangeSubItemValue={onChangeSubItemValue}
         setSubItemPrice={setSubItemPrice}
+        uploadNewPictures={uploadNewPictures}
       />
       <ItemForm
         itemDataClone={itemDataClone}

@@ -26,12 +26,14 @@ export interface ICommonGoodsElement {
   };
 }
 
+type ImageElement = string | File;
+
 export interface ISubGoodsElement {
   elementValue: {
     type: string;
     value: string;
   };
-  images: string[];
+  images: ImageElement[];
   price: number;
 }
 

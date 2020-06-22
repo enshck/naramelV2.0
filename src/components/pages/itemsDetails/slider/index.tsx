@@ -11,8 +11,10 @@ import {
 } from "./styles";
 import ZoomableImage from "components/zoomablePicture";
 
+type ImageElement = string | File;
+
 interface IProps {
-  images: string[];
+  images: ImageElement[];
 }
 
 const ItemsPictureSlider = ({ images }: IProps) => {
@@ -23,11 +25,21 @@ const ItemsPictureSlider = ({ images }: IProps) => {
   }, [images]);
 
   const settings = {
-    customPaging: (index: number) => (
-      <PagingPictureContainer>
-        <PagingPicture src={images[index]} />
-      </PagingPictureContainer>
-    ),
+    customPaging: (index: number) => {
+      const changedImage = images[index];
+
+      return (
+        <PagingPictureContainer>
+          <PagingPicture
+            src={
+              typeof changedImage === "string"
+                ? changedImage
+                : URL.createObjectURL(changedImage)
+            }
+          />
+        </PagingPictureContainer>
+      );
+    },
     appendDots: (dots: ReactNode) => (
       <DotsContainer>
         <DotsList>{dots}</DotsList>
@@ -45,7 +57,10 @@ const ItemsPictureSlider = ({ images }: IProps) => {
       <Slider ref={slider} {...settings}>
         {images.map((elem, key) => (
           <MainPictureContainer key={key}>
-            <ZoomableImage url={elem} MainContainer={MainPicture} />
+            <ZoomableImage
+              url={typeof elem === "string" ? elem : URL.createObjectURL(elem)}
+              MainContainer={MainPicture}
+            />
           </MainPictureContainer>
         ))}
       </Slider>

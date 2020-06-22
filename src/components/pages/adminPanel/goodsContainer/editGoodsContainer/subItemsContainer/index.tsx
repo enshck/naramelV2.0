@@ -22,7 +22,7 @@ import {
 } from "../styles";
 import Selector from "components/inputs/selector";
 import arrowDown from "assets/goods/arrowDown.png";
-import { IGoodsElement, ISubGoodsElement } from "components/pages/items";
+import { ISubGoodsElement } from "components/pages/items";
 import { IFilter } from "utils/interfaces";
 import { IOption } from "../..";
 import DragNDropContainer from "./dragNDropContainer";
@@ -46,6 +46,7 @@ interface IProps {
     prevValue: string
   ) => void;
   setSubItemPrice: (e: BaseSyntheticEvent) => void;
+  uploadNewPictures: (e: BaseSyntheticEvent) => void;
 }
 
 // const StyledDroppable = styled(Droppable)`
@@ -61,6 +62,7 @@ const SubItemsContainer = ({
   onChangeSubItemValueType,
   onChangeSubItemValue,
   setSubItemPrice,
+  uploadNewPictures,
 }: IProps) => {
   const filters = useSelector((state) => state.filters);
   const changedSubItem = useMemo(() => subGoods[changedSubItemIndex], [
@@ -154,6 +156,7 @@ const SubItemsContainer = ({
           onInput={setSubItemPrice}
         />
       </InputContainer>
+      <input type={"file"} onChange={uploadNewPictures} />
     </ChangedSubItemContainer>
   );
 };
