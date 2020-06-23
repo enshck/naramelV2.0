@@ -1,6 +1,6 @@
 import React, { useState, useEffect, BaseSyntheticEvent, useMemo } from "react";
 
-import { MainContainer } from "./styles";
+import { MainContainer, SubmitContainer, SubmitButton } from "./styles";
 import { IGoodsElement } from "components/pages/items";
 import { useSelector } from "customHooks/useSelector";
 import { IOption } from "../";
@@ -9,6 +9,7 @@ import ItemForm from "./itemForm";
 import { DropResult } from "react-beautiful-dnd";
 import FiltersContainer from "./filtersContainer";
 import EditFiltersPopover from "./editFiltersPopover";
+import firebase from "utils/firebase";
 
 interface IProps {
   changedItem: IGoodsElement;
@@ -261,19 +262,64 @@ const EditGoodsContainer = ({ changedItem, listOfGoodsCategory }: IProps) => {
     setItemDataClone(cloneOfItemData);
   };
 
-  // const submit = () => {
-  //   const cloneOfItemData = { ...itemDataClone };
-  //   const { subGoods } = cloneOfItemData;
+  interface IUploadPromisesData {
+    promise: Promise<string>;
+    subItemIndex: number;
+    imagePosition: number;
+  }
 
-  //   subGoods.forEach((elem) => {
-  //     const { images } = elem;
+  function uploadImageAsPromise(imageFile: File) {
+    var storageRef = firebase.storage().ref();
 
-  //     console.log(
-  //       images.filter((elem) => typeof elem !== "string"),
-  //       "img"
-  //     );
-  //   });
-  // };
+    return new Promise<string>(function (resolve, reject) {
+      // const storageRef = firebase
+      //   .storage()
+      //   .ref("gs://naramel.appspot.com/" + imageFile.name);
+
+      //Upload file
+      const task = storageRef.put(imageFile);
+
+      //Update progress bar
+      task.on(
+        "state_changed",
+        function error(err) {
+          reject(err);
+        },
+        function complete() {
+          const downloadURL = task.snapshot.downloadURL;
+
+          if (downloadURL) {
+            resolve(downloadURL);
+          } else {
+            reject("File not uploaded");
+          }
+        }
+      );
+    });
+  }
+
+  const submitHandler = () => {
+    const cloneOfItemData = { ...itemDataClone };
+    var storageRef = firebase.storage().ref();
+    const { subGoods } = cloneOfItemData;
+    const uploadPromises: IUploadPromisesData[] = [];
+
+    subGoods.forEach((elem, subItemIndex) => {
+      const { images } = elem;
+
+      images.forEach((elem, imageItemIndex) => {
+        if (typeof elem !== "string") {
+          uploadPromises.push({
+            promise: uploadImageAsPromise(elem),
+            imagePosition: imageItemIndex,
+            subItemIndex: subItemIndex,
+          });
+        }
+      });
+    });
+
+    console.log(uploadPromises, "promises");
+  };
 
   console.log(itemDataClone, itemDataCloneForEdit, "ignored");
 
@@ -313,6 +359,9 @@ const EditGoodsContainer = ({ changedItem, listOfGoodsCategory }: IProps) => {
         deleteFilter={deleteFilter}
         openEditPopoverHandler={openEditPopoverHandler}
       />
+      <SubmitContainer>
+        <SubmitButton onClick={submitHandler}>Обновить</SubmitButton>
+      </SubmitContainer>
     </MainContainer>
   );
 };

@@ -19,6 +19,7 @@ import {
   InputRow,
   InputContainer,
   StyledInput,
+  ItemFileInputContainer,
 } from "../styles";
 import Selector from "components/inputs/selector";
 import arrowDown from "assets/goods/arrowDown.png";
@@ -104,6 +105,17 @@ const SubItemsContainer = ({
         changedSubItem={changedSubItem}
         onDragEnd={onDragEnd}
       />
+      <ItemFileInputContainer>
+        <label htmlFor={"itemImageFileInput"}>Загрузить файл</label>
+        <input
+          type={"file"}
+          onChange={uploadNewPictures}
+          name={"itemImageFileInput"}
+          id={"itemImageFileInput"}
+          multiple={true}
+          accept="image/x-png,image/gif,image/jpeg"
+        />
+      </ItemFileInputContainer>
       <InputRow>
         <SelectorContainer>
           <Selector
@@ -156,7 +168,6 @@ const SubItemsContainer = ({
           onInput={setSubItemPrice}
         />
       </InputContainer>
-      <input type={"file"} onChange={uploadNewPictures} />
     </ChangedSubItemContainer>
   );
 };

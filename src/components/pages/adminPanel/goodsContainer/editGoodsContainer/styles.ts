@@ -1,7 +1,7 @@
 import styled, { css } from "styled-components";
 
 import { PlusButton } from "./editFiltersPopover/styles";
-import { StyledTextArea as TextArea } from "utils/styles";
+import { StyledTextArea as TextArea, BuyButton } from "utils/styles";
 import {
   GoodsStyledSelectorInput,
   GoodsStyledSelectorOption,
@@ -31,7 +31,7 @@ export const InputContainer = styled.div``;
 export const SelectorContainer = styled.div`
   max-width: 250px;
   width: 100%;
-  z-index: 1;
+  z-index: 999;
   position: relative;
 `;
 
@@ -175,3 +175,36 @@ export const PlusButtonContainer = styled(Button)`
   right: -30px;
   top: 1px;
 `;
+
+export const ItemFileInputContainer = styled.div`
+  background: ${(props) => props.theme.mainButtonColor};
+  color: #fff;
+  max-width: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  cursor: pointer;
+
+  input {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+  }
+  label {
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    padding: 10px;
+  }
+`;
+
+export const SubmitButton = styled(BuyButton)`
+  max-width: 200px;
+`;
+
+export const SubmitContainer = styled.div``;
