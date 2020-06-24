@@ -119,6 +119,7 @@ const GoodsContainer = () => {
           <EditGoodsContainer
             changedItem={changedItem}
             listOfGoodsCategory={listOfGoodsCategory}
+            setGoodsData={setGoodsData}
           />
         ) : (
           <h1>Выберите товар</h1>

@@ -10,13 +10,19 @@ import { DropResult } from "react-beautiful-dnd";
 import FiltersContainer from "./filtersContainer";
 import EditFiltersPopover from "./editFiltersPopover";
 import firebase from "utils/firebase";
+import { v1 as uuidv1 } from "uuid";
 
 interface IProps {
   changedItem: IGoodsElement;
   listOfGoodsCategory: IOption[];
+  setGoodsData: (newValue: IGoodsElement[]) => void;
 }
 
-const EditGoodsContainer = ({ changedItem, listOfGoodsCategory }: IProps) => {
+const EditGoodsContainer = ({
+  changedItem,
+  listOfGoodsCategory,
+  setGoodsData,
+}: IProps) => {
   const filtersTypes = useSelector((state) => state.filters);
   const [
     anchorForEditFilterPopover,
@@ -268,39 +274,23 @@ const EditGoodsContainer = ({ changedItem, listOfGoodsCategory }: IProps) => {
     imagePosition: number;
   }
 
-  function uploadImageAsPromise(imageFile: File) {
-    var storageRef = firebase.storage().ref();
+  const getPromiseOfUploadImage = (file: File) => {
+    const uniqueId = uuidv1();
 
-    return new Promise<string>(function (resolve, reject) {
-      // const storageRef = firebase
-      //   .storage()
-      //   .ref("gs://naramel.appspot.com/" + imageFile.name);
-
-      //Upload file
-      const task = storageRef.put(imageFile);
-
-      //Update progress bar
-      task.on(
-        "state_changed",
-        function error(err) {
-          reject(err);
-        },
-        function complete() {
-          const downloadURL = task.snapshot.downloadURL;
-
-          if (downloadURL) {
-            resolve(downloadURL);
-          } else {
-            reject("File not uploaded");
-          }
-        }
-      );
+    return new Promise<string>((resolve, reject) => {
+      const task = firebase.storage().ref(uniqueId).put(file);
+      const taskProgress = (snapshot: any) => {};
+      const taskError = reject;
+      const taskCompleted = () => {
+        task.snapshot.ref.getDownloadURL().then(resolve).catch(reject);
+      };
+      task.on("state_changed", taskProgress, taskError, taskCompleted);
     });
-  }
+  };
 
-  const submitHandler = () => {
+  const submitHandler = async () => {
     const cloneOfItemData = { ...itemDataClone };
-    var storageRef = firebase.storage().ref();
+    const { id } = itemDataClone;
     const { subGoods } = cloneOfItemData;
     const uploadPromises: IUploadPromisesData[] = [];
 
@@ -310,7 +300,7 @@ const EditGoodsContainer = ({ changedItem, listOfGoodsCategory }: IProps) => {
       images.forEach((elem, imageItemIndex) => {
         if (typeof elem !== "string") {
           uploadPromises.push({
-            promise: uploadImageAsPromise(elem),
+            promise: getPromiseOfUploadImage(elem),
             imagePosition: imageItemIndex,
             subItemIndex: subItemIndex,
           });
@@ -318,10 +308,36 @@ const EditGoodsContainer = ({ changedItem, listOfGoodsCategory }: IProps) => {
       });
     });
 
-    console.log(uploadPromises, "promises");
-  };
+    if (uploadPromises.length > 0) {
+      const uploadedPictureUrls = await Promise.all(
+        uploadPromises.map((item) => item.promise)
+      );
 
-  console.log(itemDataClone, itemDataCloneForEdit, "ignored");
+      uploadPromises.forEach((elem, key) => {
+        const { imagePosition, subItemIndex } = elem;
+        cloneOfItemData.subGoods[subItemIndex].images[imagePosition] =
+          uploadedPictureUrls[key];
+      });
+
+      setItemDataClone({
+        ...cloneOfItemData,
+      });
+    }
+
+    await firebase
+      .firestore()
+      .collection("goods")
+      .doc(id)
+      .update({
+        ...itemDataClone,
+      });
+
+    const updatedGoodsData: any = (
+      await firebase.firestore().collection("goods").get()
+    ).docs.map((elem) => elem.data());
+
+    setGoodsData(updatedGoodsData);
+  };
 
   return (
     <MainContainer>
