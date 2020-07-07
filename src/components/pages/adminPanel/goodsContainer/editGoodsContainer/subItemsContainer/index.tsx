@@ -48,11 +48,8 @@ interface IProps {
   ) => void;
   setSubItemPrice: (e: BaseSyntheticEvent) => void;
   uploadNewPictures: (e: BaseSyntheticEvent) => void;
+  deleteItemImageHandler: (itemIndex: number) => void;
 }
-
-// const StyledDroppable = styled(Droppable)`
-//   display: inline-flex;
-// `;
 
 const SubItemsContainer = ({
   changedFilter,
@@ -64,14 +61,13 @@ const SubItemsContainer = ({
   onChangeSubItemValue,
   setSubItemPrice,
   uploadNewPictures,
+  deleteItemImageHandler,
 }: IProps) => {
   const filters = useSelector((state) => state.filters);
   const changedSubItem = useMemo(() => subGoods[changedSubItemIndex], [
     changedSubItemIndex,
     subGoods,
   ]);
-
-  // console.log(filters, "fil");
 
   return (
     <ChangedSubItemContainer>
@@ -104,6 +100,7 @@ const SubItemsContainer = ({
       <DragNDropContainer
         changedSubItem={changedSubItem}
         onDragEnd={onDragEnd}
+        deleteItemImageHandler={deleteItemImageHandler}
       />
       <ItemFileInputContainer>
         <label htmlFor={"itemImageFileInput"}>Загрузить файл</label>

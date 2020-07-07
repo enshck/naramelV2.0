@@ -1,6 +1,5 @@
 import styled, { css } from "styled-components";
 
-import { PlusButton } from "./editFiltersPopover/styles";
 import { StyledTextArea as TextArea, BuyButton } from "utils/styles";
 import {
   GoodsStyledSelectorInput,
@@ -58,6 +57,7 @@ export const ImageCard = styled.div`
   border-left: 1px solid ${(props) => props.theme.inputsBorderColor};
   z-index: 100;
   background: #fff;
+  position: relative;
   :last-child {
     margin-right: 0;
   }
@@ -208,3 +208,20 @@ export const SubmitButton = styled(BuyButton)`
 `;
 
 export const SubmitContainer = styled.div``;
+
+export const DeleteButton = styled.div`
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  stroke: red;
+  padding: 5px;
+  border: 1px solid red;
+  border-radius: 100%;
+  box-sizing: border-box;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #fff;
+`;

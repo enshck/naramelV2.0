@@ -41,7 +41,7 @@ const EditGoodsContainer = ({
     return Object.keys(filters).map((elem) => elem);
   }, [itemDataCloneForEdit]);
 
-  const { brand, filters, subGoods } = itemDataClone;
+  const { filters, subGoods } = itemDataClone;
 
   const [changedSubItemIndex, setChangedSubItemIndex] = useState(0);
   const changedFilter = useMemo(() => {
@@ -294,49 +294,85 @@ const EditGoodsContainer = ({
     const { subGoods } = cloneOfItemData;
     const uploadPromises: IUploadPromisesData[] = [];
 
-    subGoods.forEach((elem, subItemIndex) => {
-      const { images } = elem;
+    try {
+      subGoods.forEach((elem, subItemIndex) => {
+        const { images } = elem;
 
-      images.forEach((elem, imageItemIndex) => {
-        if (typeof elem !== "string") {
-          uploadPromises.push({
-            promise: getPromiseOfUploadImage(elem),
-            imagePosition: imageItemIndex,
-            subItemIndex: subItemIndex,
-          });
-        }
-      });
-    });
-
-    if (uploadPromises.length > 0) {
-      const uploadedPictureUrls = await Promise.all(
-        uploadPromises.map((item) => item.promise)
-      );
-
-      uploadPromises.forEach((elem, key) => {
-        const { imagePosition, subItemIndex } = elem;
-        cloneOfItemData.subGoods[subItemIndex].images[imagePosition] =
-          uploadedPictureUrls[key];
+        images.forEach((elem, imageItemIndex) => {
+          if (typeof elem !== "string") {
+            uploadPromises.push({
+              promise: getPromiseOfUploadImage(elem),
+              imagePosition: imageItemIndex,
+              subItemIndex: subItemIndex,
+            });
+          }
+        });
       });
 
-      setItemDataClone({
-        ...cloneOfItemData,
-      });
+      if (uploadPromises.length > 0) {
+        const uploadedPictureUrls = await Promise.all(
+          uploadPromises.map((item) => item.promise)
+        );
+
+        uploadPromises.forEach((elem, key) => {
+          const { imagePosition, subItemIndex } = elem;
+          cloneOfItemData.subGoods[subItemIndex].images[imagePosition] =
+            uploadedPictureUrls[key];
+        });
+
+        setItemDataClone({
+          ...cloneOfItemData,
+        });
+      }
+
+      await firebase
+        .firestore()
+        .collection("goods")
+        .doc(id)
+        .update({
+          ...itemDataClone,
+        });
+
+      const updatedGoodsData: any = (
+        await firebase.firestore().collection("goods").get()
+      ).docs.map((elem) => elem.data());
+
+      setGoodsData(updatedGoodsData);
+    } catch (err) {
+      console.log(err);
     }
+  };
 
-    await firebase
-      .firestore()
-      .collection("goods")
-      .doc(id)
-      .update({
-        ...itemDataClone,
-      });
+  const deleteItemImageHandler = async (imageIndex: number) => {
+    const dataClone = { ...itemDataClone };
+    const { subGoods, id } = dataClone;
+    const changedImage = subGoods[changedSubItemIndex].images[imageIndex];
 
-    const updatedGoodsData: any = (
-      await firebase.firestore().collection("goods").get()
-    ).docs.map((elem) => elem.data());
+    try {
+      if (typeof changedImage === "string") {
+        await firebase.storage().refFromURL(changedImage).delete();
+        subGoods[changedSubItemIndex].images.splice(imageIndex, 1);
 
-    setGoodsData(updatedGoodsData);
+        await firebase
+          .firestore()
+          .collection("goods")
+          .doc(id)
+          .update({
+            ...dataClone,
+          });
+
+        setItemDataClone({
+          ...dataClone,
+        });
+      } else {
+        subGoods[changedSubItemIndex].images.splice(imageIndex, 1);
+        setItemDataClone({
+          ...dataClone,
+        });
+      }
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
@@ -362,6 +398,7 @@ const EditGoodsContainer = ({
         onChangeSubItemValue={onChangeSubItemValue}
         setSubItemPrice={setSubItemPrice}
         uploadNewPictures={uploadNewPictures}
+        deleteItemImageHandler={deleteItemImageHandler}
       />
       <ItemForm
         itemDataClone={itemDataClone}

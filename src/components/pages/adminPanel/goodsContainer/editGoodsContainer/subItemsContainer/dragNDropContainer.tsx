@@ -12,15 +12,22 @@ import {
   DroppableContainer,
   DragNDropContainer as MainContainer,
   CoverPictureContainer,
+  DeleteButton,
 } from "../styles";
 import { ISubGoodsElement } from "components/pages/items";
+import { ReactComponent as Delete } from "assets/adminPanel/delete.svg";
 
 interface IProps {
   onDragEnd: (result: DropResult) => void;
   changedSubItem: ISubGoodsElement;
+  deleteItemImageHandler: (imageIndex: number) => void;
 }
 
-const DragNDropContainer = ({ onDragEnd, changedSubItem }: IProps) => {
+const DragNDropContainer = ({
+  onDragEnd,
+  changedSubItem,
+  deleteItemImageHandler,
+}: IProps) => {
   return (
     <MainContainer>
       <DragDropContext onDragEnd={onDragEnd}>
@@ -40,6 +47,11 @@ const DragNDropContainer = ({ onDragEnd, changedSubItem }: IProps) => {
                         {...provided.draggableProps}
                         {...provided.dragHandleProps}
                       >
+                        <DeleteButton
+                          onClick={() => deleteItemImageHandler(key)}
+                        >
+                          <Delete />
+                        </DeleteButton>
                         {typeof elem === "string" ? (
                           <img src={elem} alt={elem} />
                         ) : (
