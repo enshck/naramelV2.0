@@ -25,7 +25,6 @@ interface IProps {
   anchorEl: HTMLDivElement | null;
   closeHandler: () => void;
   ignoreFiltersList: string[];
-  itemDataClone: IGoodsElement;
   setItemDataClone: (newValue: IGoodsElement) => void;
   editableFilterId: string | null;
   setEditableFilterId: (newId: string | null) => void;
@@ -37,7 +36,6 @@ const Popover = ({
   anchorEl,
   closeHandler,
   ignoreFiltersList,
-  itemDataClone,
   setItemDataClone,
   editableFilterId,
   setEditableFilterId,

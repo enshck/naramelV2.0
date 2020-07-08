@@ -1,6 +1,11 @@
 import React, { useState, useEffect, BaseSyntheticEvent, useMemo } from "react";
 
-import { MainContainer, SubmitContainer, SubmitButton } from "./styles";
+import {
+  MainContainer,
+  SubmitContainer,
+  SubmitButton,
+  SpinnerMainContainer,
+} from "./styles";
 import { IGoodsElement } from "components/pages/items";
 import { useSelector } from "customHooks/useSelector";
 import { IOption } from "../";
@@ -11,6 +16,7 @@ import FiltersContainer from "./filtersContainer";
 import EditFiltersPopover from "./editFiltersPopover";
 import firebase from "utils/firebase";
 import { v1 as uuidv1 } from "uuid";
+import Spinner from "components/spinner";
 
 interface IProps {
   changedItem: IGoodsElement;
@@ -23,6 +29,7 @@ const EditGoodsContainer = ({
   listOfGoodsCategory,
   setGoodsData,
 }: IProps) => {
+  const [isFetching, setFetching] = useState(false);
   const filtersTypes = useSelector((state) => state.filters);
   const [
     anchorForEditFilterPopover,
@@ -294,6 +301,8 @@ const EditGoodsContainer = ({
     const { subGoods } = cloneOfItemData;
     const uploadPromises: IUploadPromisesData[] = [];
 
+    setFetching(true);
+
     try {
       subGoods.forEach((elem, subItemIndex) => {
         const { images } = elem;
@@ -341,6 +350,8 @@ const EditGoodsContainer = ({
     } catch (err) {
       console.log(err);
     }
+
+    setFetching(false);
   };
 
   const deleteItemImageHandler = async (imageIndex: number) => {
@@ -375,13 +386,21 @@ const EditGoodsContainer = ({
     }
   };
 
+  if (isFetching) {
+    return (
+      <SpinnerMainContainer>
+        <Spinner />
+        <h3>Обновление товара. Не перезагружайте страницу</h3>
+      </SpinnerMainContainer>
+    );
+  }
+
   return (
     <MainContainer>
       <EditFiltersPopover
         anchorEl={anchorForEditFilterPopover}
         closeHandler={onCloseEditFilterPopover}
         ignoreFiltersList={ignoreFiltersListForEditPopover}
-        itemDataClone={itemDataClone}
         setItemDataClone={setItemDataClone}
         editableFilterId={editableFilterId}
         setEditableFilterId={setEditableFilterId}

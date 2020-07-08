@@ -25,13 +25,16 @@ export const StyledInput = styled.input`
 
 export const StyledTextArea = styled(TextArea)``;
 
-export const InputContainer = styled.div``;
+export const InputContainer = styled.div`
+  margin-top: 20px;
+`;
 
 export const SelectorContainer = styled.div`
   max-width: 250px;
   width: 100%;
   z-index: 999;
   position: relative;
+  margin-top: 10px;
 `;
 
 export const StyledSelectorInput = styled(GoodsStyledSelectorInput)``;
@@ -42,7 +45,16 @@ export const StyledSelectorOptions = styled(GoodsStyledSelectorOptions)`
   overflow-y: initial;
 `;
 
-export const ChangedSubItemContainer = styled.div``;
+export const ChangedSubItemContainer = styled.div`
+  h2 {
+    font-weight: 500;
+    font-size: 20px;
+    margin: 0;
+  }
+  width: 100%;
+  border: 1px solid #ccc;
+  padding: 10px;
+`;
 
 export const ImageCard = styled.div`
   width: 120px;
@@ -64,7 +76,6 @@ export const ImageCard = styled.div`
 `;
 
 export const DroppableContainer = styled.div`
-  /* max-width: 600px; */
   display: flex;
   flex: 1 0 auto;
   overflow-y: auto;
@@ -72,11 +83,6 @@ export const DroppableContainer = styled.div`
 `;
 
 export const DraggableImagesContainer = styled.div`
-  /* display: flex; */
-  /* width: 100%; */
-  /* display: 'flex', */
-  /* padding: 20px;
-  overflow: auto; */
   display: inline-flex;
   position: relative;
   padding: 0 20px;
@@ -89,7 +95,7 @@ export const DraggableImagesContainer = styled.div`
 
 export const DragNDropContainer = styled.div`
   border: 1px solid ${(props) => props.theme.inputsBorderColor};
-  margin: 10px 0;
+  margin: 20px 0 0 0;
 `;
 
 export const CoverPictureContainer = styled.div`
@@ -105,6 +111,9 @@ export const CoverPictureContainer = styled.div`
 
 export const InputRow = styled.div`
   display: flex;
+  flex-direction: column;
+  max-width: 200px;
+  margin-top: 10px;
 `;
 
 export const MainFiltersContainer = styled.ul`
@@ -179,12 +188,13 @@ export const PlusButtonContainer = styled(Button)`
 export const ItemFileInputContainer = styled.div`
   background: ${(props) => props.theme.mainButtonColor};
   color: #fff;
-  max-width: 200px;
+  max-width: 150px;
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 5px;
+  border-radius: 3px;
   cursor: pointer;
+  margin: 20px 0 0 0;
 
   input {
     width: 0.1px;
@@ -199,7 +209,7 @@ export const ItemFileInputContainer = styled.div`
     width: 100%;
     height: 100%;
     text-align: center;
-    padding: 10px;
+    padding: 8px;
   }
 `;
 
@@ -224,4 +234,24 @@ export const DeleteButton = styled.div`
   justify-content: center;
   align-items: center;
   background: #fff;
+`;
+
+export const SpinnerMainContainer = styled.div`
+  width: 100%;
+  position: relative;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  h3 {
+    margin: 100px 0 0 0;
+    font-weight: 500;
+    font-size: 20px;
+  }
+`;
+
+export const InputLabel = styled.label`
+  font-size: 18px;
+  color: #000;
 `;

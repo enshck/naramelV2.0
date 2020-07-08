@@ -20,6 +20,7 @@ import {
   InputContainer,
   StyledInput,
   ItemFileInputContainer,
+  InputLabel,
 } from "../styles";
 import Selector from "components/inputs/selector";
 import arrowDown from "assets/goods/arrowDown.png";
@@ -71,7 +72,7 @@ const SubItemsContainer = ({
 
   return (
     <ChangedSubItemContainer>
-      <h2>{changedFilter.name}</h2>
+      <InputLabel>Подтовар:</InputLabel>
       {subGoods.length > 0 && (
         <SelectorContainer>
           <Selector
@@ -114,6 +115,7 @@ const SubItemsContainer = ({
         />
       </ItemFileInputContainer>
       <InputRow>
+        <InputLabel>Тип подтовара:</InputLabel>
         <SelectorContainer>
           <Selector
             StyledInputContainer={StyledSelectorInput}
