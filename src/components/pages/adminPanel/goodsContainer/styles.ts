@@ -15,6 +15,7 @@ export const GridElement = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
+  overflow: auto;
 
   :first-child {
     border-right: 1px solid ${(props) => props.theme.inputsBorderColor};

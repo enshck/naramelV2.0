@@ -8,6 +8,7 @@ import {
   StyledSelectorInput,
   StyledSelectorOption,
   StyledSelectorOptions,
+  InputLabel,
 } from "./styles";
 import { IGoodsElement } from "components/pages/items";
 import Input from "components/inputs";
@@ -33,6 +34,7 @@ const EditGoodsContainer = ({
   return (
     <Fragment>
       <InputContainer>
+        <InputLabel>Название товара:</InputLabel>
         <Input
           StyledComponent={StyledInput}
           name={"name"}
@@ -42,6 +44,7 @@ const EditGoodsContainer = ({
         />
       </InputContainer>
       <InputContainer>
+        <InputLabel>Подназвание товара:</InputLabel>
         <Input
           StyledComponent={StyledInput}
           name={"subName"}
@@ -51,6 +54,7 @@ const EditGoodsContainer = ({
         />
       </InputContainer>
       <InputContainer>
+        <InputLabel>Бренд:</InputLabel>
         <Input
           StyledComponent={StyledInput}
           name={"brand"}
@@ -60,6 +64,7 @@ const EditGoodsContainer = ({
         />
       </InputContainer>
       <InputContainer>
+        <InputLabel>Описание товара:</InputLabel>
         <Input
           StyledComponent={StyledTextArea}
           name={"description"}
@@ -68,22 +73,25 @@ const EditGoodsContainer = ({
           onInput={onInputHandler}
         />
       </InputContainer>
-      <SelectorContainer>
-        <Selector
-          StyledInputContainer={StyledSelectorInput}
-          StyledOptionContainer={StyledSelectorOptions}
-          StyledOption={StyledSelectorOption}
-          options={listOfGoodsCategory}
-          changedValue={{
-            label:
-              listOfGoodsCategory.find((elem) => elem.value === groupId)
-                ?.label || "",
-            value: groupId,
-          }}
-          setNewValue={onChangeGroup}
-          arrowIcon={arrowDown}
-        />
-      </SelectorContainer>
+      <InputContainer>
+        <InputLabel>Категория товара:</InputLabel>
+        <SelectorContainer>
+          <Selector
+            StyledInputContainer={StyledSelectorInput}
+            StyledOptionContainer={StyledSelectorOptions}
+            StyledOption={StyledSelectorOption}
+            options={listOfGoodsCategory}
+            changedValue={{
+              label:
+                listOfGoodsCategory.find((elem) => elem.value === groupId)
+                  ?.label || "",
+              value: groupId,
+            }}
+            setNewValue={onChangeGroup}
+            arrowIcon={arrowDown}
+          />
+        </SelectorContainer>
+      </InputContainer>
     </Fragment>
   );
 };

@@ -10,6 +10,8 @@ import {
   InputContainer,
   PlusButton,
   SubmitButton,
+  InputLabel,
+  SelectorContainer,
 } from "./styles";
 import Selector from "components/inputs/selector";
 import arrowDown from "assets/goods/arrowDown.png";
@@ -190,15 +192,18 @@ const Popover = ({
       }}
     >
       <MainPopoverContainer>
-        <Selector
-          StyledInputContainer={StyledSelectorInput}
-          StyledOptionContainer={StyledSelectorOptions}
-          StyledOption={StyledSelectorOption}
-          options={optionsForEditFilterSelector}
-          changedValue={changedTypeOfFilter}
-          setNewValue={changeTypeFilter}
-          arrowIcon={arrowDown}
-        />
+        <InputLabel>Тип фильтра</InputLabel>
+        <SelectorContainer>
+          <Selector
+            StyledInputContainer={StyledSelectorInput}
+            StyledOptionContainer={StyledSelectorOptions}
+            StyledOption={StyledSelectorOption}
+            options={optionsForEditFilterSelector}
+            changedValue={changedTypeOfFilter}
+            setNewValue={changeTypeFilter}
+            arrowIcon={arrowDown}
+          />
+        </SelectorContainer>
         {changedFilter &&
           changedFilter.map((elem, key) => (
             <InputContainer>

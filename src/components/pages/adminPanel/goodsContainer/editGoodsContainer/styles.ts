@@ -11,7 +11,6 @@ export const MainContainer = styled.form`
   flex: 1 0 auto;
   width: 100%;
   padding: 20px;
-  overflow: auto;
 `;
 
 export const StyledInput = styled.input`
@@ -21,9 +20,12 @@ export const StyledInput = styled.input`
   height: 30px;
   width: 300px;
   outline: none;
+  margin-top: 10px;
 `;
 
-export const StyledTextArea = styled(TextArea)``;
+export const StyledTextArea = styled(TextArea)`
+  margin-top: 10px;
+`;
 
 export const InputContainer = styled.div`
   margin-top: 20px;
@@ -112,28 +114,29 @@ export const CoverPictureContainer = styled.div`
 export const InputRow = styled.div`
   display: flex;
   flex-direction: column;
-  max-width: 200px;
-  margin-top: 10px;
+  max-width: 250px;
+  margin-top: 20px;
 `;
 
 export const MainFiltersContainer = styled.ul`
   list-style: none;
-  margin: 0;
+  margin: 20px 0;
   padding: 0;
   position: relative;
 
-  li {
-    font-size: 18px;
-    font-weight: 500;
-    margin: 0 0 0 20px;
+  h2 {
+    font-size: 20px;
+    font-weight: 400;
+    color: #000;
+    margin: 0 0 10px 0;
     position: relative;
     width: fit-content;
   }
 
-  h2 {
-    font-size: 20px;
-    font-weight: 500;
-    margin: 0 0 10px 0;
+  li {
+    font-size: 18px;
+    font-weight: 400;
+    margin: 0 0 0 20px;
     position: relative;
     width: fit-content;
   }
@@ -144,7 +147,7 @@ export const FilterValuesContainer = styled.ul`
   padding: 0 0 0 20px;
 
   li {
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 400;
     margin: 0;
   }
@@ -167,6 +170,11 @@ export const Button = styled.div`
     css`
       right: ${right};
     `}
+
+  svg {
+    width: 12px;
+    height: 12px;
+  }
 `;
 
 export const PlusButtonContainer = styled(Button)`
@@ -215,9 +223,14 @@ export const ItemFileInputContainer = styled.div`
 
 export const SubmitButton = styled(BuyButton)`
   max-width: 200px;
+  width: 100%;
 `;
 
-export const SubmitContainer = styled.div``;
+export const SubmitContainer = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+`;
 
 export const DeleteButton = styled.div`
   position: absolute;

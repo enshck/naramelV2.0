@@ -32,8 +32,6 @@ const FiltersContainer = ({
 }: IProps) => {
   const filtersTypes = useSelector((state) => state.filters);
 
-  // console.log(ignoreFiltersList, "filters", filters);
-
   return (
     <MainFiltersContainer>
       <h2>

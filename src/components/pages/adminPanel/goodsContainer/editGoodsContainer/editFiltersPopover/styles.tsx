@@ -24,8 +24,8 @@ export const MainPopoverContainer = styled.form`
   align-items: center;
   background: #fff;
   position: relative;
-  height: 250px;
   overflow: auto;
+  max-height: 250px;
 
   h1 {
     font-weight: 400;
@@ -52,12 +52,13 @@ export const StyledSelectorOptions = styled(GoodsStyledSelectorOptions)`
 
 export const InputContainer = styled.div`
   position: relative;
+  margin-top: 20px;
 `;
 
 export const PlusButton = styled(Button)`
   stroke: #792c9b;
-  max-width: 30px;
-  max-height: 30px;
+  width: auto;
+  height: auto;
   padding: 5px;
   border: 1px solid #dbdcde;
   border-radius: 100%;
@@ -66,6 +67,19 @@ export const PlusButton = styled(Button)`
   justify-content: center;
   cursor: pointer;
   position: relative;
+  margin-top: 10px;
 `;
 
-export const SubmitButton = styled(BuyButton)``;
+export const SubmitButton = styled(BuyButton)`
+  margin: 20px 0 0 0;
+`;
+
+export const InputLabel = styled.label`
+  font-size: 18px;
+  color: #000;
+`;
+
+export const SelectorContainer = styled.div`
+  margin-top: 10px;
+  width: 100%;
+`;

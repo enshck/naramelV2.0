@@ -143,6 +143,7 @@ const SubItemsContainer = ({
           />
         </SelectorContainer>
         <InputContainer>
+          <InputLabel>Значение подтовара:</InputLabel>
           <Input
             StyledComponent={StyledInput}
             name={"text"}
@@ -157,16 +158,17 @@ const SubItemsContainer = ({
             }
           />
         </InputContainer>
+        <InputContainer>
+          <InputLabel>Цена:</InputLabel>
+          <Input
+            StyledComponent={StyledInput}
+            name={"text"}
+            type={"text"}
+            value={changedSubItem.price}
+            onInput={setSubItemPrice}
+          />
+        </InputContainer>
       </InputRow>
-      <InputContainer>
-        <Input
-          StyledComponent={StyledInput}
-          name={"text"}
-          type={"text"}
-          value={changedSubItem.price}
-          onInput={setSubItemPrice}
-        />
-      </InputContainer>
     </ChangedSubItemContainer>
   );
 };
