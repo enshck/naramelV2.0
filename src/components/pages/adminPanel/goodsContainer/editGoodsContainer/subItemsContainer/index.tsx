@@ -1,11 +1,5 @@
-import React, { useMemo, BaseSyntheticEvent } from "react";
-import {
-  DragDropContext,
-  Droppable,
-  Draggable,
-  DropResult,
-} from "react-beautiful-dnd";
-import styled from "styled-components";
+import React, { useMemo, BaseSyntheticEvent, Fragment } from "react";
+import { DropResult } from "react-beautiful-dnd";
 
 import {
   SelectorContainer,
@@ -13,14 +7,13 @@ import {
   StyledSelectorOption,
   StyledSelectorOptions,
   ChangedSubItemContainer,
-  DraggableImagesContainer,
-  ImageCard,
-  DroppableContainer,
   InputRow,
   InputContainer,
   StyledInput,
   ItemFileInputContainer,
   InputLabel,
+  SubmitButton,
+  SubItemSubmitButtonContainer,
 } from "../styles";
 import Selector from "components/inputs/selector";
 import arrowDown from "assets/goods/arrowDown.png";
@@ -50,6 +43,8 @@ interface IProps {
   setSubItemPrice: (e: BaseSyntheticEvent) => void;
   uploadNewPictures: (e: BaseSyntheticEvent) => void;
   deleteItemImageHandler: (itemIndex: number) => void;
+  isNewElement?: boolean;
+  addNewSubItemHandler?: () => void;
 }
 
 const SubItemsContainer = ({
@@ -63,6 +58,8 @@ const SubItemsContainer = ({
   setSubItemPrice,
   uploadNewPictures,
   deleteItemImageHandler,
+  isNewElement,
+  addNewSubItemHandler,
 }: IProps) => {
   const filters = useSelector((state) => state.filters);
   const changedSubItem = useMemo(() => subGoods[changedSubItemIndex], [
@@ -72,31 +69,35 @@ const SubItemsContainer = ({
 
   return (
     <ChangedSubItemContainer>
-      <InputLabel>Подтовар:</InputLabel>
-      {subGoods.length > 0 && (
-        <SelectorContainer>
-          <Selector
-            StyledInputContainer={StyledSelectorInput}
-            StyledOptionContainer={StyledSelectorOptions}
-            StyledOption={StyledSelectorOption}
-            options={subGoods.map((elem) => {
-              const { value, type } = elem.elementValue;
+      {!isNewElement && (
+        <Fragment>
+          <InputLabel>Подтовар:</InputLabel>
+          {subGoods.length > 0 && (
+            <SelectorContainer>
+              <Selector
+                StyledInputContainer={StyledSelectorInput}
+                StyledOptionContainer={StyledSelectorOptions}
+                StyledOption={StyledSelectorOption}
+                options={subGoods.map((elem) => {
+                  const { value, type } = elem.elementValue;
 
-              return {
-                label: `${value} ${
-                  filters.find((elem) => elem.type === type)?.units || ""
-                }`,
-                value,
-              };
-            })}
-            changedValue={{
-              label: `${changedSubItem.elementValue.value} ${changedFilter.units}`,
-              value: changedSubItem.elementValue.value,
-            }}
-            setNewValue={onChangeSubItemIndex}
-            arrowIcon={arrowDown}
-          />
-        </SelectorContainer>
+                  return {
+                    label: `${value} ${
+                      filters.find((elem) => elem.type === type)?.units || ""
+                    }`,
+                    value,
+                  };
+                })}
+                changedValue={{
+                  label: `${changedSubItem.elementValue.value} ${changedFilter.units}`,
+                  value: changedSubItem.elementValue.value,
+                }}
+                setNewValue={onChangeSubItemIndex}
+                arrowIcon={arrowDown}
+              />
+            </SelectorContainer>
+          )}
+        </Fragment>
       )}
       <DragNDropContainer
         changedSubItem={changedSubItem}
@@ -104,12 +105,14 @@ const SubItemsContainer = ({
         deleteItemImageHandler={deleteItemImageHandler}
       />
       <ItemFileInputContainer>
-        <label htmlFor={"itemImageFileInput"}>Загрузить файл</label>
+        <label htmlFor={`itemImageFileInput - ${changedSubItemIndex}`}>
+          Загрузить файл
+        </label>
         <input
           type={"file"}
           onChange={uploadNewPictures}
-          name={"itemImageFileInput"}
-          id={"itemImageFileInput"}
+          name={`itemImageFileInput - ${changedSubItemIndex}`}
+          id={`itemImageFileInput - ${changedSubItemIndex}`}
           multiple={true}
           accept="image/x-png,image/gif,image/jpeg"
         />
@@ -169,6 +172,13 @@ const SubItemsContainer = ({
           />
         </InputContainer>
       </InputRow>
+      {isNewElement && (
+        <SubItemSubmitButtonContainer>
+          <SubmitButton onClick={addNewSubItemHandler}>
+            Добавить подтовар
+          </SubmitButton>
+        </SubItemSubmitButtonContainer>
+      )}
     </ChangedSubItemContainer>
   );
 };

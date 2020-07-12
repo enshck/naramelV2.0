@@ -82,6 +82,7 @@ export const DroppableContainer = styled.div`
   flex: 1 0 auto;
   overflow-y: auto;
   padding: 20px 0;
+  height: 160px;
 `;
 
 export const DraggableImagesContainer = styled.div`
@@ -267,4 +268,11 @@ export const SpinnerMainContainer = styled.div`
 export const InputLabel = styled.label`
   font-size: 18px;
   color: #000;
+`;
+
+export const SubItemSubmitButtonContainer = styled.div`
+  margin-top: 20px;
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
 `;

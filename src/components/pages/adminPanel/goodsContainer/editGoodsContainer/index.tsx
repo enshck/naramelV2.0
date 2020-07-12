@@ -1,4 +1,5 @@
 import React, { useState, useEffect, BaseSyntheticEvent, useMemo } from "react";
+import { cloneDeep } from "lodash";
 
 import {
   MainContainer,
@@ -17,6 +18,8 @@ import EditFiltersPopover from "./editFiltersPopover";
 import firebase from "utils/firebase";
 import { v1 as uuidv1 } from "uuid";
 import Spinner from "components/spinner";
+import AddSubItemPopover from "./addSubItemPopover";
+import { initialFilterValue } from "utils/constants";
 
 interface IProps {
   changedItem: IGoodsElement;
@@ -35,13 +38,18 @@ const EditGoodsContainer = ({
     anchorForEditFilterPopover,
     setAnchorForEditFilterPopover,
   ] = useState<HTMLDivElement | null>(null);
+  const [
+    anchorForAddSubItemPopover,
+    setAnchorForAddSubItemPopover,
+  ] = useState<HTMLDivElement | null>(null);
+  const [newSubItemIndex, setNewSubItemIndex] = useState<number>(0);
   const [editableFilterId, setEditableFilterId] = useState<string | null>(null);
   const [itemDataClone, setItemDataClone] = useState<IGoodsElement>(
     changedItem
   );
   const [itemDataCloneForEdit, setItemDataCloneForEdit] = useState<
     IGoodsElement
-  >(JSON.parse(JSON.stringify(itemDataClone)));
+  >(cloneDeep(itemDataClone));
 
   const ignoreFiltersListForEditPopover = useMemo(() => {
     const { filters } = itemDataCloneForEdit;
@@ -82,7 +90,7 @@ const EditGoodsContainer = ({
   }, [itemDataClone]);
 
   useEffect(() => {
-    const itemDataDeepClone = JSON.parse(JSON.stringify(itemDataClone));
+    const itemDataDeepClone = cloneDeep(itemDataClone);
     setItemDataCloneForEdit(itemDataDeepClone);
   }, [itemDataClone]);
 
@@ -231,7 +239,7 @@ const EditGoodsContainer = ({
   };
 
   const onCloseEditFilterPopover = () => {
-    const itemDataDeepClone = JSON.parse(JSON.stringify(itemDataClone));
+    const itemDataDeepClone = cloneDeep(itemDataClone);
 
     setAnchorForEditFilterPopover(null);
     setEditableFilterId(null);
@@ -386,6 +394,40 @@ const EditGoodsContainer = ({
     }
   };
 
+  const onCloseAddSubItemPopover = () => {
+    const dataClone = { ...itemDataCloneForEdit };
+
+    setAnchorForAddSubItemPopover(null);
+    dataClone.subGoods.splice(newSubItemIndex, 1);
+
+    setItemDataCloneForEdit(dataClone);
+    setNewSubItemIndex(0);
+  };
+
+  const onSubmitedCloseSubItemPopover = () => {
+    setAnchorForAddSubItemPopover(null);
+    setNewSubItemIndex(0);
+  };
+
+  const openAddSubItemPopover = (e: BaseSyntheticEvent) => {
+    const dataClone = { ...itemDataCloneForEdit };
+
+    setAnchorForAddSubItemPopover(e.currentTarget);
+
+    dataClone.subGoods.push({
+      elementValue: initialFilterValue,
+      images: [],
+      price: 0,
+    });
+
+    const newElementIndex = dataClone.subGoods.length - 1;
+
+    setNewSubItemIndex(newElementIndex);
+    setItemDataCloneForEdit(dataClone);
+  };
+
+  // console.log(itemDataCloneForEdit, "dataEdit", itemDataClone, "currentClone");
+
   if (isFetching) {
     return (
       <SpinnerMainContainer>
@@ -397,6 +439,15 @@ const EditGoodsContainer = ({
 
   return (
     <MainContainer>
+      <AddSubItemPopover
+        anchorEl={anchorForAddSubItemPopover}
+        changedSubItemIndex={newSubItemIndex}
+        closeHandler={onCloseAddSubItemPopover}
+        itemDataCloneForEdit={itemDataCloneForEdit}
+        setItemDataClone={setItemDataClone}
+        setItemDataCloneForEdit={setItemDataCloneForEdit}
+        onSubmitedCloseSubItemPopover={onSubmitedCloseSubItemPopover}
+      />
       <EditFiltersPopover
         anchorEl={anchorForEditFilterPopover}
         closeHandler={onCloseEditFilterPopover}
@@ -419,6 +470,7 @@ const EditGoodsContainer = ({
         uploadNewPictures={uploadNewPictures}
         deleteItemImageHandler={deleteItemImageHandler}
       />
+      <div onClick={openAddSubItemPopover}>Новый субтовар</div>
       <ItemForm
         itemDataClone={itemDataClone}
         listOfGoodsCategory={listOfGoodsCategory}

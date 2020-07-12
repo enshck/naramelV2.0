@@ -13,3 +13,8 @@ export const colors: { [key: string]: string } = {
   "deep-orange": "#ff9800",
   green: "#4caf50",
 };
+
+export const initialFilterValue = {
+  type: "z3Auiup4fZQdpnc8LJ8U",
+  value: "100",
+};
