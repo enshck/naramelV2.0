@@ -1,5 +1,6 @@
 import React, { useState, useEffect, BaseSyntheticEvent, useMemo } from "react";
 import { cloneDeep } from "lodash";
+import { v1 as uuidv1 } from "uuid";
 
 import {
   MainContainer,
@@ -16,7 +17,6 @@ import { DropResult } from "react-beautiful-dnd";
 import FiltersContainer from "./filtersContainer";
 import EditFiltersPopover from "./editFiltersPopover";
 import firebase from "utils/firebase";
-import { v1 as uuidv1 } from "uuid";
 import Spinner from "components/spinner";
 import AddSubItemPopover from "./addSubItemPopover";
 import { initialFilterValue } from "utils/constants";
@@ -25,15 +25,20 @@ interface IProps {
   changedItem: IGoodsElement;
   listOfGoodsCategory: IOption[];
   setGoodsData: (newValue: IGoodsElement[]) => void;
+  isNewItem?: boolean;
+  onClose?: () => void;
 }
 
 const EditGoodsContainer = ({
   changedItem,
   listOfGoodsCategory,
   setGoodsData,
+  isNewItem,
+  onClose,
 }: IProps) => {
   const [isFetching, setFetching] = useState(false);
   const filtersTypes = useSelector((state) => state.filters);
+  const [changedSubItemIndex, setChangedSubItemIndex] = useState(0);
   const [
     anchorForEditFilterPopover,
     setAnchorForEditFilterPopover,
@@ -45,11 +50,36 @@ const EditGoodsContainer = ({
   const [newSubItemIndex, setNewSubItemIndex] = useState<number>(0);
   const [editableFilterId, setEditableFilterId] = useState<string | null>(null);
   const [itemDataClone, setItemDataClone] = useState<IGoodsElement>(
-    changedItem
+    cloneDeep(changedItem)
   );
   const [itemDataCloneForEdit, setItemDataCloneForEdit] = useState<
     IGoodsElement
   >(cloneDeep(itemDataClone));
+
+  const isValidForm = useMemo(() => {
+    const {
+      name,
+      subGoods,
+      brand,
+      description,
+      groupId,
+      subName,
+    } = itemDataClone;
+    const { images } = subGoods[0];
+
+    if (
+      images.length > 0 &&
+      name.length > 0 &&
+      brand.length > 0 &&
+      description.length > 0 &&
+      groupId.length > 0 &&
+      subName.length > 0
+    ) {
+      return true;
+    }
+
+    return false;
+  }, [itemDataClone]);
 
   const ignoreFiltersListForEditPopover = useMemo(() => {
     const { filters } = itemDataCloneForEdit;
@@ -58,7 +88,6 @@ const EditGoodsContainer = ({
 
   const { filters, subGoods } = itemDataClone;
 
-  const [changedSubItemIndex, setChangedSubItemIndex] = useState(0);
   const changedFilter = useMemo(() => {
     const { subGoods } = itemDataClone;
 
@@ -342,13 +371,28 @@ const EditGoodsContainer = ({
         });
       }
 
-      await firebase
-        .firestore()
-        .collection("goods")
-        .doc(id)
-        .update({
-          ...itemDataClone,
-        });
+      if (isNewItem) {
+        const newItemId = uuidv1();
+
+        await firebase
+          .firestore()
+          .collection("goods")
+          .doc(newItemId)
+          .set({
+            ...itemDataClone,
+            id: newItemId,
+          });
+
+        onClose && onClose();
+      } else {
+        await firebase
+          .firestore()
+          .collection("goods")
+          .doc(id)
+          .update({
+            ...itemDataClone,
+          });
+      }
 
       const updatedGoodsData: any = (
         await firebase.firestore().collection("goods").get()
@@ -426,7 +470,23 @@ const EditGoodsContainer = ({
     setItemDataCloneForEdit(dataClone);
   };
 
-  // console.log(itemDataCloneForEdit, "dataEdit", itemDataClone, "currentClone");
+  const deleteSubItemHandler = (index: number) => {
+    const itemClone = { ...itemDataClone };
+    const { subGoods } = itemClone;
+
+    if (index > 0) {
+      subGoods.splice(index, 1);
+      setChangedSubItemIndex(index - 1);
+    } else {
+      subGoods.splice(index, 1, {
+        elementValue: initialFilterValue,
+        images: [],
+        price: 0,
+      });
+    }
+
+    setItemDataClone(itemClone);
+  };
 
   if (isFetching) {
     return (
@@ -469,6 +529,7 @@ const EditGoodsContainer = ({
         setSubItemPrice={setSubItemPrice}
         uploadNewPictures={uploadNewPictures}
         deleteItemImageHandler={deleteItemImageHandler}
+        itemDataClone={itemDataClone}
       />
       <div onClick={openAddSubItemPopover}>Новый субтовар</div>
       <ItemForm
@@ -484,7 +545,9 @@ const EditGoodsContainer = ({
         openEditPopoverHandler={openEditPopoverHandler}
       />
       <SubmitContainer>
-        <SubmitButton onClick={submitHandler}>Обновить</SubmitButton>
+        <SubmitButton onClick={submitHandler} isBlocked={!isValidForm}>
+          Обновить
+        </SubmitButton>
       </SubmitContainer>
     </MainContainer>
   );

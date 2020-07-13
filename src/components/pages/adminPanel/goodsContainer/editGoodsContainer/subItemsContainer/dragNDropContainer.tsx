@@ -28,6 +28,8 @@ const DragNDropContainer = ({
   changedSubItem,
   deleteItemImageHandler,
 }: IProps) => {
+  const { images } = changedSubItem;
+
   return (
     <MainContainer>
       <DragDropContext onDragEnd={onDragEnd}>
@@ -39,7 +41,7 @@ const DragNDropContainer = ({
                 ref={provided.innerRef}
               >
                 <CoverPictureContainer />
-                {changedSubItem.images.map((elem, key) => (
+                {images.map((elem, key) => (
                   <Draggable draggableId={`${key}`} index={key}>
                     {(provided, snapshot) => (
                       <ImageCard
@@ -49,6 +51,7 @@ const DragNDropContainer = ({
                       >
                         <DeleteButton
                           onClick={() => deleteItemImageHandler(key)}
+                          isHidden={images.length <= 1 && key === 0}
                         >
                           <Delete />
                         </DeleteButton>

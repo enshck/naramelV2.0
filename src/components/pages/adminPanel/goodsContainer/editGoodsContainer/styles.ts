@@ -99,6 +99,7 @@ export const DraggableImagesContainer = styled.div`
 export const DragNDropContainer = styled.div`
   border: 1px solid ${(props) => props.theme.inputsBorderColor};
   margin: 20px 0 0 0;
+  height: 160px;
 `;
 
 export const CoverPictureContainer = styled.div`
@@ -248,6 +249,12 @@ export const DeleteButton = styled.div`
   justify-content: center;
   align-items: center;
   background: #fff;
+
+  ${({ isHidden }: { isHidden?: boolean }) =>
+    isHidden &&
+    css`
+      display: none;
+    `}
 `;
 
 export const SpinnerMainContainer = styled.div`

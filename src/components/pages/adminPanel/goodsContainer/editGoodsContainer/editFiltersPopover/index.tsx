@@ -170,6 +170,7 @@ const Popover = ({
 
   const submitHandler = () => {
     if (!isBlockedSubmitButton) {
+      console.log(itemDataCloneForEdit, "iiii");
       setItemDataClone({
         ...itemDataCloneForEdit,
       });

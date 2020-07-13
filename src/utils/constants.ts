@@ -18,3 +18,24 @@ export const initialFilterValue = {
   type: "z3Auiup4fZQdpnc8LJ8U",
   value: "100",
 };
+
+export const initialItemData = {
+  brand: "Naramel",
+  description: "",
+  groupId: "",
+  id: "",
+  name: "",
+  subName: "",
+  subGoods: [
+    {
+      elementValue: initialFilterValue,
+      images: [],
+      price: 0,
+    },
+  ],
+  filters: {
+    brand: "Naramel",
+    [initialFilterValue.type]: [initialFilterValue.value],
+    price: "0",
+  },
+};

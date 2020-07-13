@@ -23,6 +23,7 @@ import { IOption } from "../..";
 import DragNDropContainer from "./dragNDropContainer";
 import Input from "components/inputs";
 import { useSelector } from "customHooks/useSelector";
+import { IGoodsElement } from "components/pages/items";
 
 interface IProps {
   changedFilter: IFilter;
@@ -45,6 +46,7 @@ interface IProps {
   deleteItemImageHandler: (itemIndex: number) => void;
   isNewElement?: boolean;
   addNewSubItemHandler?: () => void;
+  itemDataClone: IGoodsElement;
 }
 
 const SubItemsContainer = ({
@@ -60,7 +62,9 @@ const SubItemsContainer = ({
   deleteItemImageHandler,
   isNewElement,
   addNewSubItemHandler,
+  itemDataClone,
 }: IProps) => {
+  const { id } = itemDataClone;
   const filters = useSelector((state) => state.filters);
   const changedSubItem = useMemo(() => subGoods[changedSubItemIndex], [
     changedSubItemIndex,
@@ -105,14 +109,14 @@ const SubItemsContainer = ({
         deleteItemImageHandler={deleteItemImageHandler}
       />
       <ItemFileInputContainer>
-        <label htmlFor={`itemImageFileInput - ${changedSubItemIndex}`}>
+        <label htmlFor={`itemImageFileInput-${changedSubItemIndex}-${id}`}>
           Загрузить файл
         </label>
         <input
           type={"file"}
           onChange={uploadNewPictures}
-          name={`itemImageFileInput - ${changedSubItemIndex}`}
-          id={`itemImageFileInput - ${changedSubItemIndex}`}
+          name={`itemImageFileInput-${changedSubItemIndex}-${id}`}
+          id={`itemImageFileInput-${changedSubItemIndex}-${id}`}
           multiple={true}
           accept="image/x-png,image/gif,image/jpeg"
         />

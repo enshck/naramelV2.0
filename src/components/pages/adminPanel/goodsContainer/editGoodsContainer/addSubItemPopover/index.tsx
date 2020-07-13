@@ -191,6 +191,7 @@ const AddSubItemPopover = ({
           deleteItemImageHandler={deleteItemImageHandler}
           isNewElement={true}
           addNewSubItemHandler={addNewSubItemHandler}
+          itemDataClone={itemDataCloneForEdit}
         />
       </MainContainer>
     </StyledPopover>

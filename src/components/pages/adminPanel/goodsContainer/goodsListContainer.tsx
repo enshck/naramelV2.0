@@ -12,9 +12,14 @@ import { IGoodsElement } from "components/pages/items";
 interface IProps {
   filteredGoodsData: IGoodsElement[];
   changedItem: IGoodsElement | null;
+  setOpenAddGoodsModal: (isOpenModal: boolean) => void;
 }
 
-const GoodsList = ({ filteredGoodsData, changedItem }: IProps) => {
+const GoodsList = ({
+  filteredGoodsData,
+  changedItem,
+  setOpenAddGoodsModal,
+}: IProps) => {
   const history = useHistory();
 
   return (
@@ -48,6 +53,7 @@ const GoodsList = ({ filteredGoodsData, changedItem }: IProps) => {
           </GoodsListElement>
         );
       })}
+      <div onClick={() => setOpenAddGoodsModal(true)}>plus</div>
     </GoodsListContainer>
   );
 };

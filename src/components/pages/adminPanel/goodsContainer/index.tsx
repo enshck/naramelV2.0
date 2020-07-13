@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useMemo, useCallback } from "react";
+import React, {
+  useState,
+  useEffect,
+  useMemo,
+  useCallback,
+  Fragment,
+} from "react";
 import { useHistory } from "react-router-dom";
 import qs from "qs";
 
@@ -17,6 +23,7 @@ import { debounce } from "utils/handlers";
 import GoodsListContainer from "./goodsListContainer";
 import EditGoodsContainer from "./editGoodsContainer";
 import { useSelector } from "customHooks/useSelector";
+import AddGoodsModal from "./addGoodsModal";
 
 export interface IOption {
   label: string;
@@ -24,6 +31,7 @@ export interface IOption {
 }
 
 const GoodsContainer = () => {
+  const [isOpenAddGoodsModal, setOpenAddGoodsModal] = useState(false);
   const debounceForItemSearch = useCallback(debounce(800), []);
   const [searchValue, setSearchValue] = useState("");
   const history = useHistory();
@@ -86,46 +94,57 @@ const GoodsContainer = () => {
     return changedItemData;
   }, [filteredGoodsData, search]);
 
-  console.log(listOfGoodsCategory, "cat");
+  const addGoodsModalCloseHandler = () => {
+    setOpenAddGoodsModal(false);
+  };
 
   return (
-    <MainContainer>
-      <GridElement>
-        <ItemsContainer>
-          <SearchContainer>
-            <StyledSearchLabel htmlFor={"searchValue"}>
-              Поиск по ID или имени товара
-            </StyledSearchLabel>
-            <Input
-              StyledComponent={StyledInput}
-              name={"searchValue"}
-              type={"text"}
-              defaultValue={searchValue}
-              onInput={(e) => {
-                const value = e.target.value;
+    <Fragment>
+      <AddGoodsModal
+        isOpen={isOpenAddGoodsModal}
+        onClose={addGoodsModalCloseHandler}
+        listOfGoodsCategory={listOfGoodsCategory}
+        setGoodsData={setGoodsData}
+      />
+      <MainContainer>
+        <GridElement>
+          <ItemsContainer>
+            <SearchContainer>
+              <StyledSearchLabel htmlFor={"searchValue"}>
+                Поиск по ID или имени товара
+              </StyledSearchLabel>
+              <Input
+                StyledComponent={StyledInput}
+                name={"searchValue"}
+                type={"text"}
+                defaultValue={searchValue}
+                onInput={(e) => {
+                  const value = e.target.value;
 
-                debounceForItemSearch(() => setSearchValue(value));
-              }}
+                  debounceForItemSearch(() => setSearchValue(value));
+                }}
+              />
+            </SearchContainer>
+            <GoodsListContainer
+              filteredGoodsData={filteredGoodsData}
+              changedItem={changedItem}
+              setOpenAddGoodsModal={setOpenAddGoodsModal}
             />
-          </SearchContainer>
-          <GoodsListContainer
-            filteredGoodsData={filteredGoodsData}
-            changedItem={changedItem}
-          />
-        </ItemsContainer>
-      </GridElement>
-      <GridElement>
-        {changedItem ? (
-          <EditGoodsContainer
-            changedItem={changedItem}
-            listOfGoodsCategory={listOfGoodsCategory}
-            setGoodsData={setGoodsData}
-          />
-        ) : (
-          <h1>Выберите товар</h1>
-        )}
-      </GridElement>
-    </MainContainer>
+          </ItemsContainer>
+        </GridElement>
+        <GridElement>
+          {changedItem ? (
+            <EditGoodsContainer
+              changedItem={changedItem}
+              listOfGoodsCategory={listOfGoodsCategory}
+              setGoodsData={setGoodsData}
+            />
+          ) : (
+            <h1>Выберите товар</h1>
+          )}
+        </GridElement>
+      </MainContainer>
+    </Fragment>
   );
 };
 
