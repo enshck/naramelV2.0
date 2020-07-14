@@ -1,5 +1,7 @@
 import styled, { css } from "styled-components";
 
+import { BuyButton } from "utils/styles";
+
 export const MainContainer = styled.div`
   display: grid;
   grid-template-columns: 30% 70%;
@@ -100,4 +102,8 @@ export const ImageContainer = styled.div`
   border: 1px solid ${(props) => props.theme.inputsBorderColor};
   border-left: none;
   padding: 5px;
+`;
+
+export const AddItemButton = styled(BuyButton)`
+  margin-top: 20px;
 `;

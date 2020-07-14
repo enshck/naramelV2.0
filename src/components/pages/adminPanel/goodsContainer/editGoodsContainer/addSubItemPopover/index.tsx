@@ -6,6 +6,7 @@ import SubItemContainer from "../subItemsContainer";
 import { IGoodsElement } from "components/pages/items";
 import { useSelector } from "customHooks/useSelector";
 import { IOption } from "../../";
+import firebase from "utils/firebase";
 
 interface IProps {
   anchorEl: HTMLDivElement | null;
@@ -15,6 +16,8 @@ interface IProps {
   setItemDataCloneForEdit: (newValue: IGoodsElement) => void;
   setItemDataClone: (newValue: IGoodsElement) => void;
   onSubmitedCloseSubItemPopover: () => void;
+  updateGoodsData: () => void;
+  submitHandler: (itemData: IGoodsElement) => Promise<void>;
 }
 
 const AddSubItemPopover = ({
@@ -25,6 +28,8 @@ const AddSubItemPopover = ({
   setItemDataCloneForEdit,
   setItemDataClone,
   onSubmitedCloseSubItemPopover,
+  updateGoodsData,
+  submitHandler,
 }: IProps) => {
   const filtersTypes = useSelector((state) => state.filters);
   const { subGoods } = itemDataCloneForEdit;
@@ -158,8 +163,18 @@ const AddSubItemPopover = ({
     });
   };
 
-  const addNewSubItemHandler = () => {
-    setItemDataClone(itemDataCloneForEdit);
+  const addNewSubItemHandler = async () => {
+    const { id } = itemDataCloneForEdit;
+    // setItemDataClone(itemDataCloneForEdit);
+
+    // console.log(itemDataCloneForEdit, "dat");
+    // await firebase
+    //   .firestore()
+    //   .collection("goods")
+    //   .doc(id)
+    //   .update(itemDataCloneForEdit);
+    // updateGoodsData();
+    submitHandler(itemDataCloneForEdit);
     onSubmitedCloseSubItemPopover();
   };
 
@@ -169,12 +184,12 @@ const AddSubItemPopover = ({
       anchorEl={anchorEl}
       onClose={closeHandler}
       anchorOrigin={{
-        vertical: "center",
-        horizontal: "center",
+        vertical: "top",
+        horizontal: "left",
       }}
       transformOrigin={{
-        vertical: "bottom",
-        horizontal: "center",
+        vertical: "top",
+        horizontal: "right",
       }}
     >
       <MainContainer>

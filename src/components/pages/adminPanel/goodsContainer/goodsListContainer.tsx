@@ -6,8 +6,10 @@ import {
   GoodsListElement,
   ImageContainer,
   ElementInfo,
+  AddItemButton,
 } from "./styles";
 import { IGoodsElement } from "components/pages/items";
+import defaultItemImage from "assets/goods/defaultImage.png";
 
 interface IProps {
   filteredGoodsData: IGoodsElement[];
@@ -38,9 +40,11 @@ const GoodsList = ({
             <ImageContainer>
               <img
                 src={
-                  typeof mainImage === "string"
-                    ? mainImage
-                    : URL.createObjectURL(mainImage)
+                  mainImage
+                    ? typeof mainImage === "string"
+                      ? mainImage
+                      : URL.createObjectURL(mainImage)
+                    : defaultItemImage
                 }
                 alt={"itemImage"}
               />
@@ -53,7 +57,9 @@ const GoodsList = ({
           </GoodsListElement>
         );
       })}
-      <div onClick={() => setOpenAddGoodsModal(true)}>plus</div>
+      <AddItemButton onClick={() => setOpenAddGoodsModal(true)}>
+        Новый товар
+      </AddItemButton>
     </GoodsListContainer>
   );
 };

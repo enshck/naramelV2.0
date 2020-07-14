@@ -14,6 +14,7 @@ import {
   InputLabel,
   SubmitButton,
   SubItemSubmitButtonContainer,
+  ControlsContainer,
 } from "../styles";
 import Selector from "components/inputs/selector";
 import arrowDown from "assets/goods/arrowDown.png";
@@ -47,6 +48,8 @@ interface IProps {
   isNewElement?: boolean;
   addNewSubItemHandler?: () => void;
   itemDataClone: IGoodsElement;
+  deleteSubItemHandler?: (id: number) => void;
+  openAddSubItemPopover?: (e: BaseSyntheticEvent) => void;
 }
 
 const SubItemsContainer = ({
@@ -63,13 +66,15 @@ const SubItemsContainer = ({
   isNewElement,
   addNewSubItemHandler,
   itemDataClone,
+  deleteSubItemHandler,
+  openAddSubItemPopover,
 }: IProps) => {
   const { id } = itemDataClone;
   const filters = useSelector((state) => state.filters);
-  const changedSubItem = useMemo(() => subGoods[changedSubItemIndex], [
-    changedSubItemIndex,
-    subGoods,
-  ]);
+  const changedSubItem = useMemo(() => {
+    const { subGoods } = itemDataClone;
+    return subGoods[changedSubItemIndex];
+  }, [changedSubItemIndex, itemDataClone]);
 
   return (
     <ChangedSubItemContainer>
@@ -182,6 +187,24 @@ const SubItemsContainer = ({
             Добавить подтовар
           </SubmitButton>
         </SubItemSubmitButtonContainer>
+      )}
+      {!isNewElement && (
+        <ControlsContainer>
+          {deleteSubItemHandler && (
+            <SubmitButton
+              onClick={() => deleteSubItemHandler(changedSubItemIndex)}
+              isDanger={true}
+              style={{ marginRight: "20px" }}
+            >
+              Удалить
+            </SubmitButton>
+          )}
+          {openAddSubItemPopover && (
+            <SubmitButton onClick={openAddSubItemPopover}>
+              Новый субтовар
+            </SubmitButton>
+          )}
+        </ControlsContainer>
       )}
     </ChangedSubItemContainer>
   );

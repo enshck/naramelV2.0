@@ -332,11 +332,13 @@ const EditGoodsContainer = ({
     });
   };
 
-  const submitHandler = async () => {
+  const submitHandler = async (itemDataClone: IGoodsElement) => {
     const cloneOfItemData = { ...itemDataClone };
     const { id } = itemDataClone;
     const { subGoods } = cloneOfItemData;
     const uploadPromises: IUploadPromisesData[] = [];
+
+    console.log(cloneOfItemData, "itemitem");
 
     setFetching(true);
 
@@ -394,16 +396,20 @@ const EditGoodsContainer = ({
           });
       }
 
-      const updatedGoodsData: any = (
-        await firebase.firestore().collection("goods").get()
-      ).docs.map((elem) => elem.data());
-
-      setGoodsData(updatedGoodsData);
+      updateGoodsData();
     } catch (err) {
       console.log(err);
     }
 
     setFetching(false);
+  };
+
+  const updateGoodsData = async () => {
+    const updatedGoodsData: any = (
+      await firebase.firestore().collection("goods").get()
+    ).docs.map((elem) => elem.data());
+
+    setGoodsData(updatedGoodsData);
   };
 
   const deleteItemImageHandler = async (imageIndex: number) => {
@@ -470,22 +476,42 @@ const EditGoodsContainer = ({
     setItemDataCloneForEdit(dataClone);
   };
 
-  const deleteSubItemHandler = (index: number) => {
+  const deleteImagesHandler = async (refsOfImages: string[]) => {
+    await Promise.all(
+      refsOfImages.map((elem) => firebase.storage().refFromURL(elem).delete())
+    );
+  };
+
+  const deleteSubItemHandler = async (index: number) => {
     const itemClone = { ...itemDataClone };
-    const { subGoods } = itemClone;
+    const { subGoods, id } = itemClone;
+    const { images } = subGoods[index];
 
-    if (index > 0) {
-      subGoods.splice(index, 1);
-      setChangedSubItemIndex(index - 1);
-    } else {
-      subGoods.splice(index, 1, {
-        elementValue: initialFilterValue,
-        images: [],
-        price: 0,
-      });
+    try {
+      if (subGoods.length > 1) {
+        setFetching(true);
+        const refsOfImages: string[] = [];
+
+        images.forEach((elem) => {
+          if (typeof elem === "string") {
+            refsOfImages.push(elem);
+          }
+        });
+
+        await deleteImagesHandler(refsOfImages);
+        subGoods.splice(index, 1);
+        await firebase
+          .firestore()
+          .collection("goods")
+          .doc(id)
+          .update(itemClone);
+        await updateGoodsData();
+
+        setFetching(false);
+      }
+    } catch (err) {
+      console.log(err, "error");
     }
-
-    setItemDataClone(itemClone);
   };
 
   if (isFetching) {
@@ -507,6 +533,8 @@ const EditGoodsContainer = ({
         setItemDataClone={setItemDataClone}
         setItemDataCloneForEdit={setItemDataCloneForEdit}
         onSubmitedCloseSubItemPopover={onSubmitedCloseSubItemPopover}
+        updateGoodsData={updateGoodsData}
+        submitHandler={submitHandler}
       />
       <EditFiltersPopover
         anchorEl={anchorForEditFilterPopover}
@@ -530,8 +558,9 @@ const EditGoodsContainer = ({
         uploadNewPictures={uploadNewPictures}
         deleteItemImageHandler={deleteItemImageHandler}
         itemDataClone={itemDataClone}
+        deleteSubItemHandler={deleteSubItemHandler}
+        openAddSubItemPopover={openAddSubItemPopover}
       />
-      <div onClick={openAddSubItemPopover}>Новый субтовар</div>
       <ItemForm
         itemDataClone={itemDataClone}
         listOfGoodsCategory={listOfGoodsCategory}
@@ -545,7 +574,10 @@ const EditGoodsContainer = ({
         openEditPopoverHandler={openEditPopoverHandler}
       />
       <SubmitContainer>
-        <SubmitButton onClick={submitHandler} isBlocked={!isValidForm}>
+        <SubmitButton
+          onClick={() => submitHandler(itemDataClone)}
+          isBlocked={!isValidForm}
+        >
           Обновить
         </SubmitButton>
       </SubmitContainer>

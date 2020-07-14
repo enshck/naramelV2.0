@@ -70,7 +70,12 @@ export const GoodsStyledSelectorOption = styled.div<IGoodsStyledSelectorOption>`
     `}
 `;
 
-export const BuyButton = styled.div`
+interface IBuyButton {
+  isBlocked?: boolean;
+  isDanger?: boolean;
+}
+
+export const BuyButton = styled.div<IBuyButton>`
   background-color: #792c9b;
   color: #fff;
   font-size: 12px;
@@ -82,11 +87,18 @@ export const BuyButton = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
+  user-select: none;
 
-  ${({ isBlocked }: {isBlocked?: boolean}) =>
+  ${({ isBlocked }) =>
     isBlocked &&
     css`
       background: ${props => props.theme.secondaryButtonColor};
+    `}
+    ${({ isDanger }) =>
+    isDanger &&
+    css`
+      background: ${props => props.theme.dangerColor};
     `}
 `;
 

@@ -18,6 +18,7 @@ const theme = {
   spreadColor: "#ebebeb",
   inputsBorderColor: "#ccc",
   blockedColor: "#C4C4C4",
+  dangerColor: "#FF3E3E",
 };
 
 const App = () => {

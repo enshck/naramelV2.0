@@ -283,3 +283,10 @@ export const SubItemSubmitButtonContainer = styled.div`
   display: flex;
   justify-content: flex-end;
 `;
+
+export const ControlsContainer = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+`;
