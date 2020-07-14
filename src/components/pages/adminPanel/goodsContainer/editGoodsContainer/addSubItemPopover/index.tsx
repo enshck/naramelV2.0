@@ -17,7 +17,7 @@ interface IProps {
   setItemDataClone: (newValue: IGoodsElement) => void;
   onSubmitedCloseSubItemPopover: () => void;
   updateGoodsData: () => void;
-  submitHandler: (itemData: IGoodsElement) => Promise<void>;
+  submitHandler: () => Promise<void>;
 }
 
 const AddSubItemPopover = ({
@@ -105,25 +105,47 @@ const AddSubItemPopover = ({
     prevValue: string
   ) => {
     const cloneOfItemData = { ...itemDataCloneForEdit };
-    const { filters } = cloneOfItemData;
+    const { filters, subGoods } = cloneOfItemData;
     const { elementValue } = cloneOfItemData.subGoods[changedSubItemIndex];
+    const firstSubElement = cloneOfItemData.subGoods[0];
     elementValue.value = e.target.value;
 
-    const changedFilter = filters[filterType];
+    const newFiltersValue: { [key: string]: string[] } = {};
 
-    if (Array.isArray(changedFilter)) {
-      if (filters[filterType]) {
-        const indexOfElement = changedFilter.indexOf(prevValue);
+    subGoods.forEach((elem) => {
+      const { elementValue } = elem;
+      const { type, value } = elementValue;
 
-        if (indexOfElement === -1) {
-          filters[filterType] = [...changedFilter, e.target.value];
-        } else {
-          changedFilter[indexOfElement] = e.target.value;
-        }
+      if (newFiltersValue[type]) {
+        newFiltersValue[type] = [...newFiltersValue[type], value];
       } else {
-        filters[filterType] = [e.target.value];
+        newFiltersValue[type] = [value];
       }
-    }
+    });
+
+    cloneOfItemData.filters = {
+      ...filters,
+      ...newFiltersValue,
+      price: `${firstSubElement.price}`,
+    };
+
+    // const changedFilter = filters[filterType];
+
+    // if (Array.isArray(changedFilter)) {
+    //   if (filters[filterType]) {
+    //     const indexOfElement = changedFilter.indexOf(prevValue);
+
+    //     if (indexOfElement === -1) {
+    //       console.log(changedFilter, "cng");
+    //       filters[filterType] = [...changedFilter, e.target.value];
+    //     } else {
+    //       console.log(changedFilter, indexOfElement, "cng");
+    //       changedFilter[indexOfElement] = e.target.value;
+    //     }
+    //   } else {
+    //     filters[filterType] = [e.target.value];
+    //   }
+    // }
 
     setItemDataCloneForEdit(cloneOfItemData);
   };
@@ -164,7 +186,6 @@ const AddSubItemPopover = ({
   };
 
   const addNewSubItemHandler = async () => {
-    const { id } = itemDataCloneForEdit;
     // setItemDataClone(itemDataCloneForEdit);
 
     // console.log(itemDataCloneForEdit, "dat");
@@ -174,7 +195,8 @@ const AddSubItemPopover = ({
     //   .doc(id)
     //   .update(itemDataCloneForEdit);
     // updateGoodsData();
-    submitHandler(itemDataCloneForEdit);
+    // submitHandler(itemDataCloneForEdit);
+    setItemDataClone(itemDataCloneForEdit);
     onSubmitedCloseSubItemPopover();
   };
 

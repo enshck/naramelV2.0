@@ -37,6 +37,7 @@ const EditGoodsContainer = ({
   onClose,
 }: IProps) => {
   const [isFetching, setFetching] = useState(false);
+  const [imagesForDelete, setImagesForDelete] = useState<string[]>([]);
   const filtersTypes = useSelector((state) => state.filters);
   const [changedSubItemIndex, setChangedSubItemIndex] = useState(0);
   const [
@@ -190,25 +191,45 @@ const EditGoodsContainer = ({
     prevValue: string
   ) => {
     const cloneOfItemData = { ...itemDataClone };
-    const { filters } = cloneOfItemData;
+    const { filters, subGoods } = cloneOfItemData;
     const { elementValue } = cloneOfItemData.subGoods[changedSubItemIndex];
+    const firstSubElement = cloneOfItemData.subGoods[0];
     elementValue.value = e.target.value;
 
-    const changedFilter = filters[filterType];
+    const newFiltersValue: { [key: string]: string[] } = {};
 
-    if (Array.isArray(changedFilter)) {
-      if (filters[filterType]) {
-        const indexOfElement = changedFilter.indexOf(prevValue);
+    subGoods.forEach((elem) => {
+      const { elementValue } = elem;
+      const { type, value } = elementValue;
 
-        if (indexOfElement === -1) {
-          filters[filterType] = [...changedFilter, e.target.value];
-        } else {
-          changedFilter[indexOfElement] = e.target.value;
-        }
+      if (newFiltersValue[type]) {
+        newFiltersValue[type] = [...newFiltersValue[type], value];
       } else {
-        filters[filterType] = [e.target.value];
+        newFiltersValue[type] = [value];
       }
-    }
+    });
+
+    cloneOfItemData.filters = {
+      ...filters,
+      ...newFiltersValue,
+      price: `${firstSubElement.price}`,
+    };
+
+    // const changedFilter = filters[filterType];
+
+    // if (Array.isArray(changedFilter)) {
+    //   if (filters[filterType]) {
+    //     const indexOfElement = changedFilter.indexOf(prevValue);
+
+    //     if (indexOfElement === -1) {
+    //       filters[filterType] = [...changedFilter, e.target.value];
+    //     } else {
+    //       changedFilter[indexOfElement] = e.target.value;
+    //     }
+    //   } else {
+    //     filters[filterType] = [e.target.value];
+    //   }
+    // }
 
     setItemDataClone(cloneOfItemData);
   };
@@ -290,10 +311,10 @@ const EditGoodsContainer = ({
       if (firstIdFilter) {
         setAnchorForEditFilterPopover(anchor);
         setEditableFilterId(firstIdFilter);
-        const itemClone = { ...itemDataCloneForEdit };
-        itemClone.filters[firstIdFilter] = [];
+        const itemDataDeepClone = cloneDeep(itemDataClone);
+        itemDataDeepClone.filters[firstIdFilter] = [];
 
-        setItemDataCloneForEdit(itemClone);
+        setItemDataCloneForEdit(itemDataDeepClone);
       }
     }
   };
@@ -332,13 +353,11 @@ const EditGoodsContainer = ({
     });
   };
 
-  const submitHandler = async (itemDataClone: IGoodsElement) => {
+  const submitHandler = async () => {
     const cloneOfItemData = { ...itemDataClone };
     const { id } = itemDataClone;
     const { subGoods } = cloneOfItemData;
     const uploadPromises: IUploadPromisesData[] = [];
-
-    console.log(cloneOfItemData, "itemitem");
 
     setFetching(true);
 
@@ -396,7 +415,11 @@ const EditGoodsContainer = ({
           });
       }
 
-      updateGoodsData();
+      if (imagesForDelete.length > 0) {
+        await deleteImagesHandler(imagesForDelete);
+        setImagesForDelete([]);
+      }
+      await updateGoodsData();
     } catch (err) {
       console.log(err);
     }
@@ -445,12 +468,12 @@ const EditGoodsContainer = ({
   };
 
   const onCloseAddSubItemPopover = () => {
-    const dataClone = { ...itemDataCloneForEdit };
+    const itemDataDeepClone = cloneDeep(itemDataClone);
 
     setAnchorForAddSubItemPopover(null);
-    dataClone.subGoods.splice(newSubItemIndex, 1);
+    itemDataDeepClone.subGoods.splice(newSubItemIndex, 1);
 
-    setItemDataCloneForEdit(dataClone);
+    setItemDataCloneForEdit(itemDataDeepClone);
     setNewSubItemIndex(0);
   };
 
@@ -460,20 +483,20 @@ const EditGoodsContainer = ({
   };
 
   const openAddSubItemPopover = (e: BaseSyntheticEvent) => {
-    const dataClone = { ...itemDataCloneForEdit };
+    const itemDataDeepClone = cloneDeep(itemDataClone);
 
     setAnchorForAddSubItemPopover(e.currentTarget);
 
-    dataClone.subGoods.push({
+    itemDataDeepClone.subGoods.push({
       elementValue: initialFilterValue,
       images: [],
       price: 0,
     });
 
-    const newElementIndex = dataClone.subGoods.length - 1;
+    const newElementIndex = itemDataDeepClone.subGoods.length - 1;
 
     setNewSubItemIndex(newElementIndex);
-    setItemDataCloneForEdit(dataClone);
+    setItemDataCloneForEdit(itemDataDeepClone);
   };
 
   const deleteImagesHandler = async (refsOfImages: string[]) => {
@@ -484,35 +507,74 @@ const EditGoodsContainer = ({
 
   const deleteSubItemHandler = async (index: number) => {
     const itemClone = { ...itemDataClone };
-    const { subGoods, id } = itemClone;
-    const { images } = subGoods[index];
+    const { subGoods, filters } = itemClone;
+    const { images, elementValue } = subGoods[index];
+    const changedFilter = filters[elementValue.type];
+    const refsOfImageForDeleting: string[] = [];
 
-    try {
-      if (subGoods.length > 1) {
-        setFetching(true);
-        const refsOfImages: string[] = [];
-
-        images.forEach((elem) => {
-          if (typeof elem === "string") {
-            refsOfImages.push(elem);
-          }
-        });
-
-        await deleteImagesHandler(refsOfImages);
-        subGoods.splice(index, 1);
-        await firebase
-          .firestore()
-          .collection("goods")
-          .doc(id)
-          .update(itemClone);
-        await updateGoodsData();
-
-        setFetching(false);
-      }
-    } catch (err) {
-      console.log(err, "error");
+    if (index > 0) {
+      subGoods.splice(index, 1);
+      setChangedSubItemIndex(index - 1);
+    } else {
+      subGoods.splice(index, 1, {
+        elementValue: initialFilterValue,
+        images: [],
+        price: 0,
+      });
     }
+
+    if (changedFilter && typeof changedFilter !== "string") {
+      const indexOfFilterElement = changedFilter.indexOf(elementValue.value);
+
+      if (indexOfFilterElement !== -1) {
+        if (changedFilter.length > 1) {
+          changedFilter.splice(indexOfFilterElement, 1);
+        } else {
+          delete filters[elementValue.type];
+        }
+      }
+    }
+
+    images.forEach((elem) => {
+      if (typeof elem === "string") {
+        refsOfImageForDeleting.push(elem);
+      }
+    });
+
+    if (refsOfImageForDeleting.length > 0) {
+      setImagesForDelete([...imagesForDelete, ...refsOfImageForDeleting]);
+    }
+
+    setItemDataClone(itemClone);
+
+    // try {
+    //   if (subGoods.length > 1) {
+    //     setFetching(true);
+    //     const refsOfImages: string[] = [];
+
+    //     images.forEach((elem) => {
+    //       if (typeof elem === "string") {
+    //         refsOfImages.push(elem);
+    //       }
+    //     });
+
+    //     await deleteImagesHandler(refsOfImages);
+    //     subGoods.splice(index, 1);
+    //     await firebase
+    //       .firestore()
+    //       .collection("goods")
+    //       .doc(id)
+    //       .update(itemClone);
+    //     await updateGoodsData();
+
+    //     setFetching(false);
+    //   }
+    // } catch (err) {
+    //   console.log(err, "error");
+    // }
   };
+
+  console.log(itemDataClone, "clone");
 
   if (isFetching) {
     return (
@@ -574,10 +636,7 @@ const EditGoodsContainer = ({
         openEditPopoverHandler={openEditPopoverHandler}
       />
       <SubmitContainer>
-        <SubmitButton
-          onClick={() => submitHandler(itemDataClone)}
-          isBlocked={!isValidForm}
-        >
+        <SubmitButton onClick={submitHandler} isBlocked={!isValidForm}>
           Обновить
         </SubmitButton>
       </SubmitContainer>
