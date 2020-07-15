@@ -52,6 +52,7 @@ export const GoodsListElement = styled.div`
   margin-top: 20px;
   padding: 10px 10px 10px 0;
   cursor: pointer;
+  position: relative;
 
   img {
     max-width: 100%;
@@ -106,4 +107,29 @@ export const ImageContainer = styled.div`
 
 export const AddItemButton = styled(BuyButton)`
   margin-top: 20px;
+`;
+
+export const DeleteItemButton = styled.div`
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #dbdcde;
+  border-radius: 100%;
+  background: #fff;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  stroke: ${(props) => props.theme.dangerColor};
+`;
+
+export const EmptyEditGoodsContainer = styled.div`
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  font-weight: 400;
+  font-size: 20px;
 `;

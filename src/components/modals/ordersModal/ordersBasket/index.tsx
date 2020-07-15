@@ -49,6 +49,7 @@ const Step1 = ({ open, onClose, updateCountOfGoods, setStep }: IProps) => {
                   subName,
                   elementValue,
                   count,
+                  id,
                 } = elem;
                 const { value, type } = elementValue;
                 const filterForOrderElement = filters.find(
@@ -56,7 +57,7 @@ const Step1 = ({ open, onClose, updateCountOfGoods, setStep }: IProps) => {
                 );
 
                 return (
-                  <OrderElement>
+                  <OrderElement key={id}>
                     <OrderInfoContainer>
                       <ImageContainer>
                         <img

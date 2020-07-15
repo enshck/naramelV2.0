@@ -395,7 +395,7 @@ const Categories = () => {
                     const { name, id } = elem;
 
                     return (
-                      <SubCategoryElement>
+                      <SubCategoryElement key={id}>
                         {name}
                         <CountOfGoodsContainer>
                           <span>

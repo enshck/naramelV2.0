@@ -42,7 +42,7 @@ const DragNDropContainer = ({
               >
                 <CoverPictureContainer />
                 {images.map((elem, key) => (
-                  <Draggable draggableId={`${key}`} index={key}>
+                  <Draggable draggableId={`${key}`} index={key} key={key}>
                     {(provided, snapshot) => (
                       <ImageCard
                         ref={provided.innerRef}

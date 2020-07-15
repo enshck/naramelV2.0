@@ -7,20 +7,24 @@ import {
   ImageContainer,
   ElementInfo,
   AddItemButton,
+  DeleteItemButton,
 } from "./styles";
 import { IGoodsElement } from "components/pages/items";
 import defaultItemImage from "assets/goods/defaultImage.png";
+import { ReactComponent as DeleteIcon } from "assets/adminPanel/delete.svg";
 
 interface IProps {
   filteredGoodsData: IGoodsElement[];
   changedItem: IGoodsElement | null;
   setOpenAddGoodsModal: (isOpenModal: boolean) => void;
+  deleteItemHandler: (id: string) => void;
 }
 
 const GoodsList = ({
   filteredGoodsData,
   changedItem,
   setOpenAddGoodsModal,
+  deleteItemHandler,
 }: IProps) => {
   const history = useHistory();
 
@@ -36,6 +40,7 @@ const GoodsList = ({
           <GoodsListElement
             isChanged={Boolean(changedItem && changedItem.id === id)}
             onClick={() => history.push(`/adminPanel?id=${id}#3`)}
+            key={id}
           >
             <ImageContainer>
               <img
@@ -54,6 +59,9 @@ const GoodsList = ({
               <p>{brand}</p>
               <p>{id}</p>
             </ElementInfo>
+            <DeleteItemButton onClick={() => deleteItemHandler(id)}>
+              <DeleteIcon />
+            </DeleteItemButton>
           </GoodsListElement>
         );
       })}

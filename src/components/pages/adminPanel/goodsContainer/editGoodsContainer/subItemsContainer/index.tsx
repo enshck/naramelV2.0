@@ -32,16 +32,8 @@ interface IProps {
   changedSubItemIndex: number;
   onChangeSubItemIndex: (newValue: IOption) => void;
   onDragEnd: (result: DropResult) => void;
-  onChangeSubItemValueType: (
-    nextOption: IOption,
-    prevOption: string,
-    currentValue: string
-  ) => void;
-  onChangeSubItemValue: (
-    e: BaseSyntheticEvent,
-    filterType: string,
-    prevValue: string
-  ) => void;
+  onChangeSubItemValueType: (nextOption: IOption, prevOption: string) => void;
+  onChangeSubItemValue: (e: BaseSyntheticEvent) => void;
   setSubItemPrice: (e: BaseSyntheticEvent) => void;
   uploadNewPictures: (e: BaseSyntheticEvent) => void;
   deleteItemImageHandler: (itemIndex: number) => void;
@@ -133,10 +125,12 @@ const SubItemsContainer = ({
             StyledInputContainer={StyledSelectorInput}
             StyledOptionContainer={StyledSelectorOptions}
             StyledOption={StyledSelectorOption}
-            options={filters.map((elem) => ({
-              label: elem.name,
-              value: elem.type,
-            }))}
+            options={filters
+              .filter((elem) => elem.type !== "brand" && elem.type !== "price")
+              .map((elem) => ({
+                label: elem.name,
+                value: elem.type,
+              }))}
             changedValue={{
               label:
                 filters.find(
@@ -147,8 +141,7 @@ const SubItemsContainer = ({
             setNewValue={(newValue) =>
               onChangeSubItemValueType(
                 newValue,
-                changedSubItem.elementValue.type,
-                changedSubItem.elementValue.value
+                changedSubItem.elementValue.type
               )
             }
             arrowIcon={arrowDown}
@@ -161,13 +154,7 @@ const SubItemsContainer = ({
             name={"text"}
             type={"text"}
             value={changedSubItem.elementValue.value}
-            onInput={(e) =>
-              onChangeSubItemValue(
-                e,
-                changedSubItem.elementValue.type,
-                changedSubItem.elementValue.value
-              )
-            }
+            onInput={(e) => onChangeSubItemValue(e)}
           />
         </InputContainer>
         <InputContainer>

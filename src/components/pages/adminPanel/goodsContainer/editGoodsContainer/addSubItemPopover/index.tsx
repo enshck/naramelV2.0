@@ -6,7 +6,6 @@ import SubItemContainer from "../subItemsContainer";
 import { IGoodsElement } from "components/pages/items";
 import { useSelector } from "customHooks/useSelector";
 import { IOption } from "../../";
-import firebase from "utils/firebase";
 
 interface IProps {
   anchorEl: HTMLDivElement | null;
@@ -16,8 +15,6 @@ interface IProps {
   setItemDataCloneForEdit: (newValue: IGoodsElement) => void;
   setItemDataClone: (newValue: IGoodsElement) => void;
   onSubmitedCloseSubItemPopover: () => void;
-  updateGoodsData: () => void;
-  submitHandler: () => Promise<void>;
 }
 
 const AddSubItemPopover = ({
@@ -28,11 +25,9 @@ const AddSubItemPopover = ({
   setItemDataCloneForEdit,
   setItemDataClone,
   onSubmitedCloseSubItemPopover,
-  updateGoodsData,
-  submitHandler,
 }: IProps) => {
   const filtersTypes = useSelector((state) => state.filters);
-  const { subGoods } = itemDataCloneForEdit;
+  const { subGoods, filters } = itemDataCloneForEdit;
 
   const changedFilter = useMemo(() => {
     const { subGoods } = itemDataCloneForEdit;
@@ -64,52 +59,8 @@ const AddSubItemPopover = ({
     setItemDataCloneForEdit(cloneOfItemData);
   };
 
-  const onChangeSubItemValueType = (
-    newValue: IOption,
-    prevOption: string,
-    currentValue: string
-  ) => {
-    const cloneOfItemData = { ...itemDataCloneForEdit };
-    const { filters } = cloneOfItemData;
-    const oldChangedFilter = filters[prevOption];
-
-    const indexOfCurrentValue = oldChangedFilter.indexOf(currentValue);
-
-    if (Array.isArray(oldChangedFilter)) {
-      if (indexOfCurrentValue !== -1) {
-        const { elementValue } = cloneOfItemData.subGoods[changedSubItemIndex];
-        elementValue.type = newValue.value;
-
-        oldChangedFilter.splice(indexOfCurrentValue, 1);
-
-        if (filters[prevOption].length < 1) {
-          delete filters[prevOption];
-        }
-
-        const newChangedFilter = filters[newValue.value];
-
-        if (filters[newValue.value] && Array.isArray(newChangedFilter)) {
-          filters[newValue.value] = [...newChangedFilter, currentValue];
-        } else {
-          filters[newValue.value] = [currentValue];
-        }
-
-        setItemDataCloneForEdit(cloneOfItemData);
-      }
-    }
-  };
-
-  const onChangeSubItemValue = (
-    e: BaseSyntheticEvent,
-    filterType: string,
-    prevValue: string
-  ) => {
-    const cloneOfItemData = { ...itemDataCloneForEdit };
-    const { filters, subGoods } = cloneOfItemData;
-    const { elementValue } = cloneOfItemData.subGoods[changedSubItemIndex];
+  const updateFiltersHandler = (cloneOfItemData: IGoodsElement) => {
     const firstSubElement = cloneOfItemData.subGoods[0];
-    elementValue.value = e.target.value;
-
     const newFiltersValue: { [key: string]: string[] } = {};
 
     subGoods.forEach((elem) => {
@@ -129,25 +80,25 @@ const AddSubItemPopover = ({
       price: `${firstSubElement.price}`,
     };
 
-    // const changedFilter = filters[filterType];
+    return cloneOfItemData;
+  };
 
-    // if (Array.isArray(changedFilter)) {
-    //   if (filters[filterType]) {
-    //     const indexOfElement = changedFilter.indexOf(prevValue);
+  const onChangeSubItemValueType = (newValue: IOption, prevOption: string) => {
+    const cloneOfItemData = { ...itemDataCloneForEdit };
+    const { filters } = cloneOfItemData;
+    const { elementValue } = cloneOfItemData.subGoods[changedSubItemIndex];
 
-    //     if (indexOfElement === -1) {
-    //       console.log(changedFilter, "cng");
-    //       filters[filterType] = [...changedFilter, e.target.value];
-    //     } else {
-    //       console.log(changedFilter, indexOfElement, "cng");
-    //       changedFilter[indexOfElement] = e.target.value;
-    //     }
-    //   } else {
-    //     filters[filterType] = [e.target.value];
-    //   }
-    // }
+    delete filters[prevOption];
+    elementValue.type = newValue.value;
+    setItemDataClone(updateFiltersHandler(cloneOfItemData));
+  };
 
-    setItemDataCloneForEdit(cloneOfItemData);
+  const onChangeSubItemValue = (e: BaseSyntheticEvent) => {
+    const cloneOfItemData = { ...itemDataCloneForEdit };
+    const { elementValue } = cloneOfItemData.subGoods[changedSubItemIndex];
+
+    elementValue.value = e.target.value;
+    setItemDataClone(updateFiltersHandler(cloneOfItemData));
   };
 
   const setSubItemPrice = (e: BaseSyntheticEvent) => {
@@ -186,16 +137,6 @@ const AddSubItemPopover = ({
   };
 
   const addNewSubItemHandler = async () => {
-    // setItemDataClone(itemDataCloneForEdit);
-
-    // console.log(itemDataCloneForEdit, "dat");
-    // await firebase
-    //   .firestore()
-    //   .collection("goods")
-    //   .doc(id)
-    //   .update(itemDataCloneForEdit);
-    // updateGoodsData();
-    // submitHandler(itemDataCloneForEdit);
     setItemDataClone(itemDataCloneForEdit);
     onSubmitedCloseSubItemPopover();
   };

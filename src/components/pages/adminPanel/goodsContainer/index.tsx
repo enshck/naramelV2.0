@@ -16,6 +16,7 @@ import {
   SearchContainer,
   StyledInput,
   StyledSearchLabel,
+  EmptyEditGoodsContainer,
 } from "./styles";
 import firebase from "utils/firebase";
 import { IGoodsElement } from "components/pages/items";
@@ -98,6 +99,36 @@ const GoodsContainer = () => {
     setOpenAddGoodsModal(false);
   };
 
+  const deleteItemHandler = async (id: string) => {
+    const changedItem = goodsData.find((elem) => elem.id === id);
+
+    if (changedItem) {
+      const refsOfImages: string[] = [];
+
+      changedItem.subGoods.forEach((subItem) => {
+        const { images } = subItem;
+
+        images.forEach((elem) => {
+          if (typeof elem === "string") {
+            refsOfImages.push(elem);
+          }
+        });
+      });
+
+      await Promise.all(
+        refsOfImages.map((elem) => firebase.storage().refFromURL(elem).delete())
+      );
+
+      await firebase.firestore().collection("goods").doc(id).delete();
+
+      const updatedGoodsData: any = (
+        await firebase.firestore().collection("goods").get()
+      ).docs.map((elem) => elem.data());
+
+      setGoodsData(updatedGoodsData);
+    }
+  };
+
   return (
     <Fragment>
       <AddGoodsModal
@@ -129,6 +160,7 @@ const GoodsContainer = () => {
               filteredGoodsData={filteredGoodsData}
               changedItem={changedItem}
               setOpenAddGoodsModal={setOpenAddGoodsModal}
+              deleteItemHandler={deleteItemHandler}
             />
           </ItemsContainer>
         </GridElement>
@@ -140,7 +172,7 @@ const GoodsContainer = () => {
               setGoodsData={setGoodsData}
             />
           ) : (
-            <h1>Выберите товар</h1>
+            <EmptyEditGoodsContainer>Выберите товар</EmptyEditGoodsContainer>
           )}
         </GridElement>
       </MainContainer>
