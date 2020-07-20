@@ -8,16 +8,22 @@ import {
   ElementInfo,
   AddItemButton,
   DeleteItemButton,
+  RelatedOrdersContainer,
+  RelatedOrdersElement,
+  StyledOrderStatusContainer,
 } from "./styles";
 import { IGoodsElement } from "components/pages/items";
 import defaultItemImage from "assets/goods/defaultImage.png";
 import { ReactComponent as DeleteIcon } from "assets/adminPanel/delete.svg";
+import { IRelatedOrders } from "./";
+import { orderStatus } from "utils/constants";
 
 interface IProps {
   filteredGoodsData: IGoodsElement[];
   changedItem: IGoodsElement | null;
   setOpenAddGoodsModal: (isOpenModal: boolean) => void;
   deleteItemHandler: (id: string) => void;
+  relatedGoods: IRelatedOrders;
 }
 
 const GoodsList = ({
@@ -25,8 +31,12 @@ const GoodsList = ({
   changedItem,
   setOpenAddGoodsModal,
   deleteItemHandler,
+  relatedGoods,
 }: IProps) => {
   const history = useHistory();
+  const { relatedOrders } = relatedGoods;
+
+  console.log(relatedGoods, "dat");
 
   return (
     <GoodsListContainer>
@@ -35,6 +45,8 @@ const GoodsList = ({
         const [firstElementOfSubGoods] = subGoods;
         const { images } = firstElementOfSubGoods;
         const [mainImage] = images;
+
+        const relatedOrdersForItem = relatedOrders[id];
 
         return (
           <GoodsListElement
@@ -61,6 +73,26 @@ const GoodsList = ({
             </ElementInfo>
             <DeleteItemButton onClick={() => deleteItemHandler(id)}>
               <DeleteIcon />
+              <RelatedOrdersContainer
+                onClick={(e) => e.stopPropagation()}
+                isHidden={!relatedOrdersForItem}
+              >
+                {relatedOrdersForItem &&
+                  relatedOrdersForItem.map((elem) => {
+                    const { id, status } = elem;
+
+                    return (
+                      <RelatedOrdersElement
+                        onClick={() => history.push(`/adminPanel?id=${id}#0`)}
+                      >
+                        <p>{id}</p>
+                        <StyledOrderStatusContainer status={status}>
+                          {orderStatus[status]}
+                        </StyledOrderStatusContainer>
+                      </RelatedOrdersElement>
+                    );
+                  })}
+              </RelatedOrdersContainer>
             </DeleteItemButton>
           </GoodsListElement>
         );

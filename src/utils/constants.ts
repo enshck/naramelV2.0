@@ -1,6 +1,7 @@
 export const orderStatus: { [key: string]: string } = {
   ordered: "заказано",
   accepted: "принято",
+  payed: "оплачено",
   delivered: "доставлено",
   cancelled: "отмененно",
 };

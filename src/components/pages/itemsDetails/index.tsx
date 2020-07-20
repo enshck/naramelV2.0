@@ -1,6 +1,5 @@
 import React, { useMemo, useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { Scrollbars } from "react-custom-scrollbars";
 
 import { IProfile } from "utils/interfaces";
 import firebase from "utils/firebase";

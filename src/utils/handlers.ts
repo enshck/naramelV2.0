@@ -131,6 +131,7 @@ export const counterGoodsForFilter = (goodsData: IGoodsElement[]) => {
               count: 1,
             },
           ];
+
       if (!filterData[filterKey]) {
         filterData[filterKey] = countedValue;
       } else {
@@ -138,8 +139,6 @@ export const counterGoodsForFilter = (goodsData: IGoodsElement[]) => {
           countedValue.forEach((countedValueElem) => {
             if (elem.value === countedValueElem.value) {
               elem.count = elem.count + countedValueElem.count;
-            } else {
-              filterData[filterKey].push(countedValueElem);
             }
           });
         });

@@ -25,10 +25,24 @@ import GoodsListContainer from "./goodsListContainer";
 import EditGoodsContainer from "./editGoodsContainer";
 import { useSelector } from "customHooks/useSelector";
 import AddGoodsModal from "./addGoodsModal";
+import { useAsyncMemo } from "customHooks/useAsyncMemo";
+import { getIdsForGoods } from "axiosRequests/adminPanel";
+import Loading from "components/spinner";
 
 export interface IOption {
   label: string;
   value: string;
+}
+
+interface IRelatedOrderData {
+  id: string;
+  status: "ordered" | "accepted" | "delivered" | "cancelled";
+}
+
+export interface IRelatedOrders {
+  relatedOrders: {
+    [key: string]: IRelatedOrderData[];
+  };
 }
 
 const GoodsContainer = () => {
@@ -39,6 +53,26 @@ const GoodsContainer = () => {
   const { search } = history.location;
   const [goodsData, setGoodsData] = useState<IGoodsElement[]>([]);
   const goodsCategories = useSelector((state) => state.menuCategory);
+
+  const [relatedGoods] = useAsyncMemo<IRelatedOrders>(
+    async () => {
+      const token = (await firebase.auth().currentUser?.getIdTokenResult())
+        ?.token;
+      return token
+        ? getIdsForGoods(token)
+        : new Promise((resolve) => {
+            resolve({
+              relatedGoods: {},
+              relatedOrders: {},
+            });
+          });
+    },
+    [],
+    {
+      relatedOrders: {},
+    }
+  );
+  const relatedGoodsData = relatedGoods.data;
 
   const listOfGoodsCategory = useMemo(() => {
     const goodsCategory: IOption[] = [];
@@ -129,6 +163,10 @@ const GoodsContainer = () => {
     }
   };
 
+  if (relatedGoods.pending) {
+    return <Loading />;
+  }
+
   return (
     <Fragment>
       <AddGoodsModal
@@ -161,6 +199,7 @@ const GoodsContainer = () => {
               changedItem={changedItem}
               setOpenAddGoodsModal={setOpenAddGoodsModal}
               deleteItemHandler={deleteItemHandler}
+              relatedGoods={relatedGoodsData}
             />
           </ItemsContainer>
         </GridElement>

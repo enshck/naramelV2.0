@@ -80,7 +80,7 @@ const Categories = () => {
       relatedOrders: {},
     }
   );
-  const { pending } = relatedGoodsAndOrders;
+  const { pending, error } = relatedGoodsAndOrders;
   const { relatedGoods, relatedOrders } = relatedGoodsAndOrders.data;
 
   const updateCategoriesData = async () => {

@@ -7,6 +7,7 @@ import Header from "./header";
 import Caregories from "./categoryContainer";
 import Filters from "./filtersContainer";
 import Goods from "./goodsContainer";
+import Orders from "./ordersContainer";
 
 const MainContainer = styled.div`
   display: flex;
@@ -43,6 +44,7 @@ const AdminPanel = (props: IProps) => {
     <MainContainer>
       <Header changedTab={changedTab} setChangedTab={changeTabHandler} />
       <TabsContainer>
+        {changedTab === 0 && <Orders />}
         {changedTab === 1 && <Caregories />}
         {changedTab === 2 && <Filters />}
         {changedTab === 3 && <Goods />}

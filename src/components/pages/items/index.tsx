@@ -187,6 +187,8 @@ const Items = () => {
     dispatch(setOpenedModal("orders"));
   };
 
+  // console.log(allGoods, "allGOods");
+
   if (isFetching) {
     return <Spinner />;
   }

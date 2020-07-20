@@ -1,6 +1,7 @@
 import styled, { css } from "styled-components";
 
 import { BuyButton } from "utils/styles";
+import { OrderStatusContainer } from "utils/styles";
 
 export const MainContainer = styled.div`
   display: grid;
@@ -109,6 +110,57 @@ export const AddItemButton = styled(BuyButton)`
   margin-top: 20px;
 `;
 
+export const RelatedOrdersContainer = styled.div`
+  position: absolute;
+  opacity: 0;
+  background: #fff;
+  right: 30px;
+  z-index: 9999;
+  transition: opacity 0.3s ease-in;
+  overflow: auto;
+  width: 0;
+  height: 0;
+  padding: 0;
+  max-height: 200px;
+
+  ${({ isHidden }: { isHidden?: boolean }) =>
+    isHidden &&
+    css`
+      display: none;
+    `}
+`;
+
+export const RelatedOrdersElement = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+  border: 1px solid #dbdcde;
+  padding: 10px;
+  :first-child {
+    margin-top: 0;
+  }
+  :hover {
+    color: ${(props) => props.theme.mainButtonColor};
+  }
+
+  p {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    max-width: 230px;
+    margin: 0;
+  }
+`;
+
+export const StyledOrderStatusContainer = styled(OrderStatusContainer)`
+  padding: 5px;
+  border-radius: 5px;
+  text-transform: capitalize;
+  margin-left: 10px;
+`;
+
 export const DeleteItemButton = styled.div`
   width: 30px;
   height: 30px;
@@ -122,6 +174,16 @@ export const DeleteItemButton = styled.div`
   top: 10px;
   right: 10px;
   stroke: ${(props) => props.theme.dangerColor};
+
+  :hover {
+    ${RelatedOrdersContainer} {
+      opacity: 1;
+      width: auto;
+      height: auto;
+      border: 1px solid #dbdcde;
+      padding: 5px;
+    }
+  }
 `;
 
 export const EmptyEditGoodsContainer = styled.div`

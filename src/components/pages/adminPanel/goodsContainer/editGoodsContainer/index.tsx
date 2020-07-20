@@ -506,8 +506,6 @@ const EditGoodsContainer = ({
     setItemDataClone(itemClone);
   };
 
-  console.log(itemDataClone, "dat");
-
   if (isFetching) {
     return (
       <SpinnerMainContainer>

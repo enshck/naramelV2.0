@@ -46,7 +46,8 @@ export const StyledSelectorOptions = styled(GoodsStyledSelectorOptions)``;
 export const DescriptionMainContainer = styled.div`
   margin: 70px 0 0 48px;
   padding-bottom: 10px;
-
+  box-sizing: border-box;
+  max-width: 100%;
   h1 {
     font-size: 24px;
     color: #333;
@@ -67,4 +68,5 @@ export const DescriptionGridContainer = styled.div`
   column-count: 3;
   column-gap: 20px;
   margin-top: 20px;
+  word-break: break-all;
 `;
