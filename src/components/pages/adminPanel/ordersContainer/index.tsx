@@ -1,17 +1,20 @@
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo, useState, useEffect, useCallback } from "react";
 import { useHistory } from "react-router-dom";
 import qs from "qs";
 
-import { MainContainer } from "./styles";
+import { MainContainer, GridElement } from "./styles";
 import { useAsyncMemo } from "customHooks/useAsyncMemo";
 import { IOrderData } from "utils/interfaces";
 import firebase from "utils/firebase";
 import { getOrders, IGetOrdersParams } from "axiosRequests/adminPanel";
+import { debounce } from "utils/handlers";
+import ItemsList from "./itemsList";
 
 const OrdersContainer = () => {
   const history = useHistory();
   const { search } = history.location;
-  const [filters, setFlters] = useState<IGetOrdersParams>({});
+  const [filters, setFilters] = useState<IGetOrdersParams>({});
+  const debounceForItemSearch = useCallback(debounce(800), []);
 
   const [ordersData] = useAsyncMemo<IOrderData[]>(
     async () => {
@@ -27,7 +30,7 @@ const OrdersContainer = () => {
     []
   );
 
-  // console.log(ordersData, "data");
+  console.log(filters, "data");
 
   //   const changedItem = useMemo(() => {
   //     const { id } = qs.parse(search.slice(1));
@@ -40,7 +43,24 @@ const OrdersContainer = () => {
   //     return changedItemData;
   //   }, [filteredGoodsData, search]);
 
-  return <MainContainer>ordersData</MainContainer>;
+  return (
+    <MainContainer>
+      <GridElement>
+        <ItemsList filters={filters} setFilters={setFilters} />
+      </GridElement>
+      <GridElement>
+        {/* {changedItem ? (
+        <EditGoodsContainer
+          changedItem={changedItem}
+          listOfGoodsCategory={listOfGoodsCategory}
+          setGoodsData={setGoodsData}
+        />
+      ) : (
+        <EmptyEditGoodsContainer>Выберите товар</EmptyEditGoodsContainer>
+      )} */}
+      </GridElement>
+    </MainContainer>
+  );
 };
 
 export default OrdersContainer;

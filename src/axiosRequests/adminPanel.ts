@@ -69,7 +69,12 @@ export const deleteGoods = async (
     });
 };
 
-type StatusType = "ordered" | "accepted" | "payed" | "delivered" | "cancelled";
+export type StatusType =
+  | "ordered"
+  | "accepted"
+  | "payed"
+  | "delivered"
+  | "cancelled";
 
 export interface IGetOrdersParams {
   searchString?: string;

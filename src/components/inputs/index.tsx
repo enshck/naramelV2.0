@@ -50,6 +50,8 @@ interface IProps {
   titleForFileInput?: string | ReactElement;
   mask?: string;
   maskChar?: null;
+  min?: string;
+  max?: string;
 }
 
 const Input = ({
@@ -77,6 +79,8 @@ const Input = ({
   titleForFileInput,
   mask,
   maskChar,
+  min,
+  max,
 }: IProps) => {
   return (
     <MainContainer>
@@ -105,6 +109,8 @@ const Input = ({
           titleForFileInput={titleForFileInput}
           mask={mask && mask}
           maskChar={maskChar && maskChar}
+          min={min && min}
+          max={max && max}
         />
       </InputContainer>
       {errors && errors[name] && <ErrorMessage>{errors[name]}</ErrorMessage>}
