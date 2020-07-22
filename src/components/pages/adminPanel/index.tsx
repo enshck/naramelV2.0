@@ -17,7 +17,7 @@ const MainContainer = styled.div`
 `;
 
 const TabsContainer = styled.div`
-  max-height: 100%;
+  height: 100%;
   display: flex;
 `;
 

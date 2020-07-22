@@ -1,5 +1,7 @@
 import { ICommonGoodsElement, ISubGoodsElement } from "components/pages/items";
 
+import { StatusType } from "axiosRequests/adminPanel";
+
 export interface IGoodsData {
   goodId: string;
   goodName: string;
@@ -78,4 +80,31 @@ export interface IRootState {
   isLogged: boolean;
   menuCategory: ICategory[];
   filters: IFilter[];
+}
+
+export interface IItemInCompletedOrder {
+  count: number;
+  elementValue: {
+    value: string;
+    type: string;
+  };
+  id: string;
+  images: string[];
+  name: string;
+}
+
+export interface ICustomerData {
+  city: string;
+  name: string;
+  patronymic: string;
+  phone: string;
+  warehouse: string;
+}
+
+export interface ICompletedOrderData {
+  customerData: ICustomerData;
+  date: string;
+  id: string;
+  ordersData: IItemInCompletedOrder[];
+  status: StatusType;
 }

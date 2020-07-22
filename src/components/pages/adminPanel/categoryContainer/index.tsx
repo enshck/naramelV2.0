@@ -32,10 +32,11 @@ import { ReactComponent as PlusIcon } from "assets/adminPanel/plus.svg";
 import { getIdsForCategories, deleteGoods } from "axiosRequests/adminPanel";
 import { orderStatus } from "utils/constants";
 import Spinner from "components/spinner";
+import { StatusType } from "axiosRequests/adminPanel";
 
 interface IRelatedOrderData {
   id: string;
-  status: "ordered" | "accepted" | "delivered" | "cancelled";
+  status: StatusType;
 }
 
 interface IRelatedGoodsAndOrders {

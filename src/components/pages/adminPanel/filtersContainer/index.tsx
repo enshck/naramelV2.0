@@ -25,7 +25,11 @@ import firebase from "utils/firebase";
 import { useAsyncMemo } from "customHooks/useAsyncMemo";
 import { useDispatch } from "react-redux";
 import { setFilters } from "store/actions";
-import { getIdsForFilters, deleteGoods } from "axiosRequests/adminPanel";
+import {
+  getIdsForFilters,
+  deleteGoods,
+  StatusType,
+} from "axiosRequests/adminPanel";
 import { orderStatus } from "utils/constants";
 import EditFiltersPopover from "./editFilterPopover";
 import { ReactComponent as PlusIcon } from "assets/adminPanel/plus.svg";
@@ -48,16 +52,9 @@ interface IOrderData {
   id: string;
 }
 
-interface IComplateOrders {
-  customerData: ICustomerData;
-  date: string;
-  id: string;
-  ordersData: IOrderData;
-}
-
 interface IRelatedOrderData {
   id: string;
-  status: "ordered" | "accepted" | "delivered" | "cancelled";
+  status: StatusType;
 }
 
 interface IRelatedGoodsAndOrders {

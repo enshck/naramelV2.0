@@ -26,7 +26,7 @@ import EditGoodsContainer from "./editGoodsContainer";
 import { useSelector } from "customHooks/useSelector";
 import AddGoodsModal from "./addGoodsModal";
 import { useAsyncMemo } from "customHooks/useAsyncMemo";
-import { getIdsForGoods } from "axiosRequests/adminPanel";
+import { getIdsForGoods, StatusType } from "axiosRequests/adminPanel";
 import Loading from "components/spinner";
 
 export interface IOption {
@@ -36,7 +36,7 @@ export interface IOption {
 
 interface IRelatedOrderData {
   id: string;
-  status: "ordered" | "accepted" | "delivered" | "cancelled";
+  status: StatusType;
 }
 
 export interface IRelatedOrders {

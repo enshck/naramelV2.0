@@ -1,6 +1,9 @@
 import React, { BaseSyntheticEvent } from "react";
 import styled, { createGlobalStyle, css } from "styled-components";
 
+
+import { StatusType } from "axiosRequests/adminPanel";
+
 export const GlobalStyle = createGlobalStyle`
 * {
     font-family: "Montserrat", "Proxima Nova Regular", "Proxima Nova Thin", "Roboto",
@@ -195,7 +198,7 @@ export const StyledInput = styled.input`
 `;
 
 interface IOrderStatusContainer {
-  status: "ordered" | "accepted" | "delivered" | "cancelled";
+  status: StatusType;
 }
 
 export const OrderStatusContainer = styled.div<IOrderStatusContainer>`
