@@ -1,9 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  ReactType,
-  BaseSyntheticEvent,
-} from "react";
+import React, { useState, ReactType, BaseSyntheticEvent } from "react";
 import { ClickAwayListener } from "@material-ui/core";
 import { Scrollbars } from "react-custom-scrollbars";
 
@@ -50,8 +45,8 @@ const DynamicInput = ({
         <Input
           StyledComponent={StyledComponent}
           onInput={(e: BaseSyntheticEvent) => searchHandler(e.target.value)}
-          onChange={() => {}}
-          onClick={() => setVisibleOptionsBox(true)}
+          onChange={() => !isVisibleOptionsBox && setVisibleOptionsBox(true)}
+          onFocus={() => setVisibleOptionsBox(true)}
           name={name}
           value={value}
           placeholder={placeholder}

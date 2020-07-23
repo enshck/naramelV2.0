@@ -41,6 +41,7 @@ interface IProps {
   onChange?: (...args: any[]) => void;
   autoComplete?: string;
   onInput?: (e: BaseSyntheticEvent, name: string) => void;
+  onFocus?: (e: BaseSyntheticEvent) => void;
   maxLength?: string;
   multiple?: boolean;
   autoFocus?: boolean;
@@ -81,6 +82,7 @@ const Input = ({
   maskChar,
   min,
   max,
+  onFocus,
 }: IProps) => {
   return (
     <MainContainer>
@@ -111,6 +113,7 @@ const Input = ({
           maskChar={maskChar && maskChar}
           min={min && min}
           max={max && max}
+          onFocus={onFocus && onFocus}
         />
       </InputContainer>
       {errors && errors[name] && <ErrorMessage>{errors[name]}</ErrorMessage>}

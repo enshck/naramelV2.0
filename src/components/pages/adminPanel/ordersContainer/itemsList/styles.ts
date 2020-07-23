@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 import {
   GoodsStyledSelectorInput,
@@ -80,6 +80,12 @@ export const OrderElement = styled.div`
   :first-child {
     margin-top: 0;
   }
+
+  ${({ isChanged }: { isChanged?: boolean }) =>
+    isChanged &&
+    css`
+      border-color: ${(props) => props.theme.mainButtonColor};
+    `}
 `;
 
 export const StyledOrderStatusContainer = styled(OrderStatusContainer)`

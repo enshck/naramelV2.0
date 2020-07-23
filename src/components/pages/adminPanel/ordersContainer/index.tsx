@@ -1,5 +1,4 @@
 import React, { useMemo, useState } from "react";
-import { useHistory } from "react-router-dom";
 import qs from "qs";
 
 import { MainContainer, GridElement } from "./styles";
@@ -8,12 +7,16 @@ import { ICompletedOrderData } from "utils/interfaces";
 import firebase from "utils/firebase";
 import { getOrders, IGetOrdersParams } from "axiosRequests/adminPanel";
 import ItemsList from "./itemsList";
+import OrderContainer from "./orderContainer";
 
 const OrdersContainer = () => {
-  const history = useHistory();
   // const { search } = history.location;
+  const { search } = window.location;
   const [filters, setFilters] = useState<IGetOrdersParams>({});
-  const [filterIdInputData, setFilterIdInputData] = useState<string>("");
+  const [filtersForInputs, setFiltersForInputs] = useState<IGetOrdersParams>(
+    {}
+  );
+  // const [filterIdInputData, setFilterIdInputData] = useState<string>("");
 
   const [ordersData] = useAsyncMemo<ICompletedOrderData[]>(
     async () => {
@@ -30,7 +33,6 @@ const OrdersContainer = () => {
   );
 
   const changedOrder = useMemo(() => {
-    const { search } = history.location;
     const { id } = qs.parse(search.slice(1));
     const { data } = ordersData;
 
@@ -42,7 +44,7 @@ const OrdersContainer = () => {
       }
     }
     return null;
-  }, [ordersData, history]);
+  }, [ordersData, search]);
 
   // useEffect(() => {
   //   const { search } = history.location;
@@ -72,30 +74,25 @@ const OrdersContainer = () => {
   //     return changedItemData;
   //   }, [filteredGoodsData, search]);
 
-  console.log(changedOrder, "adta");
+  // console.log(filters, filtersForInputs, "filters");
 
   return (
     <MainContainer>
       <GridElement>
         <ItemsList
-          filters={filters}
           setFilters={setFilters}
           ordersData={ordersData.data}
-          filterIdInputData={filterIdInputData}
-          setFilterIdInputData={setFilterIdInputData}
+          filtersForInputs={filtersForInputs}
+          setFiltersForInputs={setFiltersForInputs}
+          changedOrder={changedOrder}
         />
       </GridElement>
       <GridElement>
-        <div>выберите товар</div>
-        {/* {changedItem ? (
-        <EditGoodsContainer
-          changedItem={changedItem}
-          listOfGoodsCategory={listOfGoodsCategory}
-          setGoodsData={setGoodsData}
-        />
-      ) : (
-        <EmptyEditGoodsContainer>Выберите товар</EmptyEditGoodsContainer>
-      )} */}
+        {changedOrder ? (
+          <OrderContainer changedOrder={changedOrder} />
+        ) : (
+          <div>выберите товар</div>
+        )}
       </GridElement>
     </MainContainer>
   );

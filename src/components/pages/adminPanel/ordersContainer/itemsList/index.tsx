@@ -28,11 +28,11 @@ import { StatusType } from "axiosRequests/adminPanel";
 import { ICompletedOrderData } from "utils/interfaces";
 
 interface IProps {
-  filters: IGetOrdersParams;
   setFilters: (filters: IGetOrdersParams) => void;
   ordersData: ICompletedOrderData[];
-  filterIdInputData: string;
-  setFilterIdInputData: (filterId: string) => void;
+  filtersForInputs: IGetOrdersParams;
+  setFiltersForInputs: (newValue: IGetOrdersParams) => void;
+  changedOrder: ICompletedOrderData | null;
 }
 
 interface IOption {
@@ -48,49 +48,61 @@ const orderStatus: { [key: string]: string } = {
 type IRangeOfDate = [string?, string?];
 
 const ItemsList = ({
-  filters,
   setFilters,
   ordersData,
-  filterIdInputData,
-  setFilterIdInputData,
+  changedOrder,
+  filtersForInputs,
+  setFiltersForInputs,
 }: IProps) => {
   const history = useHistory();
   const [minOfDateToInput, maxOfDateToInput]: IRangeOfDate = useMemo(() => {
-    const { dateFrom } = filters;
+    const { dateFrom } = filtersForInputs;
 
     if (dateFrom) {
-      const toDateMax = moment(dateFrom).add("M", 6).format("YYYY-MM-DD");
+      const toDateMax = moment(dateFrom).add(6, "M").format("YYYY-MM-DD");
       const toDateMin = moment(dateFrom)
-        .add("M", 1)
-        .add("d", 1)
+        .add(1, "M")
+        .add(1, "d")
         .format("YYYY-MM-DD");
       return [toDateMin, toDateMax];
     }
 
     return [undefined, undefined];
-  }, [filters]);
+  }, [filtersForInputs]);
   const [minOfDateFromInput, maxOfDateFromInput]: IRangeOfDate = useMemo(() => {
-    const { dateTo } = filters;
+    const { dateTo } = filtersForInputs;
 
     if (dateTo) {
-      const fromDateMax = moment(dateTo).add("d", -1).format("YYYY-MM-DD");
-      const fromDateMin = moment(dateTo).add("M", -6).format("YYYY-MM-DD");
+      const fromDateMax = moment(dateTo).add(-1, "d").format("YYYY-MM-DD");
+      const fromDateMin = moment(dateTo).add(-6, "M").format("YYYY-MM-DD");
 
       return [fromDateMin, fromDateMax];
     }
 
     return [undefined, undefined];
-  }, [filters]);
+  }, [filtersForInputs]);
 
   const onInputSearch = (e: BaseSyntheticEvent) => {
-    setFilterIdInputData(e.target.value);
+    const { value } = e.target;
+
+    const newFiltersValue = {
+      ...filtersForInputs,
+    };
+
+    if (value.length > 0) {
+      newFiltersValue.searchString = value;
+    } else {
+      delete newFiltersValue.searchString;
+    }
+
+    setFiltersForInputs(newFiltersValue);
   };
 
   const onChangeFilter = (newValue: IOption) => {
     const value = newValue.value;
 
     const newFiltersValue = {
-      ...filters,
+      ...filtersForInputs,
     };
 
     if (value.length > 0) {
@@ -99,7 +111,7 @@ const ItemsList = ({
       delete newFiltersValue.status;
     }
 
-    setFilters(newFiltersValue);
+    setFiltersForInputs(newFiltersValue);
   };
 
   const onChangeDate = (e: BaseSyntheticEvent) => {
@@ -108,32 +120,21 @@ const ItemsList = ({
     const name: "dateFrom" | "dateTo" = e.target.name;
 
     const newFiltersValue = {
-      ...filters,
+      ...filtersForInputs,
     };
 
     newFiltersValue[name] = value;
 
-    setFilters(newFiltersValue);
+    setFiltersForInputs(newFiltersValue);
   };
 
   const submitFilterHandler = () => {
-    if (filterIdInputData.length < 1) {
-      const cloneOfFilters = {
-        ...filters,
-      };
-      delete cloneOfFilters.searchString;
-      setFilters(cloneOfFilters);
-    } else {
-      setFilters({
-        ...filters,
-        searchString: filterIdInputData,
-      });
-    }
+    setFilters(filtersForInputs);
   };
 
   const clearFilterHandler = () => {
     setFilters({});
-    setFilterIdInputData("");
+    setFiltersForInputs({});
   };
 
   return (
@@ -147,13 +148,10 @@ const ItemsList = ({
             StyledComponent={StyledInput}
             name={"searchValue"}
             type={"text"}
-            value={filterIdInputData}
+            value={filtersForInputs?.searchString || ""}
             onInput={onInputSearch}
           />
         </InputContainer>
-        <ClearFilterButton onClick={submitFilterHandler}>
-          Фильтровать по id
-        </ClearFilterButton>
         <InputContainer>
           <StyledSearchLabel htmlFor={"searchValue"}>
             Поиск по статусу заказа
@@ -168,10 +166,10 @@ const ItemsList = ({
                 value: elem,
               }))}
               changedValue={{
-                label: filters.status
-                  ? orderStatus[filters.status]
+                label: filtersForInputs.status
+                  ? orderStatus[filtersForInputs.status]
                   : "Фильтр не выбран",
-                value: filters.status || "",
+                value: filtersForInputs.status || "",
               }}
               setNewValue={onChangeFilter}
               arrowIcon={arrowDown}
@@ -184,7 +182,7 @@ const ItemsList = ({
             StyledComponent={StyledInput}
             name={"dateFrom"}
             type={"date"}
-            value={filters?.dateFrom || ""}
+            value={filtersForInputs?.dateFrom || ""}
             onInput={onChangeDate}
             min={minOfDateFromInput}
             max={maxOfDateFromInput}
@@ -196,14 +194,17 @@ const ItemsList = ({
             StyledComponent={StyledInput}
             name={"dateTo"}
             type={"date"}
-            value={filters?.dateTo || ""}
+            value={filtersForInputs?.dateTo || ""}
             onInput={onChangeDate}
             min={minOfDateToInput}
             max={maxOfDateToInput}
           />
         </InputContainer>
         <ClearFilterButton onClick={clearFilterHandler}>
-          Очистить фильтр
+          Очистить фильтры
+        </ClearFilterButton>
+        <ClearFilterButton onClick={submitFilterHandler}>
+          Применить фильтры
         </ClearFilterButton>
       </SearchContainer>
       <OrdersList>
@@ -212,6 +213,7 @@ const ItemsList = ({
 
           return (
             <OrderElement
+              isChanged={Boolean(changedOrder && id === changedOrder.id)}
               onClick={() =>
                 history.push({
                   pathname: "/adminPanel",
