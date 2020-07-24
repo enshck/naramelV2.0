@@ -91,10 +91,14 @@ export interface IItemInCompletedOrder {
   id: string;
   images: string[];
   name: string;
+  price: number;
 }
 
 export interface ICustomerData {
-  city: string;
+  city: {
+    cityId: string;
+    cityName: string;
+  };
   name: string;
   patronymic: string;
   phone: string;

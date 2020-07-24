@@ -3,12 +3,7 @@ import React, { BaseSyntheticEvent, useState, useEffect } from "react";
 import Form from "./form";
 import { ICompletedOrderData } from "utils/interfaces";
 import { StatusType } from "axiosRequests/adminPanel";
-import {
-  getCities,
-  getWarehouses,
-  getWarehousesByName,
-  getDat,
-} from "axiosRequests/orders";
+import { getCities, getWarehouses } from "axiosRequests/orders";
 
 export interface IOption {
   label: string;
@@ -22,29 +17,23 @@ interface IProps {
 
 const CustomerDataForm = ({ orderClone, setOrderClone }: IProps) => {
   const { city } = orderClone.customerData;
-  const [dynamicCitySearchValue, setDynamicCitySearchValue] = useState(city);
+  const [dynamicCitySearchValue, setDynamicCitySearchValue] = useState(
+    city.cityName
+  );
   const [citiesOptions, setCitiesOptions] = useState<IOption[]>([]);
   const [warehousesOptions, setWarehousesOptions] = useState<IOption[]>([]);
 
   useEffect(() => {
-    // const { value } = changedCity;
-    // console.log(citiesOptions, "dat");
-
-    if (city.length > 0) {
-      getDat(city).then((result) => {
+    if (city) {
+      getWarehouses(city.cityId).then((result) => {
         const { data } = result;
-
-        console.log(result);
-
-        // console.log(result, "dat");
-        // const warehousesData = Array.isArray(data) ? data : [];
-
-        // setWarehousesOptions(
-        //   warehousesData.map((elem) => ({
-        //     label: elem.DescriptionRu,
-        //     value: elem.DescriptionRu,
-        //   }))
-        // );
+        const warehousesData = Array.isArray(data) ? data : [];
+        setWarehousesOptions(
+          warehousesData.map((elem) => ({
+            label: elem.DescriptionRu,
+            value: elem.DescriptionRu,
+          }))
+        );
       });
     }
   }, [city]);
@@ -61,7 +50,10 @@ const CustomerDataForm = ({ orderClone, setOrderClone }: IProps) => {
 
     setOrderClone({
       ...orderClone,
-      [name]: value,
+      customerData: {
+        ...orderClone.customerData,
+        [name]: value,
+      },
     });
   };
 
@@ -91,21 +83,24 @@ const CustomerDataForm = ({ orderClone, setOrderClone }: IProps) => {
       ...orderClone,
       customerData: {
         ...orderClone.customerData,
-        city: data.value,
+        city: {
+          cityId: data.value,
+          cityName: data.label,
+        },
         warehouse: "",
       },
     });
   };
 
   const onChangeWarehouse = (value: IOption) => {
-    console.log(value, "value");
-    // setChangedWarehouse({
-    //   ...value,
-    //   label: value.label.slice(0, 35) + "...",
-    // });
+    setOrderClone({
+      ...orderClone,
+      customerData: {
+        ...orderClone.customerData,
+        warehouse: value.label,
+      },
+    });
   };
-
-  console.log(dynamicCitySearchValue, "date");
 
   return (
     <Form

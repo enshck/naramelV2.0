@@ -155,7 +155,7 @@ const OrdersModal = ({ open, onClose }: IProps) => {
         changedWarehouse.value.length >= 1
       ) {
         const orders = ordersData.map((elem) => {
-          const { count, elementValue, id, name, images } = elem;
+          const { count, elementValue, id, name, images, price } = elem;
 
           return {
             count,
@@ -163,6 +163,7 @@ const OrdersModal = ({ open, onClose }: IProps) => {
             id,
             name,
             images,
+            price,
           };
         });
         const id = uuidv1();
@@ -178,7 +179,10 @@ const OrdersModal = ({ open, onClose }: IProps) => {
               name,
               patronymic,
               phone,
-              city: changedCity.label,
+              city: {
+                cityName: changedCity.label,
+                cityId: changedCity.value,
+              },
               warehouse: changedWarehouse.value,
             },
             status: "ordered",

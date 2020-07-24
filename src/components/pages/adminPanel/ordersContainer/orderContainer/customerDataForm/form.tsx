@@ -2,9 +2,6 @@ import React, { BaseSyntheticEvent } from "react";
 
 import {
   MainForm,
-  StyledSelectorOptions,
-  StyledSelectorOption,
-  StyledSelectorInput,
   InputContainer,
   StyledInput,
   StyledPhoneInput,
@@ -12,6 +9,7 @@ import {
   StyledOption,
   StyledSearchList,
   SelectorInput,
+  Label,
 } from "./styles";
 import Selector from "components/inputs/selector";
 import { orderStatus } from "utils/constants";
@@ -49,10 +47,11 @@ const Form = ({
   return (
     <MainForm>
       <InputContainer>
+        <Label>Статус заказа</Label>
         <Selector
-          StyledInputContainer={StyledSelectorInput}
-          StyledOptionContainer={StyledSelectorOptions}
-          StyledOption={StyledSelectorOption}
+          StyledInputContainer={SelectorInput}
+          StyledOptionContainer={StyledSearchList}
+          StyledOption={StyledOption}
           options={Object.keys(orderStatus).map((elem) => ({
             label: orderStatus[elem],
             value: elem,
@@ -66,6 +65,7 @@ const Form = ({
         />
       </InputContainer>
       <InputContainer>
+        <Label>Имя</Label>
         <Input
           StyledComponent={StyledInput}
           name={"name"}
@@ -75,6 +75,7 @@ const Form = ({
         />
       </InputContainer>
       <InputContainer>
+        <Label>Отчество</Label>
         <Input
           StyledComponent={StyledInput}
           name={"patronymic"}
@@ -84,11 +85,12 @@ const Form = ({
         />
       </InputContainer>
       <InputContainer>
+        <Label>Телефон</Label>
         <Input
           StyledComponent={StyledPhoneInput}
           name={"phone"}
           type={"text"}
-          defaultValue={phone}
+          value={phone}
           onInput={onInputHandler}
           mask={"+38 (999) 999 99 99"}
           maskChar={null}
@@ -96,6 +98,7 @@ const Form = ({
         />
       </InputContainer>
       <InputContainer>
+        <Label>Город</Label>
         <DynamicSearcher
           StyledComponent={DynamicSearchInput}
           StyledSearchList={StyledSearchList}
@@ -108,6 +111,7 @@ const Form = ({
         />
       </InputContainer>
       <InputContainer>
+        <Label>Отделение</Label>
         <Selector
           StyledInputContainer={SelectorInput}
           StyledOptionContainer={StyledSearchList}

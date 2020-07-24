@@ -1,11 +1,6 @@
 import styled, { css } from "styled-components";
 import InputMask from "react-input-mask";
 
-import {
-  GoodsStyledSelectorInput,
-  GoodsStyledSelectorOption,
-  GoodsStyledSelectorOptions,
-} from "utils/styles";
 import { StyledInput as Input } from "utils/styles";
 
 export const MainForm = styled.form`
@@ -14,17 +9,14 @@ export const MainForm = styled.form`
 
 export const MainContainer = styled.form``;
 
-export const StyledSelectorInput = styled(GoodsStyledSelectorInput)``;
-
-export const StyledSelectorOption = styled(GoodsStyledSelectorOption)``;
-
-export const StyledSelectorOptions = styled(GoodsStyledSelectorOptions)`
-  overflow-y: initial;
+export const Label = styled.div`
+  font-size: 14px;
+  margin-bottom: 5px;
 `;
 
 export const InputContainer = styled.div`
   max-width: 400px;
-  margin: 0 auto;
+  margin: 20px auto 0 auto;
 `;
 
 export const StyledInput = styled.input`
@@ -94,6 +86,7 @@ export const SelectorInput = styled.div`
   outline: none;
   overflow: hidden;
   font-size: 12px;
+
   span {
     width: 30%;
     max-width: 50px;
