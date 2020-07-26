@@ -1,25 +1,28 @@
-import React from "react";
+import React, { BaseSyntheticEvent } from "react";
 
-import { FilterMainContainer, StyledInput } from "./styles";
+import { FilterMainContainer, StyledInput, StyledLabel } from "./styles";
 import Input from "components/inputs";
 
 interface IProps {
   filterSearchValue: string;
-  setFilterSearchValue: (newValue: string) => void;
+  setFilterValueHandler: (e: BaseSyntheticEvent) => void;
 }
 
 const FilterContainer = ({
   filterSearchValue,
-  setFilterSearchValue,
+  setFilterValueHandler,
 }: IProps) => {
   return (
     <FilterMainContainer>
+      <StyledLabel htmlFor={"filterSearchValue"}>
+        Поиск по имени товарам
+      </StyledLabel>
       <Input
         StyledComponent={StyledInput}
         name={"filterSearchValue"}
         type={"text"}
-        value={filterSearchValue}
-        onInput={(e) => setFilterSearchValue(e.target.value)}
+        defaultValue={filterSearchValue}
+        onInput={setFilterValueHandler}
       />
     </FilterMainContainer>
   );

@@ -13,7 +13,7 @@ interface IProps {
 
 const OrderContainer = ({ changedOrder }: IProps) => {
   const [orderClone, setOrderClone] = useState(cloneDeep(changedOrder));
-  const [isOpenAddGoodsModal, setOpenAddGoodsModal] = useState(true);
+  const [isOpenAddGoodsModal, setOpenAddGoodsModal] = useState(false);
 
   useEffect(() => {
     setOrderClone(cloneDeep(changedOrder));
@@ -25,14 +25,16 @@ const OrderContainer = ({ changedOrder }: IProps) => {
 
   return (
     <MainContainer>
+      <AddGoodsModal
+        open={isOpenAddGoodsModal}
+        onCloseAddGoodsModal={onCloseAddGoodsModal}
+        orderClone={orderClone}
+        setOrderClone={setOrderClone}
+      />
       <CustomerDataForm orderClone={orderClone} setOrderClone={setOrderClone} />
       <OrdersContainer
         changedOrder={changedOrder}
         setOrderClone={setOrderClone}
-      />
-      <AddGoodsModal
-        open={isOpenAddGoodsModal}
-        onCloseAddGoodsModal={onCloseAddGoodsModal}
       />
       <SubmitButtonContainer>
         <SubmitButton onClick={() => setOpenAddGoodsModal(true)}>

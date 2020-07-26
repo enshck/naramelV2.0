@@ -10,13 +10,11 @@ import ItemsList from "./itemsList";
 import OrderContainer from "./orderContainer";
 
 const OrdersContainer = () => {
-  // const { search } = history.location;
   const { search } = window.location;
   const [filters, setFilters] = useState<IGetOrdersParams>({});
   const [filtersForInputs, setFiltersForInputs] = useState<IGetOrdersParams>(
     {}
   );
-  // const [filterIdInputData, setFilterIdInputData] = useState<string>("");
 
   const [ordersData] = useAsyncMemo<ICompletedOrderData[]>(
     async () => {
@@ -45,36 +43,6 @@ const OrdersContainer = () => {
     }
     return null;
   }, [ordersData, search]);
-
-  // useEffect(() => {
-  //   const { search } = history.location;
-  //   const params = qs.parse(search.slice(1));
-
-  //   setFilters(params);
-  // }, [history]);
-
-  // useEffect(() => {
-  //   history.push({
-  //     pathname: "/adminPanel",
-  //     search: qs.stringify(filters),
-  //     hash: "#0",
-  //   });
-  // }, [filters]);
-
-  // console.log(filters, "data");
-
-  //   const changedItem = useMemo(() => {
-  //     const { id } = qs.parse(search.slice(1));
-  //     const changedItemData = filteredGoodsData.find((elem) => elem.id === id);
-
-  //     if (!changedItemData) {
-  //       return null;
-  //     }
-
-  //     return changedItemData;
-  //   }, [filteredGoodsData, search]);
-
-  // console.log(filters, filtersForInputs, "filters");
 
   return (
     <MainContainer>
