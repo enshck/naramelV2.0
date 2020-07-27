@@ -22,16 +22,18 @@ export interface ICommonGoodsElement {
   name: string;
   subName: string;
   filters: {
-    [key: string]: any;
+    [key: string]: string | string[];
   };
 }
+
+type ImageElement = string | File;
 
 export interface ISubGoodsElement {
   elementValue: {
     type: string;
     value: string;
   };
-  images: string[];
+  images: ImageElement[];
   price: number;
 }
 
@@ -133,7 +135,8 @@ const Items = () => {
     const searchData = search.slice(1);
     const parsedQuery = querystring.parse(searchData);
     if (allGoods.length > 0 && !parsedQuery.price) {
-      const allGoodsPrices = allGoods.map((elem) => elem.filters.price);
+      const allGoodsPrices = allGoods.map((elem) => +elem.filters.price);
+
       setMinAndMaxPrice({
         min: Math.min(...allGoodsPrices),
         max: Math.max(...allGoodsPrices),
@@ -183,6 +186,8 @@ const Items = () => {
     });
     dispatch(setOpenedModal("orders"));
   };
+
+  // console.log(allGoods, "allGOods");
 
   if (isFetching) {
     return <Spinner />;

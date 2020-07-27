@@ -10,5 +10,9 @@ export const Container = styled.div`
   max-width: 1600px;
   padding: 0 40px;
   width: 100%;
-  height: 100%;
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  margin: 0 auto;
 `;

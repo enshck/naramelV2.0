@@ -5,6 +5,7 @@ import { ThemeProvider } from "styled-components";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
+import { GlobalStyle } from "../utils/styles";
 import store from "../store";
 import Routes from "./Routes";
 
@@ -17,6 +18,7 @@ const theme = {
   spreadColor: "#ebebeb",
   inputsBorderColor: "#ccc",
   blockedColor: "#C4C4C4",
+  dangerColor: "#FF3E3E",
 };
 
 const App = () => {
@@ -24,6 +26,7 @@ const App = () => {
     <Provider store={store}>
       <ThemeProvider theme={theme}>
         <BrowserRouter>
+          <GlobalStyle />
           <Routes />
         </BrowserRouter>
       </ThemeProvider>

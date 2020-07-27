@@ -41,6 +41,7 @@ interface IProps {
   onChange?: (...args: any[]) => void;
   autoComplete?: string;
   onInput?: (e: BaseSyntheticEvent, name: string) => void;
+  onFocus?: (e: BaseSyntheticEvent) => void;
   maxLength?: string;
   multiple?: boolean;
   autoFocus?: boolean;
@@ -50,6 +51,8 @@ interface IProps {
   titleForFileInput?: string | ReactElement;
   mask?: string;
   maskChar?: null;
+  min?: string;
+  max?: string;
 }
 
 const Input = ({
@@ -77,6 +80,9 @@ const Input = ({
   titleForFileInput,
   mask,
   maskChar,
+  min,
+  max,
+  onFocus,
 }: IProps) => {
   return (
     <MainContainer>
@@ -105,6 +111,9 @@ const Input = ({
           titleForFileInput={titleForFileInput}
           mask={mask && mask}
           maskChar={maskChar && maskChar}
+          min={min && min}
+          max={max && max}
+          onFocus={onFocus && onFocus}
         />
       </InputContainer>
       {errors && errors[name] && <ErrorMessage>{errors[name]}</ErrorMessage>}

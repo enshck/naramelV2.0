@@ -11,19 +11,19 @@ const SpinnerMainContainer = styled.div`
     }
   }
 
-  width: 80px;
-  height: 80px;
+  width: 50px;
+  height: 50px;
 
   border: 2px solid #f3f3f3;
   border-top: 3px solid #f25a41;
   border-radius: 100%;
 
   position: absolute;
-  top: 0;
+  top: calc(50% - 25px);
   bottom: 0;
-  left: 0;
+  left: calc(50% - 25px);
   right: 0;
-  margin: auto;
+  margin: 0;
 
   animation: spin 1s infinite linear;
 `;

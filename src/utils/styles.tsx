@@ -1,6 +1,9 @@
 import React, { BaseSyntheticEvent } from "react";
 import styled, { createGlobalStyle, css } from "styled-components";
 
+
+import { StatusType } from "axiosRequests/adminPanel";
+
 export const GlobalStyle = createGlobalStyle`
 * {
     font-family: "Montserrat", "Proxima Nova Regular", "Proxima Nova Thin", "Roboto",
@@ -16,6 +19,7 @@ body {
     padding: 0px;
     /* overflow: hidden; */
 }
+
 `;
 
 export const GoodsStyledSelectorInput = styled.div`
@@ -69,7 +73,12 @@ export const GoodsStyledSelectorOption = styled.div<IGoodsStyledSelectorOption>`
     `}
 `;
 
-export const BuyButton = styled.div`
+interface IBuyButton {
+  isBlocked?: boolean;
+  isDanger?: boolean;
+}
+
+export const BuyButton = styled.div<IBuyButton>`
   background-color: #792c9b;
   color: #fff;
   font-size: 12px;
@@ -81,6 +90,19 @@ export const BuyButton = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
+  user-select: none;
+
+  ${({ isBlocked }) =>
+    isBlocked &&
+    css`
+      background: ${props => props.theme.secondaryButtonColor};
+    `}
+    ${({ isDanger }) =>
+    isDanger &&
+    css`
+      background: ${props => props.theme.dangerColor};
+    `}
 `;
 
 const CheckboxSpan = styled.span`
@@ -150,7 +172,7 @@ export const FilterStyledCheckbox = ({
   type,
   name,
   onChange,
-  checked
+  checked,
 }: IFilterStyledCheckbox) => {
   return (
     <CheckBoxMainContainer>
@@ -158,7 +180,7 @@ export const FilterStyledCheckbox = ({
         type={type}
         name={name}
         id={name}
-        onChange={e => onChange(e, name)}
+        onChange={(e) => onChange(e, name)}
         checked={checked}
       />
       <CheckboxSpan />
@@ -167,10 +189,50 @@ export const FilterStyledCheckbox = ({
 };
 
 export const StyledInput = styled.input`
+  border: 1px solid #ccc;
+  padding: 5px;
+  box-sizing: border-box;
+  height: 30px;
+  width: 100%;
+  outline: none;
+`;
+
+interface IOrderStatusContainer {
+  status: StatusType;
+}
+
+export const OrderStatusContainer = styled.div<IOrderStatusContainer>`
+  color: #fff;
+  ${({ status }) => {
+    if (status === "accepted") {
+      return css`
+        background: #792c9b;
+      `;
+    }
+    if (status === "cancelled") {
+      return css`
+        background: #ff3e3e;
+      `;
+    }
+    if (status === "delivered") {
+      return css`
+        background: #0d9e33;
+      `;
+    }
+    if (status === "ordered") {
+      return css`
+        background: #3087f8;
+      `;
+    }
+  }}
+`;
+
+export const StyledTextArea = styled.textarea`
     border: 1px solid #ccc;
-    padding: 5px;
+    padding: 10px;
     box-sizing: border-box;
-    height: 30px;
+    height: 300px;
     width: 100%;
     outline: none;
-`
+    resize: none;
+`;

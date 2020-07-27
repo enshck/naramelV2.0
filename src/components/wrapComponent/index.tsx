@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Fragment } from "react";
 import { useDispatch } from "react-redux";
 
 import {
@@ -55,9 +55,9 @@ const WrapComponent = (props: IProps) => {
   }
 
   return (
-    <MainContainer>
+    <Fragment>
       <Container>{props.children}</Container>
-    </MainContainer>
+    </Fragment>
   );
 };
 

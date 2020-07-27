@@ -2,7 +2,7 @@ import React, { ElementType, useState } from "react";
 import { ClickAwayListener } from "@material-ui/core";
 import { Scrollbars } from "react-custom-scrollbars";
 
-import { MainContainer } from "./styles";
+import { MainContainer, LabelContainer } from "./styles";
 
 interface IOption {
   label: string;
@@ -34,7 +34,7 @@ const Selector = ({
     <ClickAwayListener onClickAway={() => setVisible(false)}>
       <MainContainer isOpenedOptionContainer={isVisible}>
         <StyledInputContainer onClick={() => setVisible(!isVisible)}>
-          {changedValue.label}
+          <LabelContainer>{changedValue.label}</LabelContainer>
           <span>{arrowIcon && <img src={arrowIcon} alt={"arrowIcon"} />}</span>
         </StyledInputContainer>
         <StyledOptionContainer isVisible={isVisible}>

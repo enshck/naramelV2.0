@@ -75,7 +75,13 @@ const ItemElement = ({ itemData, buyButtonHandler }: IProps) => {
     <GoodsElement>
       <Wrapper to={`/items/${id}`} />
       <VisiblePart>
-        <ItemImage src={images[0]} />
+        <ItemImage
+          src={
+            typeof images[0] === "string"
+              ? images[0]
+              : URL.createObjectURL(images[0])
+          }
+        />
         <Name>{name}</Name>
         <SubName>{subName}</SubName>
         <Price>{price + " грн"}</Price>

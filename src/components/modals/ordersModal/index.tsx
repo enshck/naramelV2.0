@@ -146,45 +146,55 @@ const OrdersModal = ({ open, onClose }: IProps) => {
   const submitHandler = async () => {
     const { name, patronymic, phone } = customerData;
 
-    if (
-      name.length >= 1 &&
-      patronymic.length >= 1 &&
-      phone.length === 19 &&
-      changedCity.value.length >= 1 &&
-      changedWarehouse.value.length >= 1
-    ) {
-      const orders = ordersData.map((elem) => {
-        const { count, elementValue, id } = elem;
+    try {
+      if (
+        name.length >= 1 &&
+        patronymic.length >= 1 &&
+        phone.length === 19 &&
+        changedCity.value.length >= 1 &&
+        changedWarehouse.value.length >= 1
+      ) {
+        const orders = ordersData.map((elem) => {
+          const { count, elementValue, id, name, images, price } = elem;
 
-        return {
-          count,
-          elementValue,
-          id,
-        };
-      });
-      const id = uuidv1();
-      const result = await firebase
-        .firestore()
-        .collection("orders")
-        .add({
-          id,
-          ordersData: orders,
-          date: moment().format("YYYY-MM-DD"),
-          customerData: {
+          return {
+            count,
+            elementValue,
+            id,
             name,
-            patronymic,
-            phone,
-            city: changedCity.label,
-            warehouse: changedWarehouse.value,
-          },
+            images,
+            price,
+          };
         });
+        const id = uuidv1();
+        await firebase
+          .firestore()
+          .collection("orders")
+          .doc(id)
+          .set({
+            id,
+            ordersData: orders,
+            date: moment().format("YYYY-MM-DD"),
+            customerData: {
+              name,
+              patronymic,
+              phone,
+              city: {
+                cityName: changedCity.label,
+                cityId: changedCity.value,
+              },
+              warehouse: changedWarehouse.value,
+            },
+            status: "ordered",
+          });
 
-      if (result) {
         setStep(2);
         setCompletedOrderId(id);
         localStorage.removeItem("ordersData");
         dispatch(setOrdersData([]));
       }
+    } catch (err) {
+      console.log(err, "error");
     }
   };
 

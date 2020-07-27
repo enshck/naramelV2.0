@@ -1,55 +1,54 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import { useHistory } from "react-router-dom";
 
-import { IProfile } from "../../../utils/interfaces";
+import { IProfile } from "utils/interfaces";
+import Header from "./header";
+import Caregories from "./categoryContainer";
+import Filters from "./filtersContainer";
+import Goods from "./goodsContainer";
+import Orders from "./ordersContainer";
 
-const MainContainer = styled.div``;
+const MainContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 auto;
+  max-height: calc(100vh - 135px);
+`;
+
+const TabsContainer = styled.div`
+  height: 100%;
+  display: flex;
+`;
 
 interface IProps {
   profile: IProfile;
 }
 
 const AdminPanel = (props: IProps) => {
-  // const { profile } = props;
-  // const [changedMode, setChangedMode] = useState("orders");
-  // const [getAdminOrdersData, adminOrdersData] = useGetFirebaseData();
-  // const [getGoodsData, goodsData] = useGetFirebaseData();
-  // const [getOrders, ordersData] = useGetFirebaseData();
-  // const dispatch = useDispatch();
+  const [changedTab, setChangedTab] = useState(1);
+  const { hash } = window.location;
+  const history = useHistory();
 
-  // if (!adminOrdersData.called) {
-  //   getAdminOrdersData({
-  //     collection: "successOrders",
-  //     actionHandler: orders => dispatch(setAdminOrders(orders))
-  //   });
-  // }
+  useEffect(() => {
+    if (hash.length > 0) {
+      setChangedTab(+hash.slice(1));
+    }
+  }, [hash]);
 
-  // if (!goodsData.called) {
-  //   getGoodsData({
-  //     collection: "goods",
-  //     actionHandler: goods => dispatch(setGoodsList(goods))
-  //   });
-  // }
-
-  // if (!ordersData.called && profile) {
-  //   getOrders({
-  //     collection: "orders",
-  //     singleDoc: profile.uid,
-  //     actionHandler: orders => dispatch(setOrders(orders))
-  //   });
-  // }
+  const changeTabHandler = (newTab: number) => {
+    history.push(`/adminPanel#${newTab}`);
+  };
 
   return (
     <MainContainer>
-      admin panel
-      {/* <ButtonBack to={"/items"}>
-        <img src={ArrowBack} alt={"back"} />
-      </ButtonBack>
-      <Header mode={"adminPanel"} />
-      <AdminContainer
-        changedMode={changedMode}
-        setChangedMode={setChangedMode}
-      /> */}
+      <Header changedTab={changedTab} setChangedTab={changeTabHandler} />
+      <TabsContainer>
+        {changedTab === 0 && <Orders />}
+        {changedTab === 1 && <Caregories />}
+        {changedTab === 2 && <Filters />}
+        {changedTab === 3 && <Goods />}
+      </TabsContainer>
     </MainContainer>
   );
 };

@@ -1,5 +1,6 @@
 import React from "react";
 import { useDispatch } from "react-redux";
+import { useHistory } from "react-router-dom";
 
 import {
   MainContainer,
@@ -18,7 +19,7 @@ import {
 } from "./styles";
 import logo from "img/logoNaravel.png";
 import { useSelector } from "customHooks/useSelector";
-import { setOpenedModal } from "store/actions";
+import { setOpenedModal, setIsLogged } from "store/actions";
 import OrdersModal from "components/modals/ordersModal";
 import firebase from "utils/firebase";
 
@@ -28,9 +29,13 @@ const Header = () => {
   const openedModal = useSelector((state) => state.openedModal);
   const isLogged = useSelector((state) => state.isLogged);
   const dispatch = useDispatch();
+  const history = useHistory();
+  const { pathname } = history.location;
 
   const logoutHandler = () => {
     firebase.auth().signOut();
+    dispatch(setIsLogged(false));
+    history.push("/login");
   };
 
   return (
@@ -45,47 +50,54 @@ const Header = () => {
           <img src={logo} alt={"logo"} />
         </LogoContainer>
         <MainControlsContainer>
-          <ControlsContainer
-            onClick={() =>
-              ordersData.length > 0 && dispatch(setOpenedModal("orders"))
-            }
-          >
-            Корзина <span>({ordersData.length})</span>
-          </ControlsContainer>
-          {isLogged && <LogoutButton>Выйти</LogoutButton>}
+          {pathname !== "/adminPanel" && (
+            <ControlsContainer
+              onClick={() =>
+                ordersData.length > 0 && dispatch(setOpenedModal("orders"))
+              }
+            >
+              Корзина <span>({ordersData.length})</span>
+            </ControlsContainer>
+          )}
+          {isLogged && (
+            <LogoutButton onClick={logoutHandler}>Выйти</LogoutButton>
+          )}
         </MainControlsContainer>
       </SubHeader>
-      <MenuContainer>
-        {menuCategory.map((elem) => {
-          const { id, name, subCategories } = elem;
 
-          return (
-            <MenuCategoryContainer key={id}>
-              <MenuElement>
-                <p>{name}</p>
-                <SubCategoriesMainContainer>
-                  <SubCategoryWrapper />
-                  {subCategories.map((elem) => {
-                    const { id, name } = elem;
+      {pathname !== "/adminPanel" && (
+        <MenuContainer>
+          {menuCategory.map((elem) => {
+            const { id, name, subCategories } = elem;
 
-                    return (
-                      <SubCategory
-                        key={id}
-                        to={{
-                          pathname: "/items",
-                          search: `groupId=${id}`,
-                        }}
-                      >
-                        {name}
-                      </SubCategory>
-                    );
-                  })}
-                </SubCategoriesMainContainer>
-              </MenuElement>
-            </MenuCategoryContainer>
-          );
-        })}
-      </MenuContainer>
+            return (
+              <MenuCategoryContainer key={id}>
+                <MenuElement>
+                  <p>{name}</p>
+                  <SubCategoriesMainContainer>
+                    <SubCategoryWrapper />
+                    {subCategories.map((elem) => {
+                      const { id, name } = elem;
+
+                      return (
+                        <SubCategory
+                          key={id}
+                          to={{
+                            pathname: "/items",
+                            search: `groupId=${id}`,
+                          }}
+                        >
+                          {name}
+                        </SubCategory>
+                      );
+                    })}
+                  </SubCategoriesMainContainer>
+                </MenuElement>
+              </MenuCategoryContainer>
+            );
+          })}
+        </MenuContainer>
+      )}
     </MainContainer>
   );
 };

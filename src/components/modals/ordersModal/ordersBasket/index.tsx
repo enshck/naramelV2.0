@@ -49,6 +49,7 @@ const Step1 = ({ open, onClose, updateCountOfGoods, setStep }: IProps) => {
                   subName,
                   elementValue,
                   count,
+                  id,
                 } = elem;
                 const { value, type } = elementValue;
                 const filterForOrderElement = filters.find(
@@ -56,10 +57,17 @@ const Step1 = ({ open, onClose, updateCountOfGoods, setStep }: IProps) => {
                 );
 
                 return (
-                  <OrderElement>
+                  <OrderElement key={id}>
                     <OrderInfoContainer>
                       <ImageContainer>
-                        <img src={images[0]} alt={"itemImage"} />
+                        <img
+                          src={
+                            typeof images[0] === "string"
+                              ? images[0]
+                              : URL.createObjectURL(images[0])
+                          }
+                          alt={"itemImage"}
+                        />
                       </ImageContainer>
                       <OrderInfo>
                         <h2>{name}</h2>

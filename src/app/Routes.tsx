@@ -6,7 +6,6 @@ import AdminPanel from "../components/pages/adminPanel";
 import Items from "../components/pages/items";
 import ItemsDetail from "../components/pages/itemsDetails";
 import WrapComponent from "../components/wrapComponent";
-import { GlobalStyle } from "../utils/styles";
 import Header from "../components/header";
 import { useSelector } from "customHooks/useSelector";
 
@@ -76,7 +75,6 @@ const Routes = () => {
 
   return (
     <WrapComponent>
-      <GlobalStyle />
       <Header />
       <Switch>
         <Route exact path="/" render={() => <Redirect to="/items" />} />

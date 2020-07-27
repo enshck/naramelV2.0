@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { useDispatch } from "react-redux";
 
 import firebase from "utils/firebase";
 import { errors } from "utils/errors";
 import Form from "./form";
+import { setIsLogged } from "store/actions";
 
 const MainContainer = styled.div`
   display: flex;
@@ -30,6 +32,7 @@ const SignUp = (props: IProps) => {
     password: "",
     error: "",
   });
+  const dispatch = useDispatch();
 
   const authHandler = () => {
     const { email, password } = formData;
@@ -38,7 +41,10 @@ const SignUp = (props: IProps) => {
       .auth()
       .signInWithEmailAndPassword(email, password)
       .then((user) => {
-        user && history.push("/adminPanel");
+        if (user) {
+          dispatch(setIsLogged(true));
+          history.push("/adminPanel");
+        }
       })
       .catch((err) => {
         const error = errors[err.code];

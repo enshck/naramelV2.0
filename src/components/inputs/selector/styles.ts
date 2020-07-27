@@ -8,7 +8,7 @@ export const MainContainer = styled.div<IProps>`
   width: 100%;
   position: relative;
   user-select: none;
-  z-index: 9999;
+  z-index: 999;
 
   img {
     position: absolute;
@@ -22,4 +22,11 @@ export const MainContainer = styled.div<IProps>`
         transform: rotate(180deg);
       `}
   }
+`;
+
+export const LabelContainer = styled.div`
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: calc(100% - 30px);
 `;

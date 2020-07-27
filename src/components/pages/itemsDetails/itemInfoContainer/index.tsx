@@ -19,21 +19,20 @@ const LeftSideContainer = ({
       <ItemName>{name}</ItemName>
       <SubName>{subName}</SubName>
       <ItemFeatures>
-        {Object.keys(filters).map((filter) => {
+        {Object.keys(filters).map((filterKey) => {
           const changedFilter = possibleFilters.find(
-            (elem) => elem.type === filter
+            (elem) => elem.type === filterKey
           );
+          const filter = filters[filterKey];
 
           if (changedFilter) {
             const { id, name, units } = changedFilter;
             return (
               <li key={id}>
                 <span>{name}</span>:{" "}
-                {`${
-                  Array.isArray(filters[filter])
-                    ? filters[filter].join(", ")
-                    : filters[filter]
-                } ${units.length > 0 ? units + "." : ""}`}
+                {`${Array.isArray(filter) ? filter.join(", ") : filter} ${
+                  units.length > 0 ? units + "." : ""
+                }`}
               </li>
             );
           }
