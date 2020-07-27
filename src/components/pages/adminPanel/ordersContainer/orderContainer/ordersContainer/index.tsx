@@ -4,13 +4,13 @@ import { ICompletedOrderData } from "utils/interfaces";
 import OrdersList from "./ordersList";
 
 interface IProps {
-  changedOrder: ICompletedOrderData;
+  orderClone: ICompletedOrderData;
   setOrderClone: (newData: ICompletedOrderData) => void;
 }
 
-const OrdersMainContainer = ({ changedOrder, setOrderClone }: IProps) => {
+const OrdersMainContainer = ({ orderClone, setOrderClone }: IProps) => {
   const updateCountOfGoods = (count: number, key: number) => {
-    const ordersDataClone = { ...changedOrder };
+    const ordersDataClone = { ...orderClone };
 
     if (count < 1) {
       if (ordersDataClone.ordersData.length <= 1) {
@@ -26,7 +26,7 @@ const OrdersMainContainer = ({ changedOrder, setOrderClone }: IProps) => {
 
   return (
     <OrdersList
-      changedOrder={changedOrder}
+      orderClone={orderClone}
       updateCountOfGoods={updateCountOfGoods}
     />
   );

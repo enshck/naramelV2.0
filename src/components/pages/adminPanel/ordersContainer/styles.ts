@@ -16,8 +16,19 @@ export const GridElement = styled.div`
   flex-direction: column;
   height: 100%;
   overflow: auto;
+  position: relative;
 
   :first-child {
     border-right: 1px solid ${(props) => props.theme.inputsBorderColor};
   }
+`;
+
+export const EmptyEditOrdersContainer = styled.div`
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  font-weight: 400;
+  font-size: 20px;
 `;

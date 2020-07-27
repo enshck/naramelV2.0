@@ -1,8 +1,7 @@
 import React, { useMemo, useState } from "react";
 import qs from "qs";
 
-import { MainContainer, GridElement } from "./styles";
-import { useAsyncMemo } from "customHooks/useAsyncMemo";
+import { MainContainer, GridElement, EmptyEditOrdersContainer } from "./styles";
 import { ICompletedOrderData } from "utils/interfaces";
 import firebase from "utils/firebase";
 import { getOrders, IGetOrdersParams } from "axiosRequests/adminPanel";
@@ -12,30 +11,37 @@ import OrderContainer from "./orderContainer";
 const OrdersContainer = () => {
   const { search } = window.location;
   const [filters, setFilters] = useState<IGetOrdersParams>({});
+  const [ordersData, setOrdersData] = useState<ICompletedOrderData[]>([]);
+  const [isFetching, setFetching] = useState(false);
   const [filtersForInputs, setFiltersForInputs] = useState<IGetOrdersParams>(
     {}
   );
 
-  const [ordersData] = useAsyncMemo<ICompletedOrderData[]>(
-    async () => {
-      const token = (await firebase.auth().currentUser?.getIdTokenResult())
-        ?.token;
-      return token
-        ? getOrders(filters, token)
-        : new Promise((resolve) => {
-            resolve([]);
-          });
-    },
-    [filters],
-    []
-  );
+  const updateOrdersData = async () => {
+    const token = (await firebase.auth().currentUser?.getIdTokenResult())
+      ?.token;
+
+    if (token) {
+      try {
+        const data = await getOrders(filters, token);
+        setOrdersData(data);
+      } catch (err) {
+        console.log(err, "error");
+      }
+    }
+  };
+
+  useMemo(() => {
+    setFetching(true);
+    updateOrdersData();
+    setFetching(false);
+  }, [filters]);
 
   const changedOrder = useMemo(() => {
     const { id } = qs.parse(search.slice(1));
-    const { data } = ordersData;
 
     if (id) {
-      const changedOrder = data.find((elem) => elem.id === id);
+      const changedOrder = ordersData.find((elem) => elem.id === id);
 
       if (changedOrder) {
         return changedOrder;
@@ -49,7 +55,7 @@ const OrdersContainer = () => {
       <GridElement>
         <ItemsList
           setFilters={setFilters}
-          ordersData={ordersData.data}
+          ordersData={ordersData}
           filtersForInputs={filtersForInputs}
           setFiltersForInputs={setFiltersForInputs}
           changedOrder={changedOrder}
@@ -57,9 +63,14 @@ const OrdersContainer = () => {
       </GridElement>
       <GridElement>
         {changedOrder ? (
-          <OrderContainer changedOrder={changedOrder} />
+          <OrderContainer
+            changedOrder={changedOrder}
+            updateOrdersData={updateOrdersData}
+            isFetching={isFetching}
+            setFetching={setFetching}
+          />
         ) : (
-          <div>выберите товар</div>
+          <EmptyEditOrdersContainer>Выберите заказ</EmptyEditOrdersContainer>
         )}
       </GridElement>
     </MainContainer>

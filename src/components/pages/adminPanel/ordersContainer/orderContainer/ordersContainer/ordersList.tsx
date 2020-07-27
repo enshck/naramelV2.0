@@ -16,12 +16,12 @@ import { ICompletedOrderData } from "utils/interfaces";
 import { useSelector } from "customHooks/useSelector";
 
 interface IProps {
-  changedOrder: ICompletedOrderData;
+  orderClone: ICompletedOrderData;
   updateCountOfGoods: (count: number, key: number) => void;
 }
 
-const OrdersList = ({ changedOrder, updateCountOfGoods }: IProps) => {
-  const { ordersData } = changedOrder;
+const OrdersList = ({ orderClone, updateCountOfGoods }: IProps) => {
+  const { ordersData } = orderClone;
   const filters = useSelector((state) => state.filters);
 
   return (

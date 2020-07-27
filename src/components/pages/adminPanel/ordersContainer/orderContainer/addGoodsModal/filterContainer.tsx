@@ -15,7 +15,7 @@ const FilterContainer = ({
   return (
     <FilterMainContainer>
       <StyledLabel htmlFor={"filterSearchValue"}>
-        Поиск по имени товарам
+        Поиск по имени товара
       </StyledLabel>
       <Input
         StyledComponent={StyledInput}
