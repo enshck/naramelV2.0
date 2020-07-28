@@ -3,6 +3,7 @@ import React, {
   useEffect,
   Fragment,
   BaseSyntheticEvent,
+  ReactType,
 } from "react";
 import { useDispatch } from "react-redux";
 import moment from "moment";
@@ -13,7 +14,11 @@ import { setOrdersData } from "store/actions";
 import OrdersBasket from "./ordersBasket";
 import ClientForm from "./clientForm";
 import ConfirmedOrder from "./confirmedOrder";
-import { getCities, getWarehouses } from "axiosRequests/orders";
+import {
+  getCities,
+  getWarehouses,
+  getRedirectButton,
+} from "axiosRequests/orders";
 import firebase from "utils/firebase";
 
 interface IProps {
@@ -59,6 +64,7 @@ const OrdersModal = ({ open, onClose }: IProps) => {
     phone: "",
   });
   const ordersData = useSelector((state) => state.orders);
+  const [result, setResult] = useState<string>("");
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -167,31 +173,55 @@ const OrdersModal = ({ open, onClose }: IProps) => {
           };
         });
         const id = uuidv1();
-        await firebase
-          .firestore()
-          .collection("orders")
-          .doc(id)
-          .set({
-            id,
-            ordersData: orders,
-            date: moment().format("YYYY-MM-DD"),
-            customerData: {
-              name,
-              patronymic,
-              phone,
-              city: {
-                cityName: changedCity.label,
-                cityId: changedCity.value,
-              },
-              warehouse: changedWarehouse.value,
-            },
-            status: "ordered",
-          });
 
-        setStep(2);
-        setCompletedOrderId(id);
-        localStorage.removeItem("ordersData");
-        dispatch(setOrdersData([]));
+        const result = await getRedirectButton({
+          id,
+          ordersData: orders,
+          date: moment().format("YYYY-MM-DD"),
+          customerData: {
+            name,
+            patronymic,
+            phone,
+            city: {
+              cityName: changedCity.label,
+              cityId: changedCity.value,
+            },
+            warehouse: changedWarehouse.value,
+          },
+          status: "ordered",
+        });
+
+        if (result) {
+          console.log(result, "dat");
+
+          setResult(result);
+        }
+
+        // await firebase
+        //   .firestore()
+        //   .collection("orders")
+        //   .doc(id)
+        //   .set({
+        //     id,
+        //     ordersData: orders,
+        //     date: moment().format("YYYY-MM-DD"),
+        //     customerData: {
+        //       name,
+        //       patronymic,
+        //       phone,
+        //       city: {
+        //         cityName: changedCity.label,
+        //         cityId: changedCity.value,
+        //       },
+        //       warehouse: changedWarehouse.value,
+        //     },
+        //     status: "ordered",
+        //   });
+
+        // setStep(2);
+        // setCompletedOrderId(id);
+        // localStorage.removeItem("ordersData");
+        // dispatch(setOrdersData([]));
       }
     } catch (err) {
       console.log(err, "error");
@@ -222,6 +252,7 @@ const OrdersModal = ({ open, onClose }: IProps) => {
         changedWarehouse={changedWarehouse}
         onChangeWarehouse={onChangeWarehouse}
         changedCity={changedCity}
+        result={result}
       />
       <ConfirmedOrder
         open={open && step === 2}

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactType } from "react";
 import { Dialog } from "@material-ui/core";
 import { MainContainer, SubmitButton } from "./styles";
 

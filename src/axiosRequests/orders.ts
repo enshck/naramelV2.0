@@ -40,3 +40,19 @@ export const getWarehouses = (ref: string) =>
     .catch((error) => {
       console.log(error);
     });
+
+export const getRedirectButton = (data: any) =>
+  axios({
+    url: "http://localhost:5001/naramel/us-central1/getPageOfPayment",
+    method: "post",
+    params: {
+      public_key: "sandbox_i42722830834",
+    },
+    data: data,
+  })
+    .then((res) => {
+      return res.data;
+    })
+    .catch((error) => {
+      console.log(error);
+    });

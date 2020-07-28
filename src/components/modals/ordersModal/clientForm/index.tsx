@@ -1,5 +1,6 @@
-import React, { BaseSyntheticEvent } from "react";
+import React, { BaseSyntheticEvent, ReactType, useRef, useEffect } from "react";
 import { Dialog } from "@material-ui/core";
+import { useHistory } from "react-router-dom";
 
 import {
   FormContainer,
@@ -37,6 +38,7 @@ interface IProps {
   changedWarehouse: IOption;
   onChangeWarehouse: (value: IOption) => void;
   changedCity: IOption;
+  result: string;
 }
 
 const Step2 = ({
@@ -55,8 +57,21 @@ const Step2 = ({
   changedWarehouse,
   onChangeWarehouse,
   changedCity,
+  result,
 }: IProps) => {
   const { name, patronymic, phone } = customerData;
+  const history = useHistory();
+
+  const res = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!res.current) {
+      return;
+    }
+    res.current.innerHTML = result;
+  }, [result]);
+
+  // console.log(Result, "res");
 
   return (
     <Dialog open={open} fullWidth={true} maxWidth={"sm"}>
@@ -141,6 +156,7 @@ const Step2 = ({
             Продолжить покупки
           </CloseButton>
         </FormContainer>
+        <div dangerouslySetInnerHTML={{ __html: result }} />
       </MainContainer>
     </Dialog>
   );
