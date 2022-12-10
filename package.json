@@ -24,7 +24,7 @@
     "lodash.clonedeep": "^4.5.0",
     "moment": "^2.24.0",
     "prop-types": "^15.7.2",
-    "qs": "^6.9.1",
+    "qs": "^6.9.7",
     "react": "^16.10.1",
     "react-beautiful-dnd": "^13.0.0",
     "react-custom-scrollbars": "^4.2.1",
